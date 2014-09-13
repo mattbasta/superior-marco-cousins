@@ -1,7 +1,9 @@
-define('level', ['level.platform', 'level.title'], function(Lplatform, Ltitle) {
+define('level', ['level.menu', 'level.platform', 'level.title'], function(Lmenu, Lplatform, Ltitle) {
 
     var levels = [
-        Ltitle.get('bastacorp', 2500, 'bastacorp')
+        Ltitle.get('bastacorp', 2500, 'bastacorp'),
+        Lmenu.get('bastacorp', 'title'),
+        Lplatform.get()
     ];
     var current = 0;
 

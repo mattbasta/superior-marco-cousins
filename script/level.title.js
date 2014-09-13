@@ -1,4 +1,4 @@
-define('level.title', ['audio', 'images'], function(audio, images) {
+define('level.title', ['sound', 'images'], function(sound, images) {
 
     function LevelTitle(src, duration, sound) {
         this.sound = sound;
@@ -21,7 +21,7 @@ define('level.title', ['audio', 'images'], function(audio, images) {
     LevelTitle.prototype.draw = function(ctx) {};
     LevelTitle.prototype.init = function() {
         if (this.sound) {
-            audio.play(this.sound);
+            sound.play(this.sound);
         }
         this.ttl = this.duration;
     };

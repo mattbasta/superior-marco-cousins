@@ -1,7 +1,7 @@
 define('level.menu', ['audio', 'images'], function(audio, images) {
 
-    function LevelMenu(src, sound) {
-        this.sound = sound;
+    function LevelMenu(src, audio) {
+        this.audio = audio;
         var me = this;
         images.waitFor(src).done(function(img) {
             var hw = img.width / 2;
@@ -18,15 +18,15 @@ define('level.menu', ['audio', 'images'], function(audio, images) {
 
     LevelMenu.prototype.draw = function(ctx) {};
     LevelMenu.prototype.init = function() {
-        if (this.sound) {
-            audio.play(this.sound);
+        if (this.audio) {
+            audio.playLoop(this.audio);
         }
     };
     LevelMenu.prototype.tick = function(delta, levelComplete) {};
 
     return {
-        get: function(src, sound) {
-            return new LevelMenu(src, sound);
+        get: function(src, audio) {
+            return new LevelMenu(src, audio);
         }
     }
 

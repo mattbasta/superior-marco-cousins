@@ -1,14 +1,47 @@
-define('audio', ['jsfx'], function(jsfx) {
+define('audio', ['buzz'], function(buzz) {
+    'use strict';
 
-    var waves = {
-        bastacorp: ["saw",0.0000,0.1930,0.0000,0.2680,0.0000,0.0040,110.0000,878.0000,2400.0000,-0.9000,0.0000,0.0000,0.0100,0.0003,0.0000,0.0000,0.0000,0.5000,-0.2960,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,0.0000],
-    };
+    var loops = {};
+    var playingLoop = null;
 
-    var samples = jsfx.createWaves(waves);
+    function loadLoop(name, url) {
+        if(name in loops) return;
+        loops[name] = new buzz.sound(
+            url,
+            {
+                formats: ['mp3'],
+                preload: true,
+                autoload: true,
+                loop: true
+            }
+        );
+    }
+
+    loadLoop('title', 'audio/title');
 
     return {
-        play: function(name) {
-            samples[name].play();
+        loadLoop: loadLoop,
+        playLoop: function(name) {
+            if(playingLoop == name)
+                return;
+
+            if(!playingLoop) {
+                loops[name].play().setVolume(0).fadeTo(10, 1000);
+                playingLoop = name;
+                return;
+            }
+
+            loops[playingLoop].fadeOut(2000, function() {
+                playingLoop = name;
+                // FIXME: Bad things might happen if playLoop is called again
+                // within four seconds of it being called once.
+                loops[name].play().setVolume(0).fadeTo(20, 2000);
+            });
+        },
+        stop: function() {
+            if (!playingLoop) return;
+            loops[playingLoop].stop();
+            playingLoop = null;
         }
     };
 });
