@@ -9,8 +9,6 @@ define('timing', ['drawing'], function(drawing) {
 
 
         drawing.draw();
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(0, 0, width, height);
 
         raf(loop);
         lastDate = now;
