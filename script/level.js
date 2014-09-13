@@ -1,11 +1,23 @@
-define('level', [], function() {
+define('level', ['level.platform', 'level.title'], function(Lplatform, Ltitle) {
 
-    var width = 1024;
-    var height = 64;
+    var levels = [
+        Ltitle.get('bastacorp', 2500, 'bastacorp')
+    ];
+    var current = 0;
 
-    var levelBuf = new ArrayBuffer((width * height) << 2);
-    var levelView = new Uint16Array(levelBuf);
+    levels[0].init();
 
-
+    return {
+        getCurrent: function() {
+            return levels[current];
+        },
+        next: function() {
+            current += 1;
+            if (current === levels.length) {
+                current = 0;
+            }
+            levels[current].init();
+        }
+    };
 
 });

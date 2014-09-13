@@ -1,4 +1,4 @@
-define('drawing', [], function() {
+define('drawing', ['level'], function(level) {
 
     var can = document.querySelector('canvas');
     var ctx = can.getContext('2d');
@@ -7,7 +7,14 @@ define('drawing', [], function() {
     var width = can.width;
     var height = can.height;
 
-    function draw() {}
+    function draw() {
+
+        ctx.fillStyle = '#111';
+        ctx.fillRect(0, 0, can.width, can.height);
+
+        level.getCurrent().draw(ctx);
+
+    }
 
 
     function onresize() {

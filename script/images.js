@@ -13,6 +13,7 @@ define('images', ['promise'], function(promise) {
     }
 
     var images = {
+        'bastacorp': loadImage('img/bastacorp.jpg'),
         'blueman': loadImage('img/blueman.png'),
         'greenman': loadImage('img/greenman.png'),
         'tiles': loadImage('img/tiles.png')
