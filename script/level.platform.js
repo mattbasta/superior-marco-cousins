@@ -12,6 +12,24 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
     var TILE_DOOR_OPEN = 0;
 
     var TILES_PER_ROW = settings.sprite_tile_row;
+    var DAY_LENGTH = 5 * 60 * 1000;  // 5 minutes
+
+    function getTimeColor(time) {
+
+        // One day-night cycle for every full oscillation of cosine
+        var tod = Math.cos(time / DAY_LENGTH * 2 * Math.PI);
+        // Normalize the result to [0,1]
+        tod += 1;
+        tod /= 2;
+
+        var hue = 150 * tod - 100;  // [-100,50]
+        var sat = 70 * tod + 30;  // [30,100]
+        var lig = 28 * tod + 40;  // [40,68]
+
+        hue += 255;
+        hue %= 256;
+        return 'hsl(' + hue + ',' + sat + '%,' + lig + '%)';
+    }
 
     function LevelPlatform(width, height) {
         var levelBuf = new ArrayBuffer((width * height) << 2);
@@ -42,15 +60,29 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
             }
         });
 
+        this.time = 0;
+        this.timeThreshold = 0;
+        this.timeColor = 'hsl(46, 100%, 68%)';
+
     }
 
     LevelPlatform.prototype.draw = function(ctx) {
         // Clear the frame with the sky color.
-        // TODO: Add a day/night cycle?
-        ctx.fillStyle = '#FED95E';
+        var threshold = (this.time / 250 | 0)
+        if (threshold !== this.timeThreshold) {
+            this.timeThreshold = threshold;
+            this.timeColor = getTimeColor(this.time);
+        }
+        ctx.fillStyle = this.timeColor;
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        ctx.drawImage(this.ctx.canvas, 0, ctx.canvas.height - this.ctx.canvas.height);
+        ctx.drawImage(
+            this.ctx.canvas,
+            0, this.ctx.canvas.height - ctx.canvas.height,
+            ctx.canvas.width, ctx.canvas.height,
+            0, 0,
+            ctx.canvas.width, ctx.canvas.height
+        );
     };
     LevelPlatform.prototype.init = function() {};
     LevelPlatform.prototype.tick = function(delta, levelComplete) {
@@ -58,6 +90,9 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
         if (this.ttl <= 0) {
             levelComplete();
         }
+
+        this.time += delta;
+
     };
 
     return {
