@@ -45,9 +45,12 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
     }
 
     LevelPlatform.prototype.draw = function(ctx) {
+        // Clear the frame with the sky color.
+        // TODO: Add a day/night cycle?
         ctx.fillStyle = '#FED95E';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.drawImage(this.ctx.canvas, 0, 0);
+
+        ctx.drawImage(this.ctx.canvas, 0, ctx.canvas.height - this.ctx.canvas.height);
     };
     LevelPlatform.prototype.init = function() {};
     LevelPlatform.prototype.tick = function(delta, levelComplete) {
