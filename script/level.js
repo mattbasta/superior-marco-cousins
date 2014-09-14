@@ -5,7 +5,7 @@ define('level',
     var levels = [
         Ltitle.get('bastacorp', 2500, 'bastacorp'),
         Lmenu.get('menu', 'title'),
-        Lplatform.get()
+        Lplatform.get(512, 64)
     ];
     var current = 0;
 

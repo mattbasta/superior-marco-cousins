@@ -30,7 +30,7 @@ define('keys', ['events'], function(events) {
                 keys.downArrow = set;
                 break;
         }
-        var handler = set ? keyDownHandler: keyUpHandler;
+        var handler = set ? keyDownHandler : keyUpHandler;
         handler.fire(e.keyCode);
         handler.fire('any');
     }
