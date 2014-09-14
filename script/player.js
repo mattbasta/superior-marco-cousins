@@ -1,4 +1,4 @@
-define('player', ['images', 'keys', 'settings'], function(images, keys, settings) {
+define('player', ['images', 'keys', 'physics', 'settings'], function(images, keys, physics, settings) {
 
     var DIR_LEFT = 0;
     var DIR_RIGHT = 1;
@@ -8,6 +8,8 @@ define('player', ['images', 'keys', 'settings'], function(images, keys, settings
     function Player() {
         this.height = 1;
         this.width = 1;
+
+        this.jumpForce = 20;
 
         this.reset();
 
@@ -21,6 +23,9 @@ define('player', ['images', 'keys', 'settings'], function(images, keys, settings
     Player.prototype.reset = function() {
         this.x = 1;
         this.y = 5;
+
+        this.velX = 0;
+        this.velY = 0;
 
         this.walking = false;
         this.isInContactWithFloor = false; // Player starts in the air.
@@ -44,13 +49,18 @@ define('player', ['images', 'keys', 'settings'], function(images, keys, settings
             this.img,
             x * SPRITE_TILE, this.direction * SPRITE_TILE,
             SPRITE_TILE, SPRITE_TILE,
-            this.x * settings.tile_size, (level.height - this.y) * settings.tile_size + offsetY,
+            this.x * settings.tile_size, (level.height - this.y - this.height) * settings.tile_size + offsetY,
             settings.tile_size, settings.tile_size
         );
     };
 
     Player.prototype.tick = function(delta, level) {
-        //
+        if (keys.upArrow && this.isInContactWithFloor) {
+            this.velY += this.jumpForce;
+            this.isInContactWithFloor = false;
+        }
+
+        physics.tick(this, delta, level);
     };
 
     return {

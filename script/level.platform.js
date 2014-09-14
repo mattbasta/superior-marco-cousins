@@ -91,6 +91,8 @@ define('level.platform',
 
     }
 
+    LevelPlatform.prototype.getLevelIndex = getLevelIndex;
+
     LevelPlatform.prototype.draw = function(ctx) {
         // Clear the frame with the sky color.
         var threshold = (this.time / 250 | 0)
