@@ -31,8 +31,8 @@ define('keys', ['events'], function(events) {
                 break;
         }
         var handler = set ? keyDownHandler : keyUpHandler;
-        handler.fire(e.keyCode);
-        handler.fire('any');
+        handler.fire(e.keyCode, e);
+        handler.fire('any', e);
     }
     window.addEventListener('keydown', function(e) {
         keypress(e, true);

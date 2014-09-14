@@ -4,7 +4,7 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
     var TILE_GRASS = 88;
     var TILE_LEAF = 85;
     var TILE_TRUNK = 274;
-    var TILE_BRICK = 0;
+    var TILE_BRICK = 104;
     var TILE_WATER = 0;
     var TILE_LOG = 0;
     var TILE_LADDER = 0;
@@ -23,12 +23,16 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
         tod /= 2;
 
         var hue = 150 * tod - 100;  // [-100,50]
-        var sat = 70 * tod + 30;  // [30,100]
-        var lig = 28 * tod + 40;  // [40,68]
+        var sat = 70 * tod + 20;  // [20,100]
+        var lig = 33 * tod + 35;  // [35,68]
 
         hue += 255;
         hue %= 256;
         return 'hsl(' + hue + ',' + sat + '%,' + lig + '%)';
+    }
+
+    function getLevelIndex(x, y, width) {
+        return y * width + x;
     }
 
     function LevelPlatform(width, height) {
@@ -39,11 +43,16 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
 
         images.waitFor('tiles').done(function(img) {
             var tile;
+            var platform = -1;
+            var lastPlatform = 5;
             for (var x = 0; x < width; x++) {
                 for (var y = 0; y < height; y++) {
                     if (y < 3) tile = TILE_DIRT;
                     else if (y === 3) tile = TILE_GRASS;
+                    else if (y === platform) tile = TILE_BRICK;
                     else continue;
+
+                    levelView[getLevelIndex(x, y, width)] = tile;
 
                     ctx.drawImage(
                         img,
@@ -56,6 +65,14 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
                         settings.tile_size,
                         settings.tile_size
                     );
+                }
+
+                if (x % 6 === 0) {
+                    platform = -1;
+                } else if (x % 6 === 1) {
+                    platform = ((Math.random() * 2 - 1) * 6 | 0) + lastPlatform;
+                    platform = Math.max(platform, 5);
+                    lastPlatform = platform;
                 }
             }
         });
