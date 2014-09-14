@@ -2,7 +2,7 @@ define('level', ['level.menu', 'level.platform', 'level.title'], function(Lmenu,
 
     var levels = [
         Ltitle.get('bastacorp', 2500, 'bastacorp'),
-        Lmenu.get('bastacorp', 'title'),
+        Lmenu.get('menu', 'title'),
         Lplatform.get()
     ];
     var current = 0;
