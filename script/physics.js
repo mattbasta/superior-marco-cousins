@@ -10,9 +10,10 @@ define('physics', [], function() {
                 entity.velY = 0;
                 entity.y = Math.ceil(entity.y);
                 entity.isInContactWithFloor = true;
-                break;
+                return;
             }
         }
+        entity.isInContactWithFloor = false;
     }
 
     function tick(entity, delta, level) {
@@ -27,9 +28,7 @@ define('physics', [], function() {
             entity.velY -= GRAVITY * DELTA_RATIO;
         }
 
-        if (entity.velY < 0) {
-            downardsHitTesting(entity, level);
-        }
+        downardsHitTesting(entity, level);
     }
 
     return {

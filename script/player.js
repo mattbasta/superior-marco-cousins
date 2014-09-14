@@ -60,6 +60,16 @@ define('player', ['images', 'keys', 'physics', 'settings'], function(images, key
             this.isInContactWithFloor = false;
         }
 
+        if (keys.leftArrow) {
+            this.direction = DIR_LEFT;
+            this.velX = -10;
+        } else if (keys.rightArrow) {
+            this.direction = DIR_RIGHT;
+            this.velX = 10;
+        } else {
+            this.velX /= 2;
+        }
+
         physics.tick(this, delta, level);
     };
 
