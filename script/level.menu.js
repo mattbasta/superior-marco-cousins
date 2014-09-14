@@ -1,4 +1,4 @@
-define('level.menu', ['audio', 'images'], function(audio, images) {
+define('level.menu', ['audio', 'images', 'keys'], function(audio, images, keys) {
 
     function LevelMenu(src, audio) {
         this.audio = audio;
@@ -14,15 +14,27 @@ define('level.menu', ['audio', 'images'], function(audio, images) {
                 );
             };
         });
+
+        this.ended = false;
     }
 
     LevelMenu.prototype.draw = function(ctx) {};
     LevelMenu.prototype.init = function() {
+        this.ended = false;
         if (this.audio) {
             audio.playLoop(this.audio);
         }
+
+        var me = this;
+        keys.up.one('any', function() {
+            me.ended = true;
+        });
     };
-    LevelMenu.prototype.tick = function(delta, levelComplete) {};
+    LevelMenu.prototype.tick = function(delta, levelComplete) {
+        if (this.ended) {
+            levelComplete();
+        }
+    };
 
     return {
         get: function(src, audio) {

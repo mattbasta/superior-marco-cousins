@@ -1,4 +1,6 @@
-define('level', ['level.menu', 'level.platform', 'level.title'], function(Lmenu, Lplatform, Ltitle) {
+define('level',
+    ['audio', 'level.menu', 'level.platform', 'level.title'],
+    function(audio, Lmenu, Lplatform, Ltitle) {
 
     var levels = [
         Ltitle.get('bastacorp', 2500, 'bastacorp'),
@@ -14,6 +16,7 @@ define('level', ['level.menu', 'level.platform', 'level.title'], function(Lmenu,
             return levels[current];
         },
         next: function() {
+            audio.stop();
             current += 1;
             if (current === levels.length) {
                 current = 0;

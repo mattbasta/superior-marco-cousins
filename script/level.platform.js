@@ -1,4 +1,4 @@
-define('level.platform', [], function() {
+define('level.platform', ['keys'], function(keys) {
 
     function LevelPlatform(width, height) {
         var levelBuf = new ArrayBuffer((width * height) << 2);
@@ -6,7 +6,8 @@ define('level.platform', [], function() {
     }
 
     LevelPlatform.prototype.draw = function(ctx) {};
-    LevelPlatform.prototype.init = function() {};
+    LevelPlatform.prototype.init = function() {
+    };
     LevelPlatform.prototype.tick = function(delta, levelComplete) {
         this.ttl -= delta;
         if (this.ttl <= 0) {

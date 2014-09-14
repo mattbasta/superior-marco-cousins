@@ -29,10 +29,10 @@ define('keys', ['events'], function(events) {
             case 83: // S
                 keys.downArrow = set;
                 break;
-
-            default:
-                (set ? keyDownHandler: keyUpHandler).fire(e.keyCode);
         }
+        var handler = set ? keyDownHandler: keyUpHandler;
+        handler.fire(e.keyCode);
+        handler.fire('any');
     }
     window.addEventListener('keydown', function(e) {
         keypress(e, true);
