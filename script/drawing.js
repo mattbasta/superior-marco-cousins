@@ -7,16 +7,6 @@ define('drawing', ['level'], function(level) {
     var width = can.width;
     var height = can.height;
 
-    function draw() {
-
-        ctx.fillStyle = '#111';
-        ctx.fillRect(0, 0, can.width, can.height);
-
-        level.getCurrent().draw(ctx);
-
-    }
-
-
     function onresize() {
         can.width = width = document.body.clientWidth;
         can.height = height = document.body.clientHeight;
@@ -25,6 +15,11 @@ define('drawing', ['level'], function(level) {
     window.addEventListener('resize', onresize);
 
     return {
-        draw: draw
+        draw: function() {
+            ctx.imageSmoothingEnabled = false;
+            ctx.mozImageSmoothingEnabled = false;
+            ctx.webkitImageSmoothingEnabled = false;
+            level.getCurrent().draw(ctx);
+        }
     };
 });

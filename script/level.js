@@ -3,7 +3,7 @@ define('level',
     function(audio, Lmenu, Lplatform, Ltitle) {
 
     var levels = [
-        Ltitle.get('bastacorp', 2500, 'bastacorp'),
+        Ltitle.get('bastacorp', 750, 'bastacorp'),
         Lmenu.get('menu', 'title'),
         Lplatform.get(128, 32)
     ];

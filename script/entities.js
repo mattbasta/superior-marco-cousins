@@ -1,17 +1,27 @@
-define('entities', [], function() {
+define('entities', ['player'], function(player) {
 
-    var registry = [];
+    var registry = [
+        player.get()
+    ];
 
-    function process(entity, delta) {}
-
-    function tick(delta) {
+    function draw(ctx, level, offsetY) {
         for (var i = 0; i < registry.length; i++) {
-            process(registry[i], delta);
+            registry[i].draw(ctx, level, offsetY);
+        }
+    }
+
+    function tick(delta, level) {
+        for (var i = 0; i < registry.length; i++) {
+            registry[i].tick(delta, level);
         }
     }
 
     return {
+        draw: draw,
         registry: registry,
+        reset: function() {
+            registry.splice(1, registry.length - 1);
+        },
         tick: tick
     };
 });

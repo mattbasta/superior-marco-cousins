@@ -1,4 +1,6 @@
-define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(drawutils, images, keys, settings) {
+define('level.platform',
+    ['drawutils', 'entities', 'images', 'keys', 'settings'],
+    function(drawutils, entities, images, keys, settings) {
 
     var TILE_DIRT = 91;
     var TILE_GRASS = 88;
@@ -12,6 +14,7 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
     var TILE_DOOR_OPEN = 0;
 
     var TILES_PER_ROW = settings.sprite_tile_row;
+    var TILES_RATIO = settings.tile_size / settings.sprite_tile_size;
     var DAY_LENGTH = 5 * 60 * 1000;  // 5 minutes
 
     function getTimeColor(time) {
@@ -36,10 +39,13 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
     }
 
     function LevelPlatform(width, height) {
-        var levelBuf = new ArrayBuffer((width * height) << 2);
-        var levelView = new Uint16Array(levelBuf);
+        this.width = width;
+        this.height = height;
 
-        var ctx = this.ctx = drawutils.getBuffer(width * settings.tile_size, height * settings.tile_size);
+        var levelBuf = this.levBuffer = new ArrayBuffer((width * height) << 2);
+        var levelView = this.levView = new Uint16Array(levelBuf);
+
+        var ctx = this.ctx = drawutils.getBuffer(width * settings.sprite_tile_size, height * settings.sprite_tile_size);
 
         images.waitFor('tiles').done(function(img) {
             var tile;
@@ -60,10 +66,10 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
                         Math.floor(tile / TILES_PER_ROW) * settings.sprite_tile_size,
                         settings.sprite_tile_size,
                         settings.sprite_tile_size,
-                        x * settings.tile_size,
-                        (height - y) * settings.tile_size,
-                        settings.tile_size,
-                        settings.tile_size
+                        x * settings.sprite_tile_size,
+                        (height - y) * settings.sprite_tile_size,
+                        settings.sprite_tile_size,
+                        settings.sprite_tile_size
                     );
                 }
 
@@ -81,6 +87,8 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
         this.timeThreshold = 0;
         this.timeColor = 'hsl(46, 100%, 68%)';
 
+        this.leftEdge = 0;
+
     }
 
     LevelPlatform.prototype.draw = function(ctx) {
@@ -93,15 +101,22 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
         ctx.fillStyle = this.timeColor;
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
+        var myHeight = this.ctx.canvas.height;
+        var theirHeight = ctx.canvas.height;
+
         ctx.drawImage(
             this.ctx.canvas,
-            0, this.ctx.canvas.height - ctx.canvas.height,
-            ctx.canvas.width, ctx.canvas.height,
+            this.leftEdge * settings.sprite_tile_size, myHeight - theirHeight / TILES_RATIO | 0,
+            ctx.canvas.width / TILES_RATIO | 0, ctx.canvas.height / TILES_RATIO | 0,
             0, 0,
             ctx.canvas.width, ctx.canvas.height
         );
+
+        entities.draw(ctx, this, ctx.canvas.height - this.ctx.canvas.height * TILES_RATIO);
     };
-    LevelPlatform.prototype.init = function() {};
+    LevelPlatform.prototype.init = function() {
+        entities.reset();
+    };
     LevelPlatform.prototype.tick = function(delta, levelComplete) {
         this.ttl -= delta;
         if (this.ttl <= 0) {
@@ -109,6 +124,8 @@ define('level.platform', ['drawutils', 'images', 'keys', 'settings'], function(d
         }
 
         this.time += delta;
+
+        entities.tick(delta, this);
 
     };
 
