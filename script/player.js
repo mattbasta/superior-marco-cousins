@@ -42,7 +42,7 @@ define('player', ['images', 'keys', 'physics', 'settings'], function(images, key
         var now = Date.now();
         // If the player is walking, make them wiggle between states 5 and 6
         if (this.walking) {
-            x += (now / 400 | 0) % 2;
+            x += (now / 200 | 0) % 2 + 2;
         }
 
         ctx.drawImage(
@@ -63,11 +63,14 @@ define('player', ['images', 'keys', 'physics', 'settings'], function(images, key
         if (keys.leftArrow) {
             this.direction = DIR_LEFT;
             this.velX = -10;
+            this.walking = true;
         } else if (keys.rightArrow) {
             this.direction = DIR_RIGHT;
             this.velX = 10;
+            this.walking = true;
         } else {
-            this.velX /= 2;
+            this.velX *= 0.8;
+            this.walking = false;
         }
 
         physics.tick(this, delta, level);

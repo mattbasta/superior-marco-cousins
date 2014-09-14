@@ -28,7 +28,9 @@ define('physics', [], function() {
             entity.velY -= GRAVITY * DELTA_RATIO;
         }
 
-        downardsHitTesting(entity, level);
+        if (entity.velY <= 0) {
+            downardsHitTesting(entity, level);
+        }
     }
 
     return {
