@@ -663,8 +663,10 @@ var jsfx = {};
 
 scope('jsfx', [], function() {
     return {
+        arrayToParams: jsfxlib.arrayToParams.bind(jsfxlib),
         createWave: jsfxlib.createWave.bind(jsfxlib),
-        createWaves: jsfxlib.createWaves.bind(jsfxlib)
+        createWaves: jsfxlib.createWaves.bind(jsfxlib),
+        generate: jsfx.generate.bind(jsfx)
     }
 });
 

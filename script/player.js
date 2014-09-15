@@ -1,4 +1,4 @@
-define('player', ['images', 'keys', 'physics', 'settings'], function(images, keys, physics, settings) {
+define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(images, keys, physics, settings, sound) {
 
     var DIR_LEFT = 0;
     var DIR_RIGHT = 1;
@@ -27,6 +27,7 @@ define('player', ['images', 'keys', 'physics', 'settings'], function(images, key
         this.velX = 0;
         this.velY = 0;
 
+        this.ducking = false;
         this.walking = false;
         this.isInContactWithFloor = false; // Player starts in the air.
 
@@ -43,6 +44,8 @@ define('player', ['images', 'keys', 'physics', 'settings'], function(images, key
         // If the player is walking, make them wiggle between states 5 and 6
         if (this.walking) {
             x += (now / 200 | 0) % 2 + 2;
+        } else if (this.ducking) {
+            x = 2;
         }
 
         ctx.drawImage(
@@ -56,24 +59,37 @@ define('player', ['images', 'keys', 'physics', 'settings'], function(images, key
 
     Player.prototype.tick = function(delta, level) {
         if (keys.upArrow && this.isInContactWithFloor) {
-            this.velY += this.jumpForce;
+            this.velY += this.jumpForce * (this.ducking ? 0.75 : 1);
             this.isInContactWithFloor = false;
+            sound.play('jump');
         }
 
-        if (keys.leftArrow) {
-            this.direction = DIR_LEFT;
-            this.velX = -10;
-            this.walking = true;
-        } else if (keys.rightArrow) {
-            this.direction = DIR_RIGHT;
-            this.velX = 10;
-            this.walking = true;
-        } else {
-            this.velX *= 0.8;
+        if (keys.downArrow) {
+            this.velX *= 0.6;
             this.walking = false;
+            this.ducking = true;
+        }
+        if (!keys.downArrow || !this.isInContactWithFloor) {
+            this.ducking = keys.downArrow;
+            if (keys.leftArrow) {
+                this.direction = DIR_LEFT;
+                this.velX = -10;
+                this.walking = !keys.downArrow;
+            } else if (keys.rightArrow) {
+                this.direction = DIR_RIGHT;
+                this.velX = 10;
+                this.walking = !keys.downArrow;
+            } else {
+                this.velX *= 0.8;
+                this.walking = false;
+            }
         }
 
         physics.tick(this, delta, level);
+    };
+
+    Player.prototype.headBump = function() {
+        sound.play('headBump');
     };
 
     return {

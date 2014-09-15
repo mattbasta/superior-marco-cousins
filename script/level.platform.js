@@ -1,17 +1,7 @@
 define('level.platform',
-    ['drawutils', 'entities', 'images', 'keys', 'settings'],
-    function(drawutils, entities, images, keys, settings) {
+    ['drawutils', 'entities', 'images', 'keys', 'settings', 'tiles'],
+    function(drawutils, entities, images, keys, settings, tiles) {
 
-    var TILE_DIRT = 91;
-    var TILE_GRASS = 88;
-    var TILE_LEAF = 85;
-    var TILE_TRUNK = 274;
-    var TILE_BRICK = 104;
-    var TILE_WATER = 0;
-    var TILE_LOG = 0;
-    var TILE_LADDER = 0;
-    var TILE_DOOR_CLOSED = 0;
-    var TILE_DOOR_OPEN = 0;
 
     var TILES_PER_ROW = settings.sprite_tile_row;
     var TILES_RATIO = settings.tile_size / settings.sprite_tile_size;
@@ -49,21 +39,25 @@ define('level.platform',
 
         images.waitFor('tiles').done(function(img) {
             var tile;
+            var tileImg;
             var platform = -1;
             var lastPlatform = 5;
             for (var x = 0; x < width; x++) {
                 for (var y = 0; y < height; y++) {
-                    if (y < 3) tile = TILE_DIRT;
-                    else if (y === 3) tile = TILE_GRASS;
-                    else if (y === platform) tile = TILE_BRICK;
+                    if (y < 3) tile = tiles.TILE_DIRT;
+                    else if (y === 3) tile = tiles.TILE_GRASS;
+                    else if (y === platform) tile = tiles.TILE_BRICK;
+                    else if (x % 10 === 0 && y < 6) tile = tiles.TILE_BRICK;
                     else continue;
 
                     levelView[getLevelIndex(x, y, width)] = tile;
 
+                    tileImg = tiles.IMAGES.get(tile);
+
                     ctx.drawImage(
                         img,
-                        tile % TILES_PER_ROW * settings.sprite_tile_size,
-                        Math.floor(tile / TILES_PER_ROW) * settings.sprite_tile_size,
+                        tileImg % TILES_PER_ROW * settings.sprite_tile_size,
+                        Math.floor(tileImg / TILES_PER_ROW) * settings.sprite_tile_size,
                         settings.sprite_tile_size,
                         settings.sprite_tile_size,
                         x * settings.sprite_tile_size,
