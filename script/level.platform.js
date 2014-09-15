@@ -82,6 +82,7 @@ define('level.platform',
         this.timeColor = 'hsl(46, 100%, 68%)';
 
         this.leftEdge = 0;
+        this.bottomEdge = 0;
 
     }
 
@@ -100,15 +101,31 @@ define('level.platform',
         var myHeight = this.ctx.canvas.height;
         var theirHeight = ctx.canvas.height;
 
+        // Calculate the new best offsets for the viewport
+        var player = entities.registry[0];
+        var bestX = (player.x + player.width / 2) - (ctx.canvas.width / settings.tile_size / 2);
+        var bestY = (player.y + player.height / 2) - (ctx.canvas.height / settings.tile_size / 2);
+
+        this.leftEdge = (this.leftEdge * 6 + bestX) / 7;
+        this.bottomEdge = (this.bottomEdge * 6 + bestY) / 7;
+
+        this.leftEdge = Math.max(Math.min(this.leftEdge, this.width - 1 - ctx.canvas.width / settings.tile_size), 0);
+        this.bottomEdge = Math.max(Math.min(this.bottomEdge, this.height - 1 - ctx.canvas.height / settings.tile_size), 0);
+
         ctx.drawImage(
             this.ctx.canvas,
-            this.leftEdge * settings.sprite_tile_size, myHeight - theirHeight / TILES_RATIO | 0,
+            this.leftEdge * settings.sprite_tile_size, myHeight - theirHeight / TILES_RATIO - this.bottomEdge * settings.sprite_tile_size | 0,
             ctx.canvas.width / TILES_RATIO | 0, (ctx.canvas.height + 1) / TILES_RATIO | 0,
             0, 0,
             ctx.canvas.width, ctx.canvas.height
         );
 
-        entities.draw(ctx, this, ctx.canvas.height - (this.ctx.canvas.height) * TILES_RATIO);
+        entities.draw(
+            ctx,
+            this,
+            -1 * this.leftEdge * settings.tile_size,
+            ctx.canvas.height - (this.ctx.canvas.height) * TILES_RATIO + this.bottomEdge * settings.tile_size
+        );
     };
     LevelPlatform.prototype.init = function() {
         entities.reset();

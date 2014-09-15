@@ -4,9 +4,9 @@ define('entities', ['player'], function(player) {
         player.get()
     ];
 
-    function draw(ctx, level, offsetY) {
+    function draw(ctx, level, offsetX, offsetY) {
         for (var i = 0; i < registry.length; i++) {
-            registry[i].draw(ctx, level, offsetY);
+            registry[i].draw(ctx, level, offsetX, offsetY);
         }
     }
 

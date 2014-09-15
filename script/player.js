@@ -34,7 +34,7 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
         this.direction = DIR_RIGHT;
     };
 
-    Player.prototype.draw = function(ctx, level, offsetY) {
+    Player.prototype.draw = function(ctx, level, offsetX, offsetY) {
         if (!this.img) {
             return;
         }
@@ -52,7 +52,7 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
             this.img,
             x * SPRITE_TILE, this.direction * SPRITE_TILE,
             SPRITE_TILE, SPRITE_TILE,
-            this.x * settings.tile_size, (level.height - this.y - this.height) * settings.tile_size + offsetY,
+            this.x * settings.tile_size + offsetX, (level.height - this.y - this.height) * settings.tile_size + offsetY,
             settings.tile_size, settings.tile_size
         );
     };

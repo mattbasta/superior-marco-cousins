@@ -8,7 +8,7 @@ define('physics', ['tiles'], function(tiles) {
         var index;
         var tile;
         for (var x = Math.max(entity.x | 0, 0);
-             x < Math.min(Math.ceil(entity.x + entity.width), level.width - 1);
+             x < Math.min(Math.ceil(entity.x + entity.width), level.width);
              x++) {
 
             index = level.getLevelIndex(x, Math.ceil(entity.y), level.width);
@@ -85,7 +85,7 @@ define('physics', ['tiles'], function(tiles) {
         }
 
         entity.x = Math.max(entity.x, 0);
-        entity.x = Math.min(entity.x, level.width - 2);
+        entity.x = Math.min(entity.x, level.width - 1);
 
         if (entity.velY && entity.isInContactWithFloor) {
             entity.isInContactWithFloor = false;
