@@ -109,7 +109,7 @@ define('level.platform',
         this.leftEdge = (this.leftEdge * 6 + bestX) / 7;
         this.bottomEdge = (this.bottomEdge * 6 + bestY) / 7;
 
-        this.leftEdge = Math.max(Math.min(this.leftEdge, this.width - 1 - ctx.canvas.width / settings.tile_size), 0);
+        this.leftEdge = Math.max(Math.min(this.leftEdge, this.width - ctx.canvas.width / settings.tile_size), 0);
         this.bottomEdge = Math.max(Math.min(this.bottomEdge, this.height - 1 - ctx.canvas.height / settings.tile_size), 0);
 
         ctx.drawImage(

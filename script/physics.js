@@ -3,6 +3,7 @@ define('physics', ['tiles'], function(tiles) {
     var DELTA_RATIO = 20 / 1000;
 
     var GRAVITY = 50;
+    var MAX_SPEED = 50;
 
     function downardsHitTesting(entity, level) {
         var index;
@@ -94,6 +95,8 @@ define('physics', ['tiles'], function(tiles) {
         if (!entity.isInContactWithFloor) {
             entity.velY -= GRAVITY * DELTA_RATIO;
         }
+        if (entity.velY > MAX_SPEED) entity.velY = MAX_SPEED;
+        else if (-1 * entity.velY > MAX_SPEED) entity.velY = -1 * MAX_SPEED;
     }
 
     return {
