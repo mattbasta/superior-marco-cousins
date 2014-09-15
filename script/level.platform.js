@@ -18,9 +18,6 @@ define('level.platform',
         var hue = 150 * tod - 100;  // [-100,50]
         var sat = 70 * tod + 20;  // [20,100]
         var lig = 33 * tod + 35;  // [35,68]
-
-        hue += 255;
-        hue %= 256;
         return 'hsl(' + hue + ',' + sat + '%,' + lig + '%)';
     }
 
@@ -78,8 +75,6 @@ define('level.platform',
         });
 
         this.time = 0;
-        this.timeThreshold = 0;
-        this.timeColor = 'hsl(46, 100%, 68%)';
 
         this.leftEdge = 0;
         this.bottomEdge = 0;
@@ -90,12 +85,7 @@ define('level.platform',
 
     LevelPlatform.prototype.draw = function(ctx) {
         // Clear the frame with the sky color.
-        var threshold = (this.time / 250 | 0)
-        if (threshold !== this.timeThreshold) {
-            this.timeThreshold = threshold;
-            this.timeColor = getTimeColor(this.time);
-        }
-        ctx.fillStyle = this.timeColor;
+        ctx.fillStyle = getTimeColor(this.time);
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         var myHeight = this.ctx.canvas.height;
