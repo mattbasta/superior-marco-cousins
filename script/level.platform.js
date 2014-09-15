@@ -103,12 +103,12 @@ define('level.platform',
         ctx.drawImage(
             this.ctx.canvas,
             this.leftEdge * settings.sprite_tile_size, myHeight - theirHeight / TILES_RATIO | 0,
-            ctx.canvas.width / TILES_RATIO | 0, ctx.canvas.height / TILES_RATIO | 0,
+            ctx.canvas.width / TILES_RATIO | 0, (ctx.canvas.height + 1) / TILES_RATIO | 0,
             0, 0,
             ctx.canvas.width, ctx.canvas.height
         );
 
-        entities.draw(ctx, this, ctx.canvas.height - this.ctx.canvas.height * TILES_RATIO);
+        entities.draw(ctx, this, ctx.canvas.height - (this.ctx.canvas.height) * TILES_RATIO);
     };
     LevelPlatform.prototype.init = function() {
         entities.reset();
