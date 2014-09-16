@@ -1,4 +1,4 @@
-define('level.title', ['sound', 'images'], function(sound, images) {
+define('level.title', ['images', 'sound'], function(images, sound) {
 
     function LevelTitle(src, duration, sound) {
         this.sound = sound;

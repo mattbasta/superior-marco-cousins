@@ -30,6 +30,8 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
         this.ducking = false;
         this.walking = false;
         this.isInContactWithFloor = false; // Player starts in the air.
+        this.canDoubleJump = false;
+        this.didDoubleJump = false;
 
         this.direction = DIR_RIGHT;
     };
@@ -62,6 +64,13 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
             this.velY += this.jumpForce * (this.ducking ? 0.75 : 1);
             this.isInContactWithFloor = false;
             sound.play('jump');
+            this.canDoubleJump = false;
+        } else if (keys.upArrow && this.velY > 0 && !this.didDoubleJump && this.canDoubleJump) {
+            this.velY += this.jumpForce * 0.5;
+            sound.play('doubleJump');
+            this.didDoubleJump = true;
+        } else if (!keys.upArrow && this.velY > 0) {
+            this.canDoubleJump = true;
         }
 
         if (keys.downArrow) {
@@ -73,14 +82,14 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
             this.ducking = keys.downArrow;
             if (keys.leftArrow) {
                 this.direction = DIR_LEFT;
-                this.velX = -10;
+                this.velX = -8.5;
                 this.walking = !keys.downArrow;
             } else if (keys.rightArrow) {
                 this.direction = DIR_RIGHT;
-                this.velX = 10;
+                this.velX = 8.5;
                 this.walking = !keys.downArrow;
             } else {
-                this.velX *= 0.8;
+                this.velX *= 0.65;
                 this.walking = false;
             }
         }

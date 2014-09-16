@@ -1,4 +1,4 @@
-define('level.menu', ['audio', 'images', 'keys'], function(audio, images, keys) {
+define('level.menu', ['audio', 'images', 'keys', 'sound'], function(audio, images, keys, sound) {
 
     function LevelMenu(src, audio) {
         this.audio = audio;
@@ -31,6 +31,9 @@ define('level.menu', ['audio', 'images', 'keys'], function(audio, images, keys) 
         }
 
         var me = this;
+        keys.down.one('any', function() {
+            sound.play('select');
+        });
         keys.up.one('any', function() {
             me.ended = true;
         });

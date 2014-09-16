@@ -18,6 +18,7 @@ define('physics', ['tiles'], function(tiles) {
                 entity.velY = 0;
                 entity.y = Math.ceil(entity.y);
                 entity.isInContactWithFloor = true;
+                entity.didDoubleJump = false;
                 return;
             }
         }
