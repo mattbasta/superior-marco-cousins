@@ -69,7 +69,7 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
             return;
         }
         if (this.didSitInChair) {
-            level.complete();
+            level.sitByPool();
             return;
         }
 

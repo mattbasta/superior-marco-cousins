@@ -6,6 +6,7 @@ define('level.platform',
     var TILES_PER_ROW = settings.sprite_tile_row;
     var TILES_RATIO = settings.tile_size / settings.sprite_tile_size;
     var DAY_LENGTH = 5 * 60 * 1000;  // 5 minutes
+    var COMPLETED_TTL = 3000;
 
     function getTimeColor(time) {
 
@@ -116,12 +117,41 @@ define('level.platform',
             ctx.canvas.width, ctx.canvas.height
         );
 
-        entities.draw(
-            ctx,
-            this,
-            -1 * this.leftEdge * settings.tile_size,
-            ctx.canvas.height - (this.ctx.canvas.height) * TILES_RATIO + this.bottomEdge * settings.tile_size
-        );
+        var offsetX = -1 * this.leftEdge * settings.tile_size;
+        var offsetY = ctx.canvas.height - this.ctx.canvas.height * TILES_RATIO + this.bottomEdge * settings.tile_size;
+        entities.draw(ctx, this, offsetX, offsetY);
+
+        if (this.levelCompletedTTL !== -1) {
+            var me = this;
+            images.waitFor('coolshades').done(function(shades) {
+                var playerY = (me.height - player.y - player.height) * settings.tile_size + offsetY;
+                ctx.drawImage(
+                    shades,
+                    0, 0,
+                    shades.width, shades.height,
+                    player.x * settings.tile_size + offsetX,
+                    playerY - Math.max(0, (me.levelCompletedTTL - 750) / (COMPLETED_TTL - 750)) * ctx.canvas.height,
+                    settings.tile_size, settings.tile_size
+                );
+            });
+        }
+
+        if (this.messageImg) {
+            images.waitFor(this.messageImg).done(function(img) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                var width = ctx.canvas.width * 0.4;
+                var height = width / img.width * img.height;
+                ctx.drawImage(
+                    img,
+                    0, 0,
+                    img.width, img.height,
+                    ctx.canvas.width / 2 - width / 2,
+                    ctx.canvas.height / 2 - height / 2,
+                    width, height
+                );
+            });
+        }
     };
     LevelPlatform.prototype.init = function() {
         this.time = 0;
@@ -129,10 +159,16 @@ define('level.platform',
         this.leftEdge = 0;
         this.bottomEdge = 0;
 
+        this.messageImg = null;
+        this.messageImgTTL = 0;
+        this.messageImgNext = null;
+
+        this.levelCompletedTTL = -1;
+
         this.completed = false;
         entities.reset();
     };
-    LevelPlatform.prototype.tick = function(delta, levelComplete) {
+    LevelPlatform.prototype.tick = function(delta, levelComplete, levelLib) {
         if (this.completed) {
             levelComplete();
         }
@@ -141,11 +177,45 @@ define('level.platform',
 
         entities.tick(delta, this);
 
+        if (this.messageImgTTL) {
+            this.messageImgTTL -= delta;
+            if (this.messageImgTTL <= 0) {
+                this.completed = true;
+                this.messageImgNext(levelLib);
+            }
+        }
+
+        if (this.levelCompletedTTL !== -1) {
+            this.levelCompletedTTL -= delta;
+            console.log(this.levelCompletedTTL);
+            if (this.levelCompletedTTL <= 0) {
+                this.completed = true;
+            }
+        }
+
     };
 
 
     LevelPlatform.prototype.drownedInPool = function() {
         sound.play('drownInPool');
+        this.messageImg = 'drowninpool';
+        this.messageImgTTL = 1250;
+        this.messageImgNext = function(levelLib) {
+            levelLib.goTo(1);
+        };
+    };
+
+
+    LevelPlatform.prototype.sitByPool = function() {
+        if (this.levelCompletedTTL !== -1) {
+            return;
+        }
+        this.messageImg = 'relaxbypool';
+        this.messageImgTTL = COMPLETED_TTL;
+        this.levelCompletedTTL = COMPLETED_TTL;
+        this.messageImgNext = function(levelLib) {
+            levelLib.goTo(1);
+        };
     };
 
 

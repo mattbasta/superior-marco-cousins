@@ -15,8 +15,11 @@ define('images', ['promise'], function(promise) {
     var images = {
         'bastacorp': loadImage('img/bastacorp.jpg'),
         'blueman': loadImage('img/blueman.png'),
+        'coolshades': loadImage('img/coolshades.png'),
+        'drowninpool': loadImage('img/drowninpool.png'),
         'greenman': loadImage('img/greenman.png'),
         'menu': loadImage('img/menu.png'),
+        'relaxbypool': loadImage('img/relaxbypool.png'),
         'tiles': loadImage('img/tiles.png')
     };
 

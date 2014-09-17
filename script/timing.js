@@ -9,7 +9,7 @@ define('timing', ['drawing', 'entities', 'level'], function(drawing, entities, l
         var delta = now - lastDate;
 
         drawing.draw();
-        level.getCurrent().tick(delta, level.next);
+        level.getCurrent().tick(delta, level.next, level);
 
         raf(loop);
         lastDate = now;

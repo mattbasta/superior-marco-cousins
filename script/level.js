@@ -11,17 +11,23 @@ define('level',
 
     levels[0].init();
 
+    function goTo(lev) {
+        current = lev;
+        audio.stop();
+        levels[current].init();
+    }
+
     return {
         getCurrent: function() {
             return levels[current];
         },
+        goTo: goTo,
         next: function() {
-            audio.stop();
             current += 1;
             if (current === levels.length) {
                 current = 0;
             }
-            levels[current].init();
+            goTo(current);
         }
     };
 
