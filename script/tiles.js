@@ -11,20 +11,25 @@ define('tiles', [], function() {
         TILE_LADDER: 8,
         TILE_DOOR_CLOSED: 9,
         TILE_DOOR_OPEN: 10,
+
+        TILE_CHAIR_LEFT: 11,
+        TILE_CHAIR_RIGHT: 12,
     };
 
     tiles.IMAGES = new Map([
-        [tiles.TILE_AIR, 0],
         [tiles.TILE_DIRT, 91],
         [tiles.TILE_GRASS, 88],
         [tiles.TILE_LEAF, 85],
         [tiles.TILE_TRUNK, 274],
         [tiles.TILE_BRICK, 104],
-        [tiles.TILE_WATER, 0],
+        [tiles.TILE_WATER, 196],
         [tiles.TILE_LOG, 0],
         [tiles.TILE_LADDER, 0],
         [tiles.TILE_DOOR_CLOSED, 0],
         [tiles.TILE_DOOR_OPEN, 0],
+
+        [tiles.TILE_CHAIR_LEFT, 373],
+        [tiles.TILE_CHAIR_RIGHT, 374],
     ]);
 
     // Solid cannot be passed through.
@@ -34,6 +39,12 @@ define('tiles', [], function() {
         tiles.TILE_LEAF,
         tiles.TILE_TRUNK,
         tiles.TILE_BRICK,
+    ]);
+
+    // Half solid is solid at half-height.
+    tiles.HALF_SOLID = new Set([
+        tiles.TILE_CHAIR_LEFT,
+        tiles.TILE_CHAIR_RIGHT,
     ]);
 
     // Cloud can only be passed through going up.

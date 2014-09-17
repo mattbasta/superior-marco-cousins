@@ -21,6 +21,7 @@ define('entities', ['player'], function(player) {
         registry: registry,
         reset: function() {
             registry.splice(1, registry.length - 1);
+            registry[0].reset();
         },
         tick: tick
     };

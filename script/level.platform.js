@@ -1,6 +1,6 @@
 define('level.platform',
-    ['drawutils', 'entities', 'images', 'keys', 'settings', 'tiles'],
-    function(drawutils, entities, images, keys, settings, tiles) {
+    ['drawutils', 'entities', 'images', 'keys', 'settings', 'sound', 'tiles'],
+    function(drawutils, entities, images, keys, settings, sound, tiles) {
 
 
     var TILES_PER_ROW = settings.sprite_tile_row;
@@ -41,13 +41,24 @@ define('level.platform',
             var lastPlatform = 5;
             for (var x = 0; x < width; x++) {
                 for (var y = 0; y < height; y++) {
-                    if (y < 3) tile = tiles.TILE_DIRT;
+                    tile = tiles.TILE_AIR;
+
+                    if (x > width - 10) {
+                        if (y === 4) {
+                            if (x === width - 9) tile = tiles.TILE_CHAIR_LEFT;
+                            else if (x === width - 8) tile = tiles.TILE_CHAIR_RIGHT;
+                        } else if (y < 4 && x > width - 8 && x < width - 1) tile = tiles.TILE_WATER;
+                        else if (y === 3 || y < 3 && x >= width - 8) tile = tiles.TILE_BRICK;
+                        else if (y < 3) tile = tiles.TILE_DIRT;
+                    } else if (y < 3) tile = tiles.TILE_DIRT;
                     else if (y === 3) tile = tiles.TILE_GRASS;
                     else if (y === platform) tile = tiles.TILE_BRICK;
                     else if (x % 10 === 0 && y < 6) tile = tiles.TILE_BRICK;
                     else continue;
 
                     levelView[getLevelIndex(x, y, width)] = tile;
+
+                    if (tile === tiles.TILE_AIR) continue;
 
                     tileImg = tiles.IMAGES.get(tile);
 
@@ -73,11 +84,6 @@ define('level.platform',
                 }
             }
         });
-
-        this.time = 0;
-
-        this.leftEdge = 0;
-        this.bottomEdge = 0;
 
     }
 
@@ -118,11 +124,16 @@ define('level.platform',
         );
     };
     LevelPlatform.prototype.init = function() {
+        this.time = 0;
+
+        this.leftEdge = 0;
+        this.bottomEdge = 0;
+
+        this.completed = false;
         entities.reset();
     };
     LevelPlatform.prototype.tick = function(delta, levelComplete) {
-        this.ttl -= delta;
-        if (this.ttl <= 0) {
+        if (this.completed) {
             levelComplete();
         }
 
@@ -130,6 +141,16 @@ define('level.platform',
 
         entities.tick(delta, this);
 
+    };
+
+
+    LevelPlatform.prototype.drownedInPool = function() {
+        sound.play('drownInPool');
+    };
+
+
+    LevelPlatform.prototype.complete = function() {
+        this.completed = true;
     };
 
     return {

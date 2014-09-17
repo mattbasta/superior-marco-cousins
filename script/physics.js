@@ -8,10 +8,12 @@ define('physics', ['tiles'], function(tiles) {
     function downardsHitTesting(entity, level) {
         var index;
         var tile;
-        for (var x = Math.max(entity.x | 0, 0);
-             x < Math.min(Math.ceil(entity.x + entity.width), level.width);
-             x++) {
 
+        var start = Math.max(entity.x | 0, 0);
+        var end = Math.min(Math.ceil(entity.x + entity.width), level.width);
+
+        // Test for solid blocks
+        for (var x = start; x < end; x++) {
             index = level.getLevelIndex(x, Math.ceil(entity.y), level.width);
             tile = level.levView[index];
             if (tiles.SOLID.has(tile)) {
@@ -20,6 +22,24 @@ define('physics', ['tiles'], function(tiles) {
                 entity.isInContactWithFloor = true;
                 entity.didDoubleJump = false;
                 return;
+            }
+        }
+        // Test for half-solid blocks
+        if (Math.ceil(entity.y) - entity.y > 0.5) {
+            for (var x = start; x < end; x++) {
+                index = level.getLevelIndex(x, Math.ceil(entity.y), level.width);
+                tile = level.levView[index];
+                if (tiles.HALF_SOLID.has(tile)) {
+                    if (tile === tiles.TILE_CHAIR_LEFT || tile === tiles.TILE_CHAIR_RIGHT) {
+                        entity.sitOnChair();
+                    }
+
+                    entity.velY = 0;
+                    entity.y = Math.ceil(entity.y) - 0.5;
+                    entity.isInContactWithFloor = true;
+                    entity.didDoubleJump = false;
+                    return;
+                }
             }
         }
         entity.isInContactWithFloor = false;

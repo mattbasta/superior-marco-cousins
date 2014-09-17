@@ -33,6 +33,8 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
         this.canDoubleJump = false;
         this.didDoubleJump = false;
 
+        this.didSitInChair = false;
+
         this.direction = DIR_RIGHT;
     };
 
@@ -49,6 +51,9 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
         } else if (this.ducking) {
             x = 2;
         }
+        if (this.velY < -10) {
+            x = 0;
+        }
 
         ctx.drawImage(
             this.img,
@@ -60,6 +65,14 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
     };
 
     Player.prototype.tick = function(delta, level) {
+        if (this.y < -1) {
+            return;
+        }
+        if (this.didSitInChair) {
+            level.complete();
+            return;
+        }
+
         if (keys.upArrow && this.isInContactWithFloor) {
             this.velY += this.jumpForce * (this.ducking ? 0.75 : 1);
             this.isInContactWithFloor = false;
@@ -89,16 +102,31 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
                 this.velX = 8.5;
                 this.walking = !keys.downArrow;
             } else {
-                this.velX *= 0.65;
+                if (Math.abs(this.velX) > 0.001) {
+                    this.velX *= 0.65;
+                } else {
+                    this.velX = 0;
+                }
                 this.walking = false;
             }
         }
 
         physics.tick(this, delta, level);
+
+        if (this.x > level.width - 10 && this.y < -1) {
+            level.drownedInPool();
+        }
     };
 
     Player.prototype.headBump = function() {
         sound.play('headBump');
+    };
+
+    Player.prototype.sitOnChair = function() {
+        if (keys.downArrow) {
+            sound.play('select');
+            this.didSitInChair = true;
+        }
     };
 
     return {
