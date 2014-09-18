@@ -1,9 +1,17 @@
-define('physics', ['tiles'], function(tiles) {
+define('physics', ['settings', 'tiles'], function(settings, tiles) {
 
     var DELTA_RATIO = 20 / 1000;
 
     var GRAVITY = 50;
     var MAX_SPEED = 50;
+
+    function entityHitGround(entity, y) {
+        entity.velY = 0;
+        entity.y = y;
+        entity.isInContactWithFloor = true;
+        entity.didDoubleJump = false;
+        entity.jumpEnergy = settings.jump_energy;
+    }
 
     function downardsHitTesting(entity, level) {
         var index;
@@ -17,10 +25,7 @@ define('physics', ['tiles'], function(tiles) {
             index = level.getLevelIndex(x, Math.ceil(entity.y), level.width);
             tile = level.levView[index];
             if (tiles.SOLID.has(tile)) {
-                entity.velY = 0;
-                entity.y = Math.ceil(entity.y);
-                entity.isInContactWithFloor = true;
-                entity.didDoubleJump = false;
+                entityHitGround(entity, Math.ceil(entity.y));
                 return;
             }
         }
@@ -34,10 +39,7 @@ define('physics', ['tiles'], function(tiles) {
                         entity.sitOnChair();
                     }
 
-                    entity.velY = 0;
-                    entity.y = Math.ceil(entity.y) - 0.5;
-                    entity.isInContactWithFloor = true;
-                    entity.didDoubleJump = false;
+                    entityHitGround(entity, Math.ceil(entity.y) - 0.5);
                     return;
                 }
             }

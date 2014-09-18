@@ -9,8 +9,6 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
         this.height = 1;
         this.width = 1;
 
-        this.jumpForce = 20;
-
         this.reset();
 
         var me = this;
@@ -26,6 +24,8 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
 
         this.velX = 0;
         this.velY = 0;
+
+        this.jumpEnergy = settings.jump_energy;
 
         this.ducking = false;
         this.walking = false;
@@ -74,16 +74,26 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
         }
 
         if (keys.upArrow && this.isInContactWithFloor) {
-            this.velY += this.jumpForce * (this.ducking ? 0.75 : 1);
+            this.velY += settings.jump_force * (this.ducking ? 0.75 : 1);
             this.isInContactWithFloor = false;
+            this.jumpEnergy--;
             sound.play('jump');
             this.canDoubleJump = false;
         } else if (keys.upArrow && this.velY > 0 && !this.didDoubleJump && this.canDoubleJump) {
-            this.velY += this.jumpForce * 0.5;
+            this.velY += settings.jump_force_double;
             sound.play('doubleJump');
             this.didDoubleJump = true;
         } else if (!keys.upArrow && this.velY > 0) {
             this.canDoubleJump = true;
+        } else if (keys.upArrow && this.jumpEnergy) {
+            this.velY += settings.jump_energy_force * (delta / settings.jump_energy_force_ticks);
+
+            this.jumpEnergy -= delta;
+            this.jumpEnergy = Math.max(this.jumpEnergy, 0);
+        }
+
+        if (!keys.upArrow && !this.isInContactWithFloor) {
+            this.jumpEnergy = 0;
         }
 
         if (keys.downArrow) {
