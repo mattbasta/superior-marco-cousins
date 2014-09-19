@@ -1,6 +1,6 @@
 define('level.platform',
-    ['drawutils', 'entities', 'images', 'keys', 'settings', 'sound', 'tiles'],
-    function(drawutils, entities, images, keys, settings, sound, tiles) {
+    ['celestialbodies', 'drawutils', 'entities', 'images', 'keys', 'settings', 'sound', 'tiles'],
+    function(celestialbodies, drawutils, entities, images, keys, settings, sound, tiles) {
 
 
     var TILES_PER_ROW = settings.sprite_tile_row;
@@ -94,6 +94,22 @@ define('level.platform',
         // Clear the frame with the sky color.
         ctx.fillStyle = getTimeColor(this.time);
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        // Draw the sun/moon
+        ctx.drawImage(
+            celestialbodies.sun,
+            0, 0,
+            celestialbodies.sun.width, celestialbodies.sun.height,
+            30, -1 * (ctx.canvas.height / 2) * Math.cos(this.time / DAY_LENGTH * 2 * Math.PI) + ctx.canvas.height,
+            60, 60
+        );
+        ctx.drawImage(
+            celestialbodies.moon,
+            0, 0,
+            celestialbodies.moon.width, celestialbodies.moon.height,
+            ctx.canvas.width - celestialbodies.moon.width - 30, (ctx.canvas.height / 2) * Math.cos(this.time / DAY_LENGTH * 2 * Math.PI) + ctx.canvas.height,
+            60, 60
+        );
 
         var myHeight = this.ctx.canvas.height;
         var theirHeight = ctx.canvas.height;

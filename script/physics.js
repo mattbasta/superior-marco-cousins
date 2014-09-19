@@ -9,6 +9,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
         entity.velY = 0;
         entity.y = y;
         entity.isInContactWithFloor = true;
+        entity.canDoubleJump = false;
         entity.didDoubleJump = false;
         entity.jumpEnergy = settings.jump_energy;
     }
@@ -59,6 +60,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
             if (tiles.SOLID.has(tile)) {
                 entity.velY = 0;
                 entity.y = Math.floor(entity.y) - entity.height + 1;
+                entity.jumpEnergy = 0;
                 entity.headBump();
                 return;
             }

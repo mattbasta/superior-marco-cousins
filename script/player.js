@@ -51,7 +51,7 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
         } else if (this.ducking) {
             x = 2;
         }
-        if (this.velY < -10) {
+        if (this.velY < -10 && !this.ducking) {
             x = 0;
         }
 
