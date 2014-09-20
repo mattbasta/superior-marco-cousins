@@ -16,6 +16,20 @@ define('tiles', [], function() {
         TILE_CHAIR_RIGHT: 12,
     };
 
+    // TODO: remove when Chrome 38 comes out
+    if (!window.Map) {
+        function Map(items) {
+            var result = {};
+            for (var i = 0; i < items.length; i++) {
+                result[items[i][0]] = items[i][1];
+            }
+
+            this.get = function(x) {
+                return result[x];
+            };
+        }
+    }
+
     tiles.IMAGES = new Map([
         [tiles.TILE_DIRT, 91],
         [tiles.TILE_GRASS, 88],
@@ -31,6 +45,20 @@ define('tiles', [], function() {
         [tiles.TILE_CHAIR_LEFT, 373],
         [tiles.TILE_CHAIR_RIGHT, 374],
     ]);
+
+    // TODO: remove when Chrome 38 comes out
+    if (!window.Set) {
+        function Set(items) {
+            var result = [];
+            for (var i = 0; i < items.length; i++) {
+                result[items[i]] = true;
+            }
+
+            this.has = function(x) {
+                return !!result[x];
+            };
+        }
+    }
 
     // Solid cannot be passed through.
     tiles.SOLID = new Set([

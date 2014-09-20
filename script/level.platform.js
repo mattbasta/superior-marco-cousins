@@ -107,7 +107,7 @@ define('level.platform',
             celestialbodies.moon,
             0, 0,
             celestialbodies.moon.width, celestialbodies.moon.height,
-            ctx.canvas.width - celestialbodies.moon.width - 30, (ctx.canvas.height / 2) * Math.cos(this.time / DAY_LENGTH * 2 * Math.PI) + ctx.canvas.height,
+            ctx.canvas.width - 60 - 30, (ctx.canvas.height / 2) * Math.cos(this.time / DAY_LENGTH * 2 * Math.PI) + ctx.canvas.height,
             60, 60
         );
 

@@ -25,7 +25,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
         for (var x = start; x < end; x++) {
             index = level.getLevelIndex(x, Math.ceil(entity.y), level.width);
             tile = level.levView[index];
-            if (tiles.SOLID.has(tile)) {
+            if (tiles.SOLID.has(tile) || tiles.CLOUD.has(tile)) {
                 entityHitGround(entity, Math.ceil(entity.y));
                 return;
             }
