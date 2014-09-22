@@ -21,16 +21,21 @@ define('entity.melon', ['images', 'settings'], function(images, settings) {
         }
 
         var x = Math.floor(Date.now() / 250) % 3;
+        var locX = this.x * settings.tile_size;
+
+        if (locX + offsetX + settings.tile_size < 0 || locX + offsetX > ctx.canvas.width) return;
 
         ctx.drawImage(
             this.image,
             x * SPRITE_TILE, 0,
             SPRITE_TILE, SPRITE_TILE,
-            this.x * settings.tile_size + offsetX, (level.height - this.y - this.height) * settings.tile_size + offsetY,
+            locX + offsetX, (level.height - this.y - this.height) * settings.tile_size + offsetY,
             settings.tile_size, settings.tile_size
         );
     };
-    MelonEntity.prototype.tick = function() {};
+    MelonEntity.prototype.tick = function(delta, level, registry) {
+        //
+    };
 
     return {
         get: function(x, y) {

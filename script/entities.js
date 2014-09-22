@@ -12,7 +12,7 @@ define('entities', ['entity.melon', 'player'], function(Emelon, player) {
 
     function tick(delta, level) {
         for (var i = 0; i < registry.length; i++) {
-            registry[i].tick(delta, level);
+            registry[i].tick(delta, level, registry);
         }
     }
 

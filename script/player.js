@@ -36,6 +36,8 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
         this.didSitInChair = false;
 
         this.direction = DIR_RIGHT;
+
+        this.melonCount = 0;
     };
 
     Player.prototype.draw = function(ctx, level, offsetX, offsetY) {
@@ -126,6 +128,7 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
         if (this.x > level.width - 10 && this.y < -1) {
             level.drownedInPool();
         }
+
     };
 
     Player.prototype.headBump = function() {
