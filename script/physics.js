@@ -14,24 +14,32 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
         entity.jumpEnergy = settings.jump_energy;
     }
 
-    function downardsHitTesting(entity, level) {
+    function downardsHitTesting(entity, level, origY) {
         var index;
         var tile;
 
         var start = Math.max(entity.x | 0, 0);
         var end = Math.min(Math.ceil(entity.x + entity.width), level.width);
 
+        var crossedOne = Math.floor(entity.y) !== Math.floor(origY);
+        var testForHalf = Math.ceil(entity.y) - entity.y > 0.5;
+
         // Test for solid blocks
-        for (var x = start; x < end; x++) {
-            index = level.getLevelIndex(x, Math.ceil(entity.y));
-            tile = level.levView[index];
-            if (tiles.SOLID.has(tile) || tiles.CLOUD.has(tile)) {
-                entityHitGround(entity, Math.ceil(entity.y));
-                return;
+        if (crossedOne) {
+            for (var x = start; x < end; x++) {
+                index = level.getLevelIndex(x, Math.ceil(entity.y));
+                tile = level.levView[index];
+                if (tiles.SOLID.has(tile) || tiles.CLOUD.has(tile)) {
+                    entityHitGround(entity, Math.ceil(entity.y));
+                    return;
+                }
+            }
+            if (!testForHalf) {
+                entity.isInContactWithFloor = false;
             }
         }
         // Test for half-solid blocks
-        if (Math.ceil(entity.y) - entity.y > 0.5) {
+        if (testForHalf) {
             for (var x = start; x < end; x++) {
                 index = level.getLevelIndex(x, Math.ceil(entity.y));
                 tile = level.levView[index];
@@ -44,8 +52,8 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
                     return;
                 }
             }
+            entity.isInContactWithFloor = false;
         }
-        entity.isInContactWithFloor = false;
     }
 
     function upwardsHitTesting(entity, level) {
@@ -97,6 +105,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
     }
 
     function tick(entity, delta, level) {
+        var origY = entity.y;
 
         entity.x += entity.velX * DELTA_RATIO;
         if (entity.velX) {
@@ -104,8 +113,8 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
         }
 
         entity.y += entity.velY * DELTA_RATIO;
-        if (entity.velY <= 0) {
-            downardsHitTesting(entity, level);
+        if (entity.velY < 0) {
+            downardsHitTesting(entity, level, origY);
         } else if (entity.velY > 0) {
             upwardsHitTesting(entity, level);
         }
@@ -117,9 +126,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
             entity.isInContactWithFloor = false;
         }
 
-        if (!entity.isInContactWithFloor) {
-            entity.velY -= GRAVITY * DELTA_RATIO;
-        }
+        entity.velY -= GRAVITY * DELTA_RATIO;
         if (entity.velY > MAX_SPEED) entity.velY = MAX_SPEED;
         else if (-1 * entity.velY > MAX_SPEED) entity.velY = -1 * MAX_SPEED;
     }
