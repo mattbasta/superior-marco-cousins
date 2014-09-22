@@ -1,4 +1,4 @@
-define('entity.melon', ['images', 'settings'], function(images, settings) {
+define('entity.melon', ['images', 'settings', 'sound'], function(images, settings, sound) {
 
     var SPRITE_TILE = 8;
 
@@ -13,6 +13,8 @@ define('entity.melon', ['images', 'settings'], function(images, settings) {
         this.y = startY;
         this.width = 1;
         this.height = 1;
+
+        this.bouncing = false;
     }
 
     MelonEntity.prototype.draw = function(ctx, level, offsetX, offsetY) {
@@ -33,8 +35,21 @@ define('entity.melon', ['images', 'settings'], function(images, settings) {
             settings.tile_size, settings.tile_size
         );
     };
-    MelonEntity.prototype.tick = function(delta, level, registry) {
-        //
+    MelonEntity.prototype.tick = function(delta, level, registry, i) {
+        if (this.bouncing) {
+            //
+        } else {
+            var player = registry[0];
+
+            if (this.x > player.x + player.width) return;
+            if (this.x + this.width < player.x) return;
+            if (this.y > player.y + player.height) return;
+            if (this.y + this.height < player.y) return;
+
+            registry.splice(i, 1);
+            player.melonCount++;
+            sound.play('melonCollect');
+        }
     };
 
     return {
