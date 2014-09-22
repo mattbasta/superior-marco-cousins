@@ -25,6 +25,7 @@ define('tiles', [], function() {
         TILE_SIGN_LEFT: 25,
         TILE_SIGN_STOP: 26,
         TILE_SIGN_RIGHT_DOWN: 27,
+        TILE_SIGN_Q: 28,
     };
 
     // TODO: remove when Chrome 38 comes out
@@ -65,6 +66,7 @@ define('tiles', [], function() {
         [tiles.TILE_SIGN_LEFT, 24],
         [tiles.TILE_SIGN_STOP, 25],
         [tiles.TILE_SIGN_RIGHT_DOWN, 26],
+        [tiles.TILE_SIGN_Q, 27],
     ]);
 
     // TODO: remove when Chrome 38 comes out

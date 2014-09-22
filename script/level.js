@@ -8,7 +8,7 @@ define('level',
     ];
 
     leveldata.forEach(function(level) {
-        levels.push(Lplatform.get(level.width, level.height, level.content));
+        levels.push(Lplatform.get(level));
     });
 
     var current = 0;

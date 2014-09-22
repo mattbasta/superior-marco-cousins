@@ -23,9 +23,11 @@ define('level.platform',
         return 'hsl(' + hue + ',' + sat + '%,' + lig + '%)';
     }
 
-    function LevelPlatform(width, height, data) {
+    function LevelPlatform(width, height, data, defaultEntities) {
         this.width = width;
         this.height = height;
+
+        this.defaultEntities = defaultEntities;
 
         var levelBuf = this.levBuffer = new ArrayBuffer((width * height) << 2);
         var levelView = this.levView = new Uint16Array(levelBuf);
@@ -176,6 +178,10 @@ define('level.platform',
 
         this.completed = false;
         entities.reset();
+
+        this.defaultEntities.forEach(function(dE) {
+            entities.add(dE.id, dE.x, dE.y);
+        });
     };
     LevelPlatform.prototype.tick = function(delta, levelComplete, levelLib) {
         if (this.completed) {
@@ -232,8 +238,8 @@ define('level.platform',
     };
 
     return {
-        get: function(width, height, data) {
-            return new LevelPlatform(width, height, data);
+        get: function(data) {
+            return new LevelPlatform(data.width, data.height, data.content, data.entities);
         }
     }
 

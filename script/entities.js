@@ -1,4 +1,4 @@
-define('entities', ['player'], function(player) {
+define('entities', ['entity.melon', 'player'], function(Emelon, player) {
 
     var registry = [
         player.get()
@@ -16,6 +16,14 @@ define('entities', ['player'], function(player) {
         }
     }
 
+    function get(id, x, y) {
+        switch (id) {
+            case 0: // Melon
+                return Emelon.get(x, y);
+        }
+        return null;
+    }
+
     return {
         draw: draw,
         registry: registry,
@@ -23,6 +31,10 @@ define('entities', ['player'], function(player) {
             registry.splice(1, registry.length - 1);
             registry[0].reset();
         },
-        tick: tick
+        tick: tick,
+        get: get,
+        add: function(id, x, y) {
+            registry.push(get(id, x, y));
+        }
     };
 });

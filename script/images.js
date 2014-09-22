@@ -17,6 +17,7 @@ define('images', ['promise'], function(promise) {
         'blueman': loadImage('img/blueman.png'),
         'coolshades': loadImage('img/coolshades.png'),
         'drowninpool': loadImage('img/drowninpool.png'),
+        'entities': loadImage('img/entities.png'),
         'greenman': loadImage('img/greenman.png'),
         'menu': loadImage('img/menu.png'),
         'relaxbypool': loadImage('img/relaxbypool.png'),
