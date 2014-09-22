@@ -83,7 +83,7 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
             this.velY += settings.jump_force_double;
             sound.play('doubleJump');
             this.didDoubleJump = true;
-        } else if (!keys.upArrow && this.velY > 0) {
+        } else if (!keys.upArrow && this.velY > -3) {
             this.canDoubleJump = true;
         } else if (keys.upArrow && this.jumpEnergy) {
             this.velY += settings.jump_energy_force * (delta / settings.jump_energy_force_ticks);

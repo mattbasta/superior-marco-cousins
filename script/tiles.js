@@ -19,6 +19,12 @@ define('tiles', [], function() {
 
         TILE_CHAIR_LEFT: 21,
         TILE_CHAIR_RIGHT: 22,
+
+        TILE_SIGN_RIGHT: 23,
+        TILE_SIGN_RIGHT_UP: 24,
+        TILE_SIGN_LEFT: 25,
+        TILE_SIGN_STOP: 26,
+        TILE_SIGN_RIGHT_DOWN: 27,
     };
 
     // TODO: remove when Chrome 38 comes out
@@ -54,6 +60,11 @@ define('tiles', [], function() {
 
         [tiles.TILE_CHAIR_LEFT, 20],
         [tiles.TILE_CHAIR_RIGHT, 21],
+        [tiles.TILE_SIGN_RIGHT, 22],
+        [tiles.TILE_SIGN_RIGHT_UP, 23],
+        [tiles.TILE_SIGN_LEFT, 24],
+        [tiles.TILE_SIGN_STOP, 25],
+        [tiles.TILE_SIGN_RIGHT_DOWN, 26],
     ]);
 
     // TODO: remove when Chrome 38 comes out

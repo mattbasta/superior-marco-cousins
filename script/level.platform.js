@@ -5,6 +5,7 @@ define('level.platform',
 
     var TILES_PER_ROW = settings.sprite_tile_row;
     var TILES_RATIO = settings.tile_size / settings.sprite_tile_size;
+    var TILES_RATIO_INV = settings.sprite_tile_size / settings.tile_size;
     var DAY_LENGTH = 5 * 60 * 1000;  // 5 minutes
     var COMPLETED_TTL = 3000;
 
@@ -116,16 +117,17 @@ define('level.platform',
         this.leftEdge = Math.max(Math.min(this.leftEdge, this.width - ctx.canvas.width / settings.tile_size), 0);
         this.bottomEdge = Math.max(Math.min(this.bottomEdge, this.height - 1 - ctx.canvas.height / settings.tile_size), 0);
 
+        var terrainY = myHeight - theirHeight / TILES_RATIO - this.bottomEdge * settings.sprite_tile_size;
         ctx.drawImage(
             this.ctx.canvas,
-            this.leftEdge * settings.sprite_tile_size, myHeight - theirHeight / TILES_RATIO - this.bottomEdge * settings.sprite_tile_size,
+            this.leftEdge * settings.sprite_tile_size, terrainY,
             ctx.canvas.width / TILES_RATIO | 0, (ctx.canvas.height + 1) / TILES_RATIO | 0,
             0, 0,
-            ctx.canvas.width, ctx.canvas.height
+            ctx.canvas.width, ctx.canvas.height + TILES_RATIO_INV
         );
 
         var offsetX = -1 * this.leftEdge * settings.tile_size;
-        var offsetY = ctx.canvas.height - this.ctx.canvas.height * TILES_RATIO + this.bottomEdge * settings.tile_size;
+        var offsetY = ctx.canvas.height - myHeight * TILES_RATIO + this.bottomEdge * settings.tile_size;
         entities.draw(ctx, this, offsetX, offsetY);
 
         if (this.levelCompletedTTL !== -1) {
@@ -194,7 +196,6 @@ define('level.platform',
 
         if (this.levelCompletedTTL !== -1) {
             this.levelCompletedTTL -= delta;
-            console.log(this.levelCompletedTTL);
             if (this.levelCompletedTTL <= 0) {
                 this.completed = true;
             }
