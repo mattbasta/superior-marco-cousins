@@ -1,19 +1,24 @@
 define('tiles', [], function() {
     var tiles = {
-        TILE_AIR: 0,
-        TILE_DIRT: 1,
-        TILE_GRASS: 2,
-        TILE_LEAF: 3,
-        TILE_TRUNK: 4,
-        TILE_BRICK: 5,
-        TILE_WATER: 6,
-        TILE_LOG: 7,
-        TILE_LADDER: 8,
-        TILE_DOOR_CLOSED: 9,
-        TILE_DOOR_OPEN: 10,
+        TILE_BRICK: 1,
+        TILE_ROCK: 2,
+        TILE_ROCK_LOOSE: 3,
+        TILE_CARVED_STONE: 4,
+        TILE_CRACKED_STONE: 5,
 
-        TILE_CHAIR_LEFT: 11,
-        TILE_CHAIR_RIGHT: 12,
+        TILE_DIRT: 6,
+        TILE_GRASS: 7,
+        TILE_WATER: 10,
+        TILE_TRUNK: 11,
+        TILE_LEAF: 12,
+        TILE_GLASS: 16,
+        TILE_LOG: 17,
+        TILE_LADDER: 18,
+        TILE_DOOR_CLOSED: 19,
+        TILE_DOOR_OPEN: 20,
+
+        TILE_CHAIR_LEFT: 21,
+        TILE_CHAIR_RIGHT: 22,
     };
 
     // TODO: remove when Chrome 38 comes out
@@ -31,19 +36,24 @@ define('tiles', [], function() {
     }
 
     tiles.IMAGES = new Map([
-        [tiles.TILE_DIRT, 91],
-        [tiles.TILE_GRASS, 88],
-        [tiles.TILE_LEAF, 85],
-        [tiles.TILE_TRUNK, 274],
-        [tiles.TILE_BRICK, 104],
-        [tiles.TILE_WATER, 196],
-        [tiles.TILE_LOG, 0],
-        [tiles.TILE_LADDER, 0],
-        [tiles.TILE_DOOR_CLOSED, 0],
-        [tiles.TILE_DOOR_OPEN, 0],
+        [tiles.TILE_BRICK, 0],
+        [tiles.TILE_ROCK, 1],
+        [tiles.TILE_ROCK_LOOSE, 2],
+        [tiles.TILE_CARVED_STONE, 3],
+        [tiles.TILE_CRACKED_STONE, 4],
+        [tiles.TILE_DIRT, 5],
+        [tiles.TILE_GRASS, 6],
+        [tiles.TILE_WATER, 9],
+        [tiles.TILE_TRUNK, 10],
+        [tiles.TILE_LEAF, 11],
+        [tiles.TILE_GLASS, 15],
+        [tiles.TILE_LOG, 16],
+        [tiles.TILE_LADDER, 17],
+        [tiles.TILE_DOOR_CLOSED, 18],
+        [tiles.TILE_DOOR_OPEN, 19],
 
-        [tiles.TILE_CHAIR_LEFT, 373],
-        [tiles.TILE_CHAIR_RIGHT, 374],
+        [tiles.TILE_CHAIR_LEFT, 20],
+        [tiles.TILE_CHAIR_RIGHT, 21],
     ]);
 
     // TODO: remove when Chrome 38 comes out
@@ -62,11 +72,14 @@ define('tiles', [], function() {
 
     // Solid cannot be passed through.
     tiles.SOLID = new Set([
+        tiles.TILE_ROCK,
+        tiles.TILE_ROCK_LOOSE,
+        tiles.TILE_CARVED_STONE,
+        tiles.TILE_CRACKED_STONE,
         tiles.TILE_DIRT,
         tiles.TILE_GRASS,
-        tiles.TILE_LEAF,
-        tiles.TILE_TRUNK,
         tiles.TILE_BRICK,
+        tiles.TILE_GLASS,
     ]);
 
     // Half solid is solid at half-height.
@@ -77,6 +90,7 @@ define('tiles', [], function() {
 
     // Cloud can only be passed through going up.
     tiles.CLOUD = new Set([
+        tiles.TILE_LEAF,
         tiles.TILE_LOG,
     ]);
 

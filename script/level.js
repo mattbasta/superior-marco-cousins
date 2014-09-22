@@ -1,12 +1,16 @@
 define('level',
-    ['audio', 'level.menu', 'level.platform', 'level.title'],
-    function(audio, Lmenu, Lplatform, Ltitle) {
+    ['audio', 'level.menu', 'level.platform', 'level.title', 'leveldata'],
+    function(audio, Lmenu, Lplatform, Ltitle, leveldata) {
 
     var levels = [
         Ltitle.get('bastacorp', 750, 'bastacorp'),
         Lmenu.get('menu', 'title'),
-        Lplatform.get(128, 32)
     ];
+
+    leveldata.forEach(function(level) {
+        levels.push(Lplatform.get(level.width, level.height, level.content));
+    });
+
     var current = 0;
 
     levels[0].init();

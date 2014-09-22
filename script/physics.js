@@ -23,7 +23,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
 
         // Test for solid blocks
         for (var x = start; x < end; x++) {
-            index = level.getLevelIndex(x, Math.ceil(entity.y), level.width);
+            index = level.getLevelIndex(x, Math.ceil(entity.y));
             tile = level.levView[index];
             if (tiles.SOLID.has(tile) || tiles.CLOUD.has(tile)) {
                 entityHitGround(entity, Math.ceil(entity.y));
@@ -33,7 +33,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
         // Test for half-solid blocks
         if (Math.ceil(entity.y) - entity.y > 0.5) {
             for (var x = start; x < end; x++) {
-                index = level.getLevelIndex(x, Math.ceil(entity.y), level.width);
+                index = level.getLevelIndex(x, Math.ceil(entity.y));
                 tile = level.levView[index];
                 if (tiles.HALF_SOLID.has(tile)) {
                     if (tile === tiles.TILE_CHAIR_LEFT || tile === tiles.TILE_CHAIR_RIGHT) {

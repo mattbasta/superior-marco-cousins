@@ -1,6 +1,6 @@
 define('level.platform',
-    ['celestialbodies', 'drawutils', 'entities', 'images', 'keys', 'settings', 'sound', 'tiles'],
-    function(celestialbodies, drawutils, entities, images, keys, settings, sound, tiles) {
+    ['base64', 'celestialbodies', 'drawutils', 'entities', 'images', 'keys', 'settings', 'sound', 'tiles'],
+    function(base64, celestialbodies, drawutils, entities, images, keys, settings, sound, tiles) {
 
 
     var TILES_PER_ROW = settings.sprite_tile_row;
@@ -22,18 +22,23 @@ define('level.platform',
         return 'hsl(' + hue + ',' + sat + '%,' + lig + '%)';
     }
 
-    function getLevelIndex(x, y, width) {
-        return y * width + x;
-    }
-
-    function LevelPlatform(width, height) {
+    function LevelPlatform(width, height, data) {
         this.width = width;
         this.height = height;
 
         var levelBuf = this.levBuffer = new ArrayBuffer((width * height) << 2);
         var levelView = this.levView = new Uint16Array(levelBuf);
 
+        if (data) {
+            data = base64.base64DecToArr(data);
+            for (var i = 0; i < data.length; i++) {
+                levelView[i] = data[i];
+            }
+        }
+
         var ctx = this.ctx = drawutils.getBuffer(width * settings.sprite_tile_size, height * settings.sprite_tile_size);
+
+        var me = this;
 
         images.waitFor('tiles').done(function(img) {
             var tile;
@@ -42,23 +47,7 @@ define('level.platform',
             var lastPlatform = 5;
             for (var x = 0; x < width; x++) {
                 for (var y = 0; y < height; y++) {
-                    tile = tiles.TILE_AIR;
-
-                    if (x > width - 10) {
-                        if (y === 4) {
-                            if (x === width - 9) tile = tiles.TILE_CHAIR_LEFT;
-                            else if (x === width - 8) tile = tiles.TILE_CHAIR_RIGHT;
-                        } else if (y < 4 && x > width - 8 && x < width - 1) tile = tiles.TILE_WATER;
-                        else if (y === 3 || y < 3 && x >= width - 8) tile = tiles.TILE_BRICK;
-                        else if (y < 3) tile = tiles.TILE_DIRT;
-                    } else if (y < 3) tile = tiles.TILE_DIRT;
-                    else if (y === 3) tile = tiles.TILE_GRASS;
-                    else if (y === platform) tile = tiles.TILE_BRICK;
-                    else if (x % 10 === 0 && y < 6) tile = tiles.TILE_BRICK;
-                    else continue;
-
-                    levelView[getLevelIndex(x, y, width)] = tile;
-
+                    tile = levelView[me.getLevelIndex(x, y)];
                     if (tile === tiles.TILE_AIR) continue;
 
                     tileImg = tiles.IMAGES.get(tile);
@@ -88,7 +77,9 @@ define('level.platform',
 
     }
 
-    LevelPlatform.prototype.getLevelIndex = getLevelIndex;
+    LevelPlatform.prototype.getLevelIndex = function(x, y) {
+        return (this.height - y) * this.width + x;
+    };
 
     LevelPlatform.prototype.draw = function(ctx) {
         // Clear the frame with the sky color.
@@ -127,7 +118,7 @@ define('level.platform',
 
         ctx.drawImage(
             this.ctx.canvas,
-            this.leftEdge * settings.sprite_tile_size, myHeight - theirHeight / TILES_RATIO - this.bottomEdge * settings.sprite_tile_size | 0,
+            this.leftEdge * settings.sprite_tile_size, myHeight - theirHeight / TILES_RATIO - this.bottomEdge * settings.sprite_tile_size,
             ctx.canvas.width / TILES_RATIO | 0, (ctx.canvas.height + 1) / TILES_RATIO | 0,
             0, 0,
             ctx.canvas.width, ctx.canvas.height
@@ -240,8 +231,8 @@ define('level.platform',
     };
 
     return {
-        get: function(width, height) {
-            return new LevelPlatform(width, height);
+        get: function(width, height, data) {
+            return new LevelPlatform(width, height, data);
         }
     }
 
