@@ -228,7 +228,7 @@ define('level.platform',
         this.messageImgTTL = COMPLETED_TTL;
         this.levelCompletedTTL = COMPLETED_TTL;
         this.messageImgNext = function(levelLib) {
-            levelLib.goTo(1);
+            levelLib.next();
         };
     };
 

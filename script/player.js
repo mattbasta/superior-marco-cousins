@@ -158,7 +158,7 @@ define('player',
     };
 
     Player.prototype.throwMelon = function(registry) {
-        if (!this.melonCount) return;
+        if (this.melonCount <= 0) return;
         this.melonCount--;
 
         var melon = Emelon.get(this.x, this.y);

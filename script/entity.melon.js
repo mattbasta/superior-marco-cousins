@@ -44,7 +44,7 @@ define('entity.melon', ['images', 'physics', 'settings', 'sound'], function(imag
     MelonEntity.prototype.tick = function(delta, level, registry, i) {
         if (this.bouncing) {
             physics.tick(this, delta, level);
-            this.velX *= 0.925;
+            this.velX *= 0.95;
             if (this.isInContactWithFloor && this.velX + this.velY < 1) {
                 this.bouncing = false;
                 this.x = Math.round(this.x);

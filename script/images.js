@@ -20,6 +20,7 @@ define('images', ['promise'], function(promise) {
         'entities': loadImage('img/entities.png'),
         'greenman': loadImage('img/greenman.png'),
         'menu': loadImage('img/menu.png'),
+        'melonfinance': loadImage('img/melonfinance.png'),
         'relaxbypool': loadImage('img/relaxbypool.png'),
         'tiles': loadImage('img/tiles.png')
     };

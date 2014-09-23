@@ -18,6 +18,7 @@ define('audio', ['buzz'], function(buzz) {
     }
 
     loadLoop('title', 'audio/title');
+    loadLoop('hero', 'audio/hero');
 
     return {
         loadLoop: loadLoop,

@@ -1,6 +1,6 @@
 define('level',
-    ['audio', 'level.menu', 'level.platform', 'level.title', 'leveldata'],
-    function(audio, Lmenu, Lplatform, Ltitle, leveldata) {
+    ['audio', 'level.melonomics', 'level.menu', 'level.platform', 'level.title', 'leveldata'],
+    function(audio, Lmelonomics, Lmenu, Lplatform, Ltitle, leveldata) {
 
     var levels = [
         Ltitle.get('bastacorp', 750, 'bastacorp'),
@@ -9,6 +9,7 @@ define('level',
 
     leveldata.forEach(function(level) {
         levels.push(Lplatform.get(level));
+        levels.push(Lmelonomics.get());
     });
 
     var current = 0;
