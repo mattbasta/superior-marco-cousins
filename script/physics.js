@@ -50,7 +50,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
                 index = level.getLevelIndex(x, Math.ceil(entity.y));
                 tile = level.levView[index];
                 if (tiles.HALF_SOLID.has(tile)) {
-                    if (tile === tiles.TILE_CHAIR_LEFT || tile === tiles.TILE_CHAIR_RIGHT) {
+                    if (entity.sitOnChair && (tile === tiles.TILE_CHAIR_LEFT || tile === tiles.TILE_CHAIR_RIGHT)) {
                         entity.sitOnChair();
                     }
 
@@ -93,7 +93,11 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
                 index = level.getLevelIndex(Math.ceil(entity.x - 1), y, level.width);
                 tile = level.levView[index];
                 if (tiles.SOLID.has(tile)) {
-                    entity.velX = 0;
+                    if (entity.bounce) {
+                        entity.velX = -1 * entity.bounce * entity.velX;
+                    } else {
+                        entity.velX = 0;
+                    }
                     entity.x = Math.ceil(entity.x);
                     return;
                 }
@@ -102,7 +106,11 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
                 index = level.getLevelIndex(Math.floor(entity.x + entity.width), y, level.width);
                 tile = level.levView[index];
                 if (tiles.SOLID.has(tile)) {
-                    entity.velX = 0;
+                    if (entity.bounce) {
+                        entity.velX = -1 * entity.bounce * entity.velX;
+                    } else {
+                        entity.velX = 0;
+                    }
                     entity.x = Math.floor(entity.x);
                     return;
                 }
