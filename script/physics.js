@@ -6,12 +6,18 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
     var MAX_SPEED = 50;
 
     function entityHitGround(entity, y) {
-        entity.velY = 0;
+        if (entity.bounce) {
+            entity.velY = -1 * entity.bounce * entity.velY;
+        } else {
+            entity.velY = 0;
+        }
         entity.y = y;
         entity.isInContactWithFloor = true;
-        entity.canDoubleJump = false;
-        entity.didDoubleJump = false;
-        entity.jumpEnergy = settings.jump_energy;
+        if (entity.jumps) {
+            entity.canDoubleJump = false;
+            entity.didDoubleJump = false;
+            entity.jumpEnergy = settings.jump_energy;
+        }
     }
 
     function downardsHitTesting(entity, level, origY) {
@@ -69,7 +75,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
                 entity.velY = 0;
                 entity.y = Math.floor(entity.y) - entity.height + 1;
                 entity.jumpEnergy = 0;
-                entity.headBump();
+                if (entity.headBump) entity.headBump();
                 return;
             }
         }

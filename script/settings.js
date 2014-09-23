@@ -9,5 +9,7 @@ define('settings', [], function() {
         sprite_tile_row: 5,
         sprite_tile_size: 8,
         tile_size: 48,
+        throw_force_x: 20,
+        throw_force_y: 10,
     };
 });

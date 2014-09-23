@@ -1,4 +1,6 @@
-define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(images, keys, physics, settings, sound) {
+define('player',
+    ['entity.melon', 'images', 'keys', 'physics', 'settings', 'sound'],
+    function(Emelon, images, keys, physics, settings, sound) {
 
     var DIR_LEFT = 0;
     var DIR_RIGHT = 1;
@@ -9,12 +11,20 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
         this.height = 1;
         this.width = 1;
 
+        this.bounce = 0;
+        this.jumps = true;
+
         this.reset();
 
         var me = this;
         this.img = null;
         images.waitFor('blueman').done(function(img) {
             me.img = img;
+        });
+
+        this.shouldThrowMelon = false;
+        keys.down.on(81, function() {
+            me.shouldThrowMelon = true;
         });
     }
 
@@ -66,7 +76,7 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
         );
     };
 
-    Player.prototype.tick = function(delta, level) {
+    Player.prototype.tick = function(delta, level, registry) {
         if (this.y < -1) {
             return;
         }
@@ -129,6 +139,11 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
             level.drownedInPool();
         }
 
+        if (this.shouldThrowMelon) {
+            this.shouldThrowMelon = false;
+            this.throwMelon(registry);
+        }
+
     };
 
     Player.prototype.headBump = function() {
@@ -140,6 +155,17 @@ define('player', ['images', 'keys', 'physics', 'settings', 'sound'], function(im
             sound.play('select');
             this.didSitInChair = true;
         }
+    };
+
+    Player.prototype.throwMelon = function(registry) {
+        if (!this.melonCount) return;
+        this.melonCount--;
+
+        var melon = Emelon.get(this.x, this.y);
+        melon.bouncing = true;
+        melon.velY = this.velY + settings.throw_force_y;
+        melon.velX = settings.throw_force_x * (this.direction === DIR_LEFT ? -1 : 1);
+        registry.push(melon);
     };
 
     return {
