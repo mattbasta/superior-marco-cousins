@@ -1,7 +1,7 @@
 define('settings', [], function() {
     return {
         init_module: 'main',
-        jump_energy: 120,
+        jump_energy: 160,
         jump_energy_force: 3,
         jump_energy_force_ticks: 40,
         jump_force: 13,

@@ -85,7 +85,10 @@ define('player',
             return;
         }
 
-        if (keys.upArrow && this.isInContactWithFloor) {
+        var upArrow = keys.upArrow;
+        var jumpCondition = upArrow && !physics.testHitUp(this, level);
+
+        if (jumpCondition && this.isInContactWithFloor) {
             this.velY += settings.jump_force * (this.ducking ? 0.75 : 1);
             this.isInContactWithFloor = false;
             this.jumpEnergy--;
@@ -97,7 +100,7 @@ define('player',
             this.didDoubleJump = true;
         } else if (!keys.upArrow && this.velY > -3) {
             this.canDoubleJump = true;
-        } else if (keys.upArrow && this.jumpEnergy) {
+        } else if (jumpCondition && this.jumpEnergy) {
             this.velY += settings.jump_energy_force * (delta / settings.jump_energy_force_ticks);
 
             this.jumpEnergy -= delta;

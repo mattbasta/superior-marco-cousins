@@ -62,7 +62,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
         }
     }
 
-    function upwardsHitTesting(entity, level) {
+    function testHitUp(entity, level) {
         var index;
         var tile;
         for (var x = Math.max(entity.x | 0, 0);
@@ -72,12 +72,18 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
             index = level.getLevelIndex(x, Math.floor(entity.y) + entity.height + 1, level.width);
             tile = level.levView[index];
             if (tiles.SOLID.has(tile)) {
-                entity.velY = 0;
-                entity.y = Math.floor(entity.y) - entity.height + 1;
-                entity.jumpEnergy = 0;
-                if (entity.headBump) entity.headBump();
-                return;
+                return true;
             }
+        }
+        return false;
+    }
+
+    function upwardsHitTesting(entity, level) {
+        if (testHitUp(entity, level)) {
+            entity.velY = 0;
+            entity.y = Math.floor(entity.y) - entity.height + 1;
+            entity.jumpEnergy = 0;
+            if (entity.headBump) entity.headBump();
         }
     }
 
@@ -146,6 +152,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
     }
 
     return {
-        tick: tick
+        tick: tick,
+        testHitUp: testHitUp
     };
 });
