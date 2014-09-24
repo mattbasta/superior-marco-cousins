@@ -1,15 +1,27 @@
-define('timing', ['drawing', 'entities', 'level'], function(drawing, entities, level) {
+define('timing', ['drawing', 'entities', 'keys', 'level', 'sound'], function(drawing, entities, keys, level, sound) {
 
     var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
     var started;
     var lastDate = Date.now();
 
+    var paused = false;
+
+    keys.down.on(80, function() {
+        paused = !paused;
+        sound.play('select');
+        if (paused) {
+            drawing.drawPaused();
+        }
+    });
+
     function loop() {
         var now = Date.now();
         var delta = now - lastDate;
 
-        drawing.draw();
-        level.getCurrent().tick(delta, level.next, level);
+        if (!paused) {
+            drawing.draw();
+            level.getCurrent().tick(delta, level.next, level);
+        }
 
         raf(loop);
         lastDate = now;
