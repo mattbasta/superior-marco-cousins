@@ -96,11 +96,15 @@ define('player',
             this.jumpEnergy--;
             sound.play('jump');
             this.canDoubleJump = false;
-        } else if (keys.upArrow && this.velY > 0 && !this.didDoubleJump && this.canDoubleJump) {
-            this.velY += settings.jump_force_double;
+        } else if (keys.upArrow && !this.didDoubleJump && this.canDoubleJump) {
+            if (this.velY < -5) {
+                this.velY += settings.jump_force_double_falling;
+            } else {
+                this.velY += settings.jump_force_double;
+            }
             sound.play('doubleJump');
             this.didDoubleJump = true;
-        } else if (!keys.upArrow && this.velY > -3) {
+        } else if (!keys.upArrow) {
             this.canDoubleJump = true;
         } else if (jumpCondition && this.jumpEnergy) {
             this.velY += settings.jump_energy_force * (delta / settings.jump_energy_force_ticks);
@@ -108,7 +112,10 @@ define('player',
             this.jumpEnergy -= delta;
             this.jumpEnergy = Math.max(this.jumpEnergy, 0);
         } else if (upArrow && onLadder) {
-            this.velY = 7;
+            this.velY = settings.ladder_velocity;
+            this.jumpEnergy = settings.jump_energy;
+            this.canDoubleJump = false;
+            this.didDoubleJump = false;
         }
 
         if (!keys.upArrow && !this.isInContactWithFloor) {
