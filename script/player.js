@@ -86,7 +86,9 @@ define('player',
         }
 
         var upArrow = keys.upArrow;
-        var jumpCondition = upArrow && !physics.testHitUp(this, level);
+        var onLadder = physics.testOnLadder(this, level);
+        var jumpCondition = upArrow && !physics.testHitUp(this, level) && !onLadder;
+
 
         if (jumpCondition && this.isInContactWithFloor) {
             this.velY += settings.jump_force * (this.ducking ? 0.75 : 1);
@@ -105,6 +107,8 @@ define('player',
 
             this.jumpEnergy -= delta;
             this.jumpEnergy = Math.max(this.jumpEnergy, 0);
+        } else if (upArrow && onLadder) {
+            this.velY = 7;
         }
 
         if (!keys.upArrow && !this.isInContactWithFloor) {

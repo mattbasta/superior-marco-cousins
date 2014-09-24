@@ -62,6 +62,22 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
         }
     }
 
+    function testOnLadder(entity, level) {
+        var index;
+        var tile;
+        for (var y = Math.max(entity.y + 1 | 0, 0);
+             y < Math.min(Math.ceil(entity.y + entity.height), level.height - 1);
+             y++) {
+
+            index = level.getLevelIndex(entity.x + 0.5 | 0, y, level.width);
+            tile = level.levView[index];
+            if (tile === tiles.TILE_LADDER) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function testHitUp(entity, level) {
         var index;
         var tile;
@@ -153,6 +169,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
 
     return {
         tick: tick,
-        testHitUp: testHitUp
+        testHitUp: testHitUp,
+        testOnLadder: testOnLadder,
     };
 });
