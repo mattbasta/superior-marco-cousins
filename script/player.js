@@ -11,9 +11,6 @@ define('player',
         this.height = 1;
         this.width = 1;
 
-        this.bounce = 0;
-        this.jumps = true;
-
         this.reset();
 
         var me = this;
@@ -26,7 +23,18 @@ define('player',
         keys.down.on(81, function() {
             me.shouldThrowMelon = true;
         });
+
+        this.standers = [];
+        this.standingOn = null;
     }
+
+    Player.prototype.bounce = 0;
+    Player.prototype.canBePushed = true;
+    Player.prototype.canBeStoodOn = true;
+    Player.prototype.canPush = true;
+    Player.prototype.canStandOn = true;
+    Player.prototype.jumps = true;
+    Player.prototype.type = 'player';
 
     Player.prototype.reset = function() {
         this.x = 1;
@@ -91,16 +99,16 @@ define('player',
 
 
         if (jumpCondition && this.isInContactWithFloor) {
-            this.velY += settings.jump_force * (this.ducking ? 0.75 : 1);
+            physics.doJump(this, settings.jump_force * (this.ducking ? 0.75 : 1));
             this.isInContactWithFloor = false;
             this.jumpEnergy--;
             sound.play('jump');
             this.canDoubleJump = false;
         } else if (keys.upArrow && !this.didDoubleJump && this.canDoubleJump) {
             if (this.velY < -5) {
-                this.velY += settings.jump_force_double_falling;
+                physics.doJump(this, settings.jump_force_double_falling);
             } else {
-                this.velY += settings.jump_force_double;
+                physics.doJump(this, settings.jump_force_double);
             }
             sound.play('doubleJump');
             this.didDoubleJump = true;
@@ -147,7 +155,7 @@ define('player',
             }
         }
 
-        physics.tick(this, delta, level);
+        physics.tick(this, delta, level, registry);
 
         if (this.x > level.width - 10 && this.y < -1) {
             level.drownedInPool();

@@ -1,4 +1,4 @@
-define('entities', ['entity.melon', 'player'], function(Emelon, player) {
+define('entities', ['entity.colin', 'entity.melon', 'player'], function(Ecolin, Emelon, player) {
 
     var registry = [
         player.get()
@@ -20,6 +20,8 @@ define('entities', ['entity.melon', 'player'], function(Emelon, player) {
         switch (id) {
             case 0: // Melon
                 return Emelon.get(x, y);
+            case 5: // Colin
+                return Ecolin.get(x, y);
         }
         return null;
     }

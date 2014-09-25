@@ -13,15 +13,24 @@ define('entity.melon', ['images', 'physics', 'settings', 'sound'], function(imag
         this.y = startY;
         this.width = 1;
         this.height = 1;
-        this.jumps = false;
 
         this.velX = 0;
         this.velY = 0;
 
-        this.bounc = 0.5;
         this.bouncing = false;
         this.isInContactWithFloor = false;
+
+        this.standers = [];
+        this.standingOn = null;
     }
+
+    MelonEntity.prototype.bounce = 0.5;
+    MelonEntity.prototype.canBePushed = false;
+    MelonEntity.prototype.canBeStoodOn = false;
+    MelonEntity.prototype.canPush = false;
+    MelonEntity.prototype.canStandOn = false;
+    MelonEntity.prototype.jumps = false;
+    MelonEntity.prototype.type = 'melon';
 
     MelonEntity.prototype.draw = function(ctx, level, offsetX, offsetY) {
         if (!this.image) {
@@ -37,13 +46,13 @@ define('entity.melon', ['images', 'physics', 'settings', 'sound'], function(imag
             this.image,
             x * SPRITE_TILE, 0,
             SPRITE_TILE, SPRITE_TILE,
-            locX + offsetX, (level.height - this.y - this.height) * settings.tile_size + offsetY,
+            locX + offsetX | 0, (level.height - this.y - this.height) * settings.tile_size + offsetY | 0,
             settings.tile_size, settings.tile_size
         );
     };
     MelonEntity.prototype.tick = function(delta, level, registry, i) {
         if (this.bouncing) {
-            physics.tick(this, delta, level);
+            physics.tick(this, delta, level, registry);
             this.velX *= 0.95;
             if (this.isInContactWithFloor && this.velX + this.velY < 1) {
                 this.bouncing = false;

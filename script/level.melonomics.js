@@ -21,7 +21,7 @@ define('level.melonomics', ['audio', 'entities', 'images', 'keys', 'sound'], fun
             },
         },
         {
-            name: 'Inter-state melon commerce Tax',
+            name: 'Inter-Melon Commerce Tax',
             applies: function(s) {return s > 10;},
             mod: function(s) {
                 return s - 1;

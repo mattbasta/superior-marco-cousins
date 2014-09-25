@@ -6,7 +6,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
     var MAX_SPEED = 50;
 
     function entityHitGround(entity, y) {
-        if (entity.bounce) {
+        if (entity.bounce && entity.velY < -1 && !entity.standers.length) {
             entity.velY = -1 * entity.bounce * entity.velY;
         } else {
             entity.velY = 0;
@@ -79,13 +79,18 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
     }
 
     function testHitUp(entity, level) {
+        var height = entity.height;
+        for (var i = 0; i < entity.standers.length; i++) {
+            height = Math.max(height, entity.standers[i].height + entity.height);
+        }
+
         var index;
         var tile;
         for (var x = Math.max(entity.x | 0, 0);
              x < Math.min(Math.ceil(entity.x + entity.width), level.width - 1);
              x++) {
 
-            index = level.getLevelIndex(x, Math.floor(entity.y) + entity.height + 1, level.width);
+            index = level.getLevelIndex(x, Math.floor(entity.y) + height + 1, level.width);
             tile = level.levView[index];
             if (tiles.SOLID.has(tile)) {
                 return true;
@@ -140,19 +145,107 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
         }
     }
 
-    function tick(entity, delta, level) {
+    function hitTestEntities(entity, registry, cb) {
+        var ent;
+        var res = false;
+        for (var i = 0; i < registry.length; i++) {
+            ent = registry[i];
+            if (ent === entity) continue;
+
+            if (entity.x >= ent.x + ent.width ||
+                entity.y >= ent.y + ent.height ||
+                entity.x + entity.width <= ent.x ||
+                entity.y + entity.height <= ent.y) {
+                continue;
+            }
+
+            res = cb(ent);
+            if (res) {
+                break;
+            }
+        }
+    }
+
+    function updateUpwardsChain(entity) {
+        if (entity.standers.length) {
+            var newY = entity.y + entity.height;
+            for (var i = 0; i < entity.standers.length; i++) {
+                entity.standers[i].y = newY;
+                updateUpwardsChain(entity.standers[i]);
+            }
+        }
+    }
+
+    function entityDownwardsStandingTest(entity, registry) {
+        if (entity.standingOn) {
+            // console.log(entity.type, entity.standingOn.type);
+            // console.log(entity.x + entity.width, entity.standingOn.x);
+            // console.log(entity.x, entity.standingOn.x + entity.standingOn.width);
+            // If the entity is standing on someone, check the state of
+            // that.
+            var estStandingY = entity.y - entity.standingOn.height;
+            if (estStandingY > entity.standingOn.y ||
+                       entity.x + entity.width < entity.standingOn.x ||
+                       entity.x > entity.standingOn.x + entity.standingOn.width) {
+                // If we're no longer standing on the other entity, un-stand
+                // us from it.
+                entity.standingOn.standers.splice(entity.standingOn.standers.indexOf(entity), 1);
+                entity.standingOn = null;
+            } else if (estStandingY < entity.standingOn.y) {
+                // If the entity would be falling through the entity it is
+                // on, terminate the fall.
+                entityHitGround(entity, entity.standingOn.y + entity.standingOn.height);
+            }
+
+        }
+        if (entity.canStandOn && !entity.standingOn) {
+            // If we can stand on someone (and we're not already), check
+            // who we can stand on.
+            hitTestEntities(entity, registry, function(ent) {
+                if (!ent.canBeStoodOn) return false;
+                if (ent.standingOn === entity) return false;
+                ent.standers.push(entity);
+                entity.standingOn = ent;
+                entityHitGround(entity, ent.y + ent.height);
+                if (ent.velY) {
+                    entity.velY += ent.velY;
+                }
+                return true;
+            });
+        }
+
+    }
+
+    function tick(entity, delta, level, registry) {
         var origY = entity.y;
+        var origX = entity.x;
 
         entity.x += entity.velX * DELTA_RATIO;
         if (entity.velX) {
             sideHitTesting(entity, level);
+            if (entity.canBePushed || entity.canPush) {
+                hitTestEntities(entity, registry, function(ent) {
+                    if (ent.canPush && entity.canBePushed) {
+                        entity.x = origX;
+                    } else if (ent.canBePushed && entity.canPush) {
+                        // TODO: Play with this.
+                        ent.velX = ent.velX * DELTA_RATIO;
+                    }
+
+                });
+            }
         }
 
         entity.y += entity.velY * DELTA_RATIO;
         if (entity.velY < 0) {
             downardsHitTesting(entity, level, origY);
+            entityDownwardsStandingTest(entity, registry);
+
         } else if (entity.velY > 0) {
             upwardsHitTesting(entity, level);
+            updateUpwardsChain(entity);
+        } else {
+            entityDownwardsStandingTest(entity, registry);
         }
 
         entity.x = Math.max(entity.x, 0);
@@ -168,6 +261,14 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
     }
 
     return {
+        doJump: function(entity, velY) {
+            entity.velY += velY;
+            if (entity.standingOn) {
+                entity.standingOn.standers.splice(entity.standingOn.standers.indexOf(entity), 1);
+                entity.standingOn = null;
+            }
+        },
+        hitTestEntities: hitTestEntities,
         tick: tick,
         testHitUp: testHitUp,
         testOnLadder: testOnLadder,

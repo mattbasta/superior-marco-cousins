@@ -19,8 +19,8 @@ define('timing', ['drawing', 'entities', 'keys', 'level', 'sound'], function(dra
         var delta = now - lastDate;
 
         if (!paused) {
-            drawing.draw();
             level.getCurrent().tick(delta, level.next, level);
+            drawing.draw();
         }
 
         raf(loop);
@@ -31,6 +31,7 @@ define('timing', ['drawing', 'entities', 'keys', 'level', 'sound'], function(dra
         start: function() {
             if (started) return;
             raf(loop);
+            started = true;
         }
     };
 });

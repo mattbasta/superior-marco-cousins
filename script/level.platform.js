@@ -84,7 +84,7 @@ define('level.platform',
         return (this.height - y) * this.width + x;
     };
 
-    LevelPlatform.prototype.draw = function(ctx) {
+    LevelPlatform.prototype.draw = function(ctx, drawUI) {
         // Clear the frame with the sky color.
         ctx.fillStyle = getTimeColor(this.time);
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -163,6 +163,8 @@ define('level.platform',
                 );
             });
         }
+
+        drawUI();
     };
     LevelPlatform.prototype.init = function() {
         this.time = 0;
