@@ -19,7 +19,7 @@ define('images', ['promise'], function(promise) {
         'disabilityBenefits': loadImage('img/disabilityBenefits.png'),
         'drowninpool': loadImage('img/drowninpool.png'),
         'entities': loadImage('img/entities.png'),
-        'fellInHole': loadImage('img/fellInHole.png'),
+        'fellInHole': loadImage('img/fellinhole.png'),
         'greenman': loadImage('img/greenman.png'),
         'menu': loadImage('img/menu.png'),
         'melonfinance': loadImage('img/melonfinance.png'),
