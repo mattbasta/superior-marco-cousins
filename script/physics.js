@@ -257,6 +257,7 @@ define('physics', ['settings', 'tiles'], function(settings, tiles) {
 
         entity.velY -= GRAVITY * DELTA_RATIO;
         if (entity.velY > MAX_SPEED) entity.velY = MAX_SPEED;
+        if (-1 * entity.velY > MAX_SPEED) entity.velY = -1 * MAX_SPEED;
         else if (-1 * entity.velY > MAX_SPEED) entity.velY = -1 * MAX_SPEED;
     }
 

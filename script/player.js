@@ -185,6 +185,7 @@ define('player',
         if (this.melonCount <= 0) return;
         this.melonCount--;
 
+        sound.play('throwMelon');
         var melon = Emelon.get(this.x, this.y);
         melon.bouncing = true;
         melon.velY = this.velY + settings.throw_force_y;
