@@ -35,9 +35,11 @@ define('keys', ['events'], function(events) {
         handler.fire('any', e);
     }
     window.addEventListener('keydown', function(e) {
+        e.preventDefault();
         keypress(e, true);
     });
     window.addEventListener('keyup', function(e) {
+        e.preventDefault();
         keypress(e, false);
     });
 

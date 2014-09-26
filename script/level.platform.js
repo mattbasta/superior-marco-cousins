@@ -222,6 +222,16 @@ define('level.platform',
     };
 
 
+    LevelPlatform.prototype.fellInHole = function() {
+        sound.play('fellInHole');
+        this.messageImg = 'fellInHole';
+        this.messageImgTTL = 1250;
+        this.messageImgNext = function(levelLib) {
+            levelLib.goToDisability();
+        };
+    };
+
+
     LevelPlatform.prototype.sitByPool = function() {
         if (this.levelCompletedTTL !== -1) {
             return;

@@ -38,11 +38,17 @@ define('events', [], function() {
         var one = this.one = function(name, listener) {
             setDefault(name, oneListeners, listener);
         };
+        var off = this.off = function(name, listener) {
+            var idx = type[name].indexOf(listener);
+            if (idx === -1) return;
+            type[name].splice(idx, 1);
+        };
 
         this.endpoint = function(obj) {
             obj = obj || {};
             obj.on = on;
             obj.one = one;
+            obj.off = off;
             return obj;
         };
     }

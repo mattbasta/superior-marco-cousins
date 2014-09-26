@@ -159,6 +159,8 @@ define('player',
 
         if (this.x > level.width - 10 && this.y < -1) {
             level.drownedInPool();
+        } else if (this.y < -1) {
+            level.fellInHole();
         }
 
         if (this.shouldThrowMelon) {
