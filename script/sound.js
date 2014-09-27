@@ -1,4 +1,4 @@
-define('sound', ['jsfx'], function(jsfx) {
+define('sound', ['audio', 'jsfx'], function(audio, jsfx) {
 
     var waves = {
         bastacorp: ["saw",0.0000,0.1930,0.0000,0.2680,0.0000,0.0040,110.0000,878.0000,2400.0000,-0.9000,0.0000,0.0000,0.0100,0.0003,0.0000,0.0000,0.0000,0.5000,-0.2960,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,0.0000],
@@ -28,13 +28,16 @@ define('sound', ['jsfx'], function(jsfx) {
         for (i = 0; i < fArr.length; i++) {
             fArr[i] = waveform[i];
         }
-        samples[wave] = audioCtx.createBufferSource()
+        samples[wave] = audioCtx.createBufferSource();
         samples[wave].buffer = buffer;
         samples[wave].connect(audioCtx.destination);
     }
 
     return {
         play: function(name) {
+            if (audio.isMuted()) {
+                return;
+            }
             var orig = samples[name];
             var cloned = audioCtx.createBufferSource();
             cloned.buffer = orig.buffer;

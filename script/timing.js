@@ -1,4 +1,4 @@
-define('timing', ['drawing', 'entities', 'keys', 'level', 'sound'], function(drawing, entities, keys, level, sound) {
+define('timing', ['audio', 'drawing', 'entities', 'keys', 'level', 'sound'], function(audio, drawing, entities, keys, level, sound) {
 
     var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
     var started;
@@ -6,6 +6,7 @@ define('timing', ['drawing', 'entities', 'keys', 'level', 'sound'], function(dra
 
     var paused = false;
 
+    // P for pause.
     keys.down.on(80, function() {
         paused = !paused;
         sound.play('select');
@@ -13,6 +14,9 @@ define('timing', ['drawing', 'entities', 'keys', 'level', 'sound'], function(dra
             drawing.drawPaused();
         }
     });
+
+    // M for mute.
+    keys.down.on(77, audio.toggleMute);
 
     function loop() {
         var now = Date.now();
