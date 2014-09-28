@@ -9,19 +9,26 @@ import 'sound.dart' as sound;
 var started = false;
 var paused = false;
 
-void _loop(num delta) {
+var previous = 0;
+
+void _loop(num ts) {
+    var now = new DateTime.now().millisecondsSinceEpoch;
+    var delta = now - previous;
+
     if (!paused) {
         levels.getCurrent().tick(delta, levels.next);
         drawing.draw();
     }
 
     window.animationFrame.then(_loop);
+    previous = now;
 }
 
 void start() {
     if (started) {
         return;
     }
+    previous = new DateTime.now().millisecondsSinceEpoch;
     window.animationFrame.then(_loop);
     started = true;
 

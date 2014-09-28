@@ -10,12 +10,12 @@ class EventTarget {
     void fire(name, [data]) {
         if (_listeners.containsKey(name)) {
             for (Function listener in _listeners[name]) {
-                Function.apply(listener, data);
+                Function.apply(listener, [data]);
             }
         }
         if (_oneListeners.containsKey(name)) {
             for (Function listener in _oneListeners[name]) {
-                Function.apply(listener, data);
+                Function.apply(listener, [data]);
             }
             _oneListeners.remove(name);
         }

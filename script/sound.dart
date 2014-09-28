@@ -22,7 +22,10 @@ void init() {
     _jsfxInst = new JsObject(context['JSFX']);
 
     for (var wave in waves.keys) {
-        samples[wave] = _jsfxInst.callMethod('getSample', [waves[wave]]);
+        samples[wave] = _jsfxInst.callMethod(
+            'getSample',
+            [new JsObject.jsify(waves[wave])]
+        );
     }
 }
 

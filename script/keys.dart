@@ -41,10 +41,10 @@ void _keypress(KeyEvent e, bool wasSet) {
 }
 
 void init() {
-    KeyEvent.keyDownEvent.forTarget(document.body).listen((e) {
+    document.body.onKeyDown.listen((e) {
         _keypress(e, true);
     });
-    KeyEvent.keyUpEvent.forTarget(document.body).listen((e) {
+    document.body.onKeyUp.listen((e) {
         _keypress(e, false);
     });
 }

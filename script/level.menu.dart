@@ -26,8 +26,8 @@ class LevelMenu extends Level {
         }
         this.ended = false;
 
-        keys.down.one('any', () {sound.play('select');});
-        keys.up.one('any', () {this.ended = true;});
+        keys.down.one('any', (e) {sound.play('select');});
+        keys.up.one('any', (e) {this.ended = true;});
     }
 
     void draw(CanvasRenderingContext2D ctx, Function drawUI) {
