@@ -1,4 +1,4 @@
-(function(scope) {
+(function() {
 "use strict";
 
 var audio = {};
@@ -661,13 +661,35 @@ var jsfx = {};
 
 }).apply(jsfx);
 
-scope('jsfx', [], function() {
-    return {
-        arrayToParams: jsfxlib.arrayToParams.bind(jsfxlib),
-        createWave: jsfxlib.createWave.bind(jsfxlib),
-        createWaves: jsfxlib.createWaves.bind(jsfxlib),
-        generate: jsfx.generate.bind(jsfx)
-    }
-});
+window.JSFX = function JSFX() {
 
-}(define));
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    this.arrayToParams = jsfxlib.arrayToParams.bind(jsfxlib);
+    this.createWave = jsfxlib.createWave.bind(jsfxlib);
+    this.createWaves = jsfxlib.createWaves.bind(jsfxlib);
+    this.generate = jsfx.generate.bind(jsfx);
+
+    this.getSample = function(data) {
+        var waveform = this.generate(this.arrayToParams(data));
+        var buffer = audioCtx.createBuffer(1, waveform.length, 44100);
+        var fArr = buffer.getChannelData(0);
+        for (var i = 0; i < fArr.length; i++) {
+            fArr[i] = waveform[i];
+        }
+        var sample = audioCtx.createBufferSource()
+        sample.buffer = buffer;
+        sample.connect(audioCtx.destination);
+        return sample;
+    };
+
+    this.playSample = function(orig) {
+        var cloned = audioCtx.createBufferSource();
+        cloned.buffer = orig.buffer;
+        cloned.playbackRate = orig.playbackRate;
+        cloned.connect(audioCtx.destination);
+        cloned.start(0);
+    };
+};
+
+}());
