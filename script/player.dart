@@ -21,9 +21,14 @@ class Player extends Entity {
 
     Player() {
         image = images.get('blueman');
+        this.reset();
     }
 
     void reset() {
+        this.x = 1;
+        this.y = 5;
+        this.velX = 0;
+        this.velY = 0;
         this.ducking = false;
         this.walking = false;
 
@@ -44,7 +49,7 @@ class Player extends Entity {
                 x = 0;
             }
 
-            ctx.drawImage(
+            ctx.drawImageScaledFromSource(
                 img,
                 x * SPRITE_TILE, this.direction * SPRITE_TILE,
                 SPRITE_TILE, SPRITE_TILE,

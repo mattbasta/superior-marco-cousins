@@ -1,6 +1,7 @@
 import 'audio.dart' as audio;
 import 'level.generic.dart';
 import 'level.menu.dart';
+import 'level.platform.dart';
 import 'level.title.dart';
 import 'leveldata.dart';
 
@@ -15,7 +16,7 @@ void init() {
     levels.add(new LevelMenu('menu', audioName: 'title'));
 
     LEVELS.forEach((level) {
-        // levels.add();
+        levels.add(new LevelPlatform(level['width'], level['height'], level['content'], level['entities']));
     });
 
     // levels.add();

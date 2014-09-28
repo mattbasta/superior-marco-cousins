@@ -34,5 +34,8 @@ void add(int id, int x, int y) {
 }
 
 void reset() {
+    if (registry.length == 1) {
+        return;
+    }
     registry.removeRange(1, registry.length - 1);
 }

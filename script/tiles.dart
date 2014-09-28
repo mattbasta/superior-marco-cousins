@@ -1,3 +1,4 @@
+const TILE_AIR = 0;
 const TILE_BRICK = 1;
 const TILE_ROCK = 2;
 const TILE_ROCK_LOOSE = 3;

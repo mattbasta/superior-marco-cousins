@@ -38,7 +38,7 @@ void onResize(Event e) {
 
 void drawUI() {
     entitiesDrawable.draw((img) {
-        _ctx.drawImage(
+        _ctx.drawImageScaledFromSource(
             img,
             0, 0,
             8, 8,

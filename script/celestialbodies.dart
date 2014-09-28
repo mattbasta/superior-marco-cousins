@@ -30,5 +30,5 @@ var moon = null;
 
 void init() {
     sun = getBody('#fff');
-    moon: getBody('#ccc');
+    moon = getBody('#ccc');
 }

@@ -18,10 +18,10 @@ int _b64ToUint6(int char) {
 
 var baseRegexp = new RegExp(r'/[^A-Za-z0-9\+\/]/g');
 
-Uint8List base64DecToArr(String sBase64, int nBlocksSize) {
+Uint8List base64DecToArr(String sBase64) {
     var sB64Enc = sBase64.replaceAll(baseRegexp, '');
     var nInLen = sB64Enc.length;
-    var nOutLen = nBlocksSize != 0 ? ((nInLen * 3 + 1 >> 2) / nBlocksSize).ceil() * nBlocksSize : nInLen * 3 + 1 >> 2;
+    var nOutLen = nInLen * 3 + 1 >> 2;
     var taBytes = new Uint8List(nOutLen);
 
     for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
