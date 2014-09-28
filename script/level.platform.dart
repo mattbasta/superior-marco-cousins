@@ -74,7 +74,7 @@ class LevelPlatform extends Level {
             }
         }
 
-        images.get('tiles').draw((img) {
+        images.get('tiles').drawEventually((img) {
             var tile;
             var tileImg;
             var platform = -1;
@@ -111,7 +111,7 @@ class LevelPlatform extends Level {
     }
 
     int getLevelIndex(int x, int y) {
-        return (this.height - y) * this.width + x;
+        return (this.height - y - 1) * this.width + x;
     }
 
     void reset() {

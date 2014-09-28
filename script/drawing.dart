@@ -47,16 +47,16 @@ void drawUI() {
         );
     });
 
-    _ctx.font = settings.tile_size + 'px VT323';
+    _ctx.font = settings.tile_size.toString() + 'px VT323';
     _ctx.fillStyle = 'black';
     _ctx.fillText(
-        'x' + entities.registry[0].melonCount,
+        'x' + entities.registry[0].melonCount.toString(),
         12 + settings.tile_size + 10,
         _ctx.canvas.height - 23
     );
     _ctx.fillStyle = 'white';
     _ctx.fillText(
-        'x' + entities.registry[0].melonCount,
+        'x' + entities.registry[0].melonCount.toString(),
         10 + settings.tile_size + 10,
         _ctx.canvas.height - 25
     );

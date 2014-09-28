@@ -52,6 +52,10 @@ class Drawable {
             drawer(this.fetched);
         }
     }
+
+    void drawEventually(Function drawer) {
+        this.future.then(drawer);
+    }
 }
 
 Drawable get(String name) {

@@ -18,17 +18,15 @@ class Player extends Entity {
     bool walking = false;
 
     int direction;
+    int melonCount = 0;
 
-    Player() {
+    Player() : super() {
         image = images.get('blueman');
-        this.reset();
     }
 
     void reset() {
         this.x = 1;
         this.y = 5;
-        this.velX = 0;
-        this.velY = 0;
         this.ducking = false;
         this.walking = false;
 
@@ -59,7 +57,7 @@ class Player extends Entity {
         });
     }
 
-    void tick(int delta, Level level, List registry) {
+    void tick(int delta, Level level, List registry, int i) {
 
     }
 

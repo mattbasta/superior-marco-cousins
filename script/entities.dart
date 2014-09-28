@@ -1,6 +1,8 @@
 import 'dart:html';
 
+import 'entity.colin.dart';
 import 'entity.generic.dart';
+import 'entity.melon.dart';
 import 'level.generic.dart';
 import 'player.dart' as player;
 
@@ -24,7 +26,10 @@ void tick(int delta, Level level) {
 
 Entity getEntity(int id, int x, int y) {
     switch (id) {
-        //
+        case 0: // Melon
+            return new MelonEntity(x, y);
+        case 5: // Colin
+            return new ColinEntity(x, y);
     }
     return null;
 }
