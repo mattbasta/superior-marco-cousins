@@ -38,7 +38,6 @@ String getTimeColor(int time) {
 
 
 class LevelPlatform extends Level {
-
     int width;
     int height;
 

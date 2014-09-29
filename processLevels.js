@@ -35,7 +35,7 @@ fs.readdir('levels/', function(err, list) {
         var contents = fs.readFileSync(file);
         var parsed = JSON.parse(contents);
 
-        var height = parsed.height;
+        var height = parsed.height + 1;
         var width = parsed.width;
 
         data.push({

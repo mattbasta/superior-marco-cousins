@@ -18,9 +18,13 @@ void draw(CanvasRenderingContext2D ctx, Level level, int offsetX, int offsetY) {
         registry[i].draw(ctx, level, offsetX, offsetY);
     }
 }
+
 void tick(int delta, Level level) {
-    for (var i = 0; i < registry.length; i++) {
-        registry[i].tick(delta, level, registry, i);
+    for (var i = registry.length - 1; i >= 0; i--) {
+        bool result = registry[i].tick(delta, level);
+        if (!result) {
+            registry.removeAt(i);
+        }
     }
 }
 

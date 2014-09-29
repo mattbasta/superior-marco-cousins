@@ -1,7 +1,9 @@
 import 'dart:html';
 
+import 'entities.dart' as entities;
 import 'entity.generic.dart';
 import 'images.dart' as images;
+import 'level.generic.dart';
 import 'settings.dart' as settings;
 import 'sound.dart' as sound;
 
@@ -13,9 +15,12 @@ class MelonEntity extends Entity {
     images.Drawable image;
     bool bouncing = false;
 
+    double bounce() => 0.5;
+    String type() => 'melon';
+
     MelonEntity(int x, int y): super() {
-        this.x = x;
-        this.y = y;
+        this.x = x.toDouble();
+        this.y = y.toDouble();
 
         this.image = images.get('entities');
     }
@@ -41,26 +46,30 @@ class MelonEntity extends Entity {
         });
     }
 
-    void tick(int delta, Level level, List registry, int i) {
+    bool tick(int delta, Level level) {
         if (this.bouncing) {
-            physics.tick(this, delta, level, registry);
+            this.calcPhysics(delta, level);
             this.velX *= 0.95;
             if (this.isInContactWithFloor && this.velX + this.velY < 1) {
                 this.bouncing = false;
-                this.x = Math.round(this.x);
+                this.x = this.x.round().toDouble();
             }
+
+            return true;
+
         } else {
-            var player = registry[0];
+            var player = entities.registry[0];
 
-            if (this.x > player.x + player.width) return;
-            if (this.x + this.width < player.x) return;
-            if (this.y > player.y + player.height) return;
-            if (this.y + this.height < player.y) return;
+            if (this.x > player.x + player.width) return true;
+            if (this.x + this.width < player.x) return true;
+            if (this.y > player.y + player.height) return true;
+            if (this.y + this.height < player.y) return true;
 
-            registry.splice(i, 1);
-            player.melonCount++;
             sound.play('melonCollect');
+            player.melonCount++;
+            return false;
         }
+
     }
 
 }

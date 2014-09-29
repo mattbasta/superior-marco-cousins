@@ -3,8 +3,8 @@ import 'dart:math' as Math;
 
 import 'entity.generic.dart';
 import 'images.dart' as images;
+import 'level.generic.dart';
 import 'settings.dart' as settings;
-import 'sound.dart' as sound;
 
 
 const SPRITE_TILE = 8;
@@ -19,9 +19,16 @@ class ColinEntity extends Entity {
     int jumpTimer;
     int jumpDuration;
 
+    double bounce() => 0.4;
+    bool canBePushed() => true;
+    bool canBeStoodOn() => true;
+    bool canPush() => true;
+    bool canStandOn() => true;
+    String type() => 'colin';
+
     ColinEntity(int x, int y): super() {
-        this.x = x;
-        this.y = y;
+        this.x = x.toDouble();
+        this.y = y.toDouble();
 
         this.image = images.get('entities');
     }
@@ -48,7 +55,7 @@ class ColinEntity extends Entity {
         });
     }
 
-    void tick(int delta, Level level, List registry, int i) {
+    bool tick(int delta, Level level) {
 
         // physics.tick(this, delta, level, registry);
 
@@ -65,6 +72,8 @@ class ColinEntity extends Entity {
         // if (this.x + this.width < player.x) return;
         // if (this.y > player.y + player.height) return;
         // if (this.y + this.height < player.y) return;
+
+        return true;
 
     }
 
