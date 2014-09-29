@@ -1,4 +1,5 @@
 import 'audio.dart' as audio;
+import 'level.disability.dart';
 import 'level.generic.dart';
 import 'level.melonomics.dart';
 import 'level.menu.dart';
@@ -21,7 +22,7 @@ void init() {
         levels.add(new LevelMelonomics());
     });
 
-    // levels.add();
+    levels.add(new LevelDisability());
 
     DISABILITY_LEVEL = levels.length - 1;
 

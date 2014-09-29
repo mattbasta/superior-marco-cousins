@@ -11,12 +11,12 @@ import 'timing.dart' as timing;
 
 void main() {
     audio.init();
+    keys.init();
     sound.init();
 
     celestialbodies.init();
     drawing.init();
     entities.init();
-    keys.init();
     levels.init();
 
     images.all.then(([_]) {

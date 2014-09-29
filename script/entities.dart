@@ -46,6 +46,6 @@ void reset() {
     if (registry.length == 1) {
         return;
     }
-    registry.removeRange(1, registry.length - 1);
+    registry.removeRange(1, registry.length);
     (registry[0] as Player).reset();
 }
