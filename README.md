@@ -12,5 +12,7 @@ Great game for jump and fun. Play long!
 
 ## LICENSE
 
+Made by @mattbasta with [CC0](http://creativecommons.org/publicdomain/zero/1.0/).
+
 - All game assets are in the public domain or CC0.
 - JSFX and Buzz.js: MIT license
