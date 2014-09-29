@@ -4,13 +4,13 @@ import 'entity.colin.dart';
 import 'entity.generic.dart';
 import 'entity.melon.dart';
 import 'level.generic.dart';
-import 'player.dart' as player;
+import 'player.dart';
 
 
 var registry = [];
 
 void init() {
-    registry.add(new player.Player());
+    registry.add(new Player());
 }
 
 void draw(CanvasRenderingContext2D ctx, Level level, int offsetX, int offsetY) {
@@ -47,4 +47,5 @@ void reset() {
         return;
     }
     registry.removeRange(1, registry.length - 1);
+    (registry[0] as Player).reset();
 }

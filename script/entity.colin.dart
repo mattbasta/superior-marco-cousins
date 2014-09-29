@@ -8,7 +8,7 @@ import 'settings.dart' as settings;
 
 
 const SPRITE_TILE = 8;
-const COLIN_JUMP_FORCE = 20;
+const COLIN_JUMP_FORCE = 20.0;
 const COLIN_JUMP_TIMER_MIN = 2000;
 const COLIN_JUMP_TIMER_MAX = 4000;
 
@@ -57,21 +57,14 @@ class ColinEntity extends Entity {
 
     bool tick(int delta, Level level) {
 
-        // physics.tick(this, delta, level, registry);
+        this.calcPhysics(delta, level);
 
         this.jumpTimer += delta;
         if (this.jumpTimer > this.jumpDuration) {
             this.jumpTimer = 0;
-            //physics.doJump(this, COLIN_JUMP_FORCE);
+            this.jump(COLIN_JUMP_FORCE);
             this.calculateJumpTime();
         }
-
-        // var player = registry[0];
-
-        // if (this.x > player.x + player.width) return;
-        // if (this.x + this.width < player.x) return;
-        // if (this.y > player.y + player.height) return;
-        // if (this.y + this.height < player.y) return;
 
         return true;
 

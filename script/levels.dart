@@ -1,5 +1,6 @@
 import 'audio.dart' as audio;
 import 'level.generic.dart';
+import 'level.melonomics.dart';
 import 'level.menu.dart';
 import 'level.platform.dart';
 import 'level.title.dart';
@@ -17,6 +18,7 @@ void init() {
 
     LEVELS.forEach((level) {
         levels.add(new LevelPlatform(level['width'], level['height'], level['content'], level['entities']));
+        levels.add(new LevelMelonomics());
     });
 
     // levels.add();

@@ -200,10 +200,10 @@ abstract class Entity {
     void hitTestEntities(Function cb) {
         entities.registry.where((e) => e != this)
                          .where((e) {
-            return this.x <= e.x + e.width &&
-                   this.y <= e.y + e.height &&
-                   this.x + this.width >= e.x &&
-                   this.y + this.height >= e.y;
+            return !(this.x >= e.x + e.width ||
+                     this.y >= e.y + e.height ||
+                     this.x + this.width <= e.x ||
+                     this.y + this.height <= e.y);
         }).forEach(cb);
     }
 
