@@ -47,7 +47,9 @@ class LevelPlatform extends Level {
     num leftEdge;
     num bottomEdge;
 
-    String messageImg;
+    images.Drawable coolShades;
+
+    images.Drawable messageImg;
     int messageImgTTL;
     Function messageImgNext;
 
@@ -62,6 +64,8 @@ class LevelPlatform extends Level {
         this.width = width;
         this.height = height;
         this.defaultEntities = defaultEntities;
+
+        this.coolShades = images.get('coolshades');
 
         this.ctx = drawutils.getBuffer(width * settings.sprite_tile_size, height * settings.sprite_tile_size);
 
@@ -209,7 +213,7 @@ class LevelPlatform extends Level {
 
         if (this.levelCompletedTTL != -1) {
             var me = this;
-            images.get('coolshades').draw((shades) {
+            this.coolShades.draw((shades) {
                 var playerY = (me.height - player.y - player.height) * settings.tile_size + offsetY;
                 ctx.drawImageScaledFromSource(
                     shades,
@@ -223,7 +227,7 @@ class LevelPlatform extends Level {
         }
 
         if (this.messageImg != null) {
-            images.get(this.messageImg).draw((img) {
+            this.messageImg.draw((img) {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
                 ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 var width = ctx.canvas.width * 0.4;
@@ -244,7 +248,7 @@ class LevelPlatform extends Level {
 
     void drownedInPool() {
         sound.play('drownInPool');
-        this.messageImg = 'drowninpool';
+        this.messageImg = images.get('drowninpool');
         this.messageImgTTL = 1250;
         this.messageImgNext = () {
             levelLib.goTo(1);
@@ -253,7 +257,7 @@ class LevelPlatform extends Level {
 
     void fellInHole() {
         sound.play('fellInHole');
-        this.messageImg = 'fellInHole';
+        this.messageImg = images.get('fellInHole');
         this.messageImgTTL = 1250;
         this.messageImgNext = () {
             levelLib.goToDisability();
@@ -264,7 +268,7 @@ class LevelPlatform extends Level {
         if (this.levelCompletedTTL != -1) {
             return;
         }
-        this.messageImg = 'relaxbypool';
+        this.messageImg = images.get('relaxbypool');
         this.messageImgTTL = COMPLETED_TTL;
         this.levelCompletedTTL = COMPLETED_TTL;
         this.messageImgNext = () {
@@ -275,4 +279,8 @@ class LevelPlatform extends Level {
     void complete() {
         this.completed = true;
     }
+
+
+    bool canPause() => true;
+
 }

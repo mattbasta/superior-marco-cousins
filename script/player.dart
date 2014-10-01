@@ -86,7 +86,8 @@ class Player extends Entity {
             return true;
         }
 
-        bool onLadder = this.isOnLadder(level);
+        int nearestLadder = this.nearestLadder(level);
+        bool onLadder = nearestLadder != -1;
         bool jumpCondition = keys.upArrow && !this.testHitUp(level) && !onLadder;
 
         if (jumpCondition && this.isInContactWithFloor) {
@@ -119,6 +120,7 @@ class Player extends Entity {
             this.jumpEnergy = settings.jump_energy;
             this.canDoubleJump = false;
             this.didDoubleJump = false;
+            this.x = (nearestLadder.toDouble() + this.x * 5) / 6;
 
         }
 

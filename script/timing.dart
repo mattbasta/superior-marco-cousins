@@ -33,6 +33,9 @@ void start() {
     started = true;
 
     keys.up.on(80, (e) {
+        if (!paused && !levels.getCurrent().canPause()) {
+            return;
+        }
         paused = !paused;
         sound.play('select');
 

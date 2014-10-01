@@ -24,6 +24,7 @@ class LevelDisability extends Level {
 
         keys.up.on('any', (e) {
             if (!this.active || this.entered > 0) return;
+            if (e.metaKey || e.altKey) return;
 
             e.preventDefault();
 

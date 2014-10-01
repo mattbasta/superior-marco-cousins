@@ -117,20 +117,21 @@ abstract class Entity {
         }
     }
 
-    bool isOnLadder(Level level) {
+    int nearestLadder(Level level) {
         int index;
         int tile;
         for (var y = Math.max((this.y + 1).floor(), 0);
              y < Math.min((this.y + this.height).ceil(), level.height - 1);
              y++) {
 
-            index = level.getLevelIndex((this.x + 0.5).floor(), y);
+            int x = (this.x + 0.5).floor();
+            index = level.getLevelIndex(x, y);
             tile = level.data[index];
             if (tile == tiles.TILE_LADDER) {
-                return true;
+                return x;
             }
         }
-        return false;
+        return -1;
     }
 
     bool testHitUp(Level level) {

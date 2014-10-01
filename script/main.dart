@@ -19,7 +19,7 @@ void main() {
     entities.init();
     levels.init();
 
-    images.all.then(([_]) {
+    images.all.then((_) {
         timing.start();
     });
 }

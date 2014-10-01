@@ -32,4 +32,6 @@ abstract class Level {
         // noop
     }
 
+    bool canPause() => false;
+
 }
