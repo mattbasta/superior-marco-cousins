@@ -63,7 +63,7 @@ class TileMap {
         for (int y = topMostY; y <= bottomMostY; y++) {
             for (int x = leftMostX; x <= rightMostX; x++) {
                 int idx = y * this.perRow + x;
-                if (idx < 0 || idx > this.canvases.length) continue;
+                if (idx < 0 || idx >= this.canvases.length) continue;
                 ctx.drawImageScaledFromSource(
                     this.canvases[idx],
                     0, 0, this.tileSize, this.tileSize,
