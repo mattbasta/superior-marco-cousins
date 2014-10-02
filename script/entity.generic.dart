@@ -140,13 +140,18 @@ abstract class Entity {
             height = Math.max(height, e.height + this.height);
         });
 
+        int y = this.y.floor() + height + 1;
+        if (y >= level.height) {
+            return false;
+        }
+
         int index;
         int tile;
         for (var x = Math.max(this.x.floor(), 0);
              x < Math.min((this.x + this.width).ceil(), level.width - 1);
              x++) {
 
-            index = level.getLevelIndex(x, this.y.floor() + height + 1);
+            index = level.getLevelIndex(x, y);
             tile = level.data[index];
             if (tiles.SOLID.contains(tile)) {
                 return true;

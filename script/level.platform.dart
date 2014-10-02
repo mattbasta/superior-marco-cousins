@@ -56,7 +56,7 @@ class LevelPlatform extends Level {
     int levelCompletedTTL;
     bool completed;
 
-    CanvasRenderingContext2D ctx;
+    drawutils.TileMap tilemap;
     Uint16List data;
 
 
@@ -67,8 +67,6 @@ class LevelPlatform extends Level {
 
         this.coolShades = images.get('coolshades');
 
-        this.ctx = drawutils.getBuffer(width * settings.sprite_tile_size, height * settings.sprite_tile_size);
-
         this.data = new Uint16List(width * height);
         if (data != null) {
             var convertedData = base64.base64DecToArr(data);
@@ -77,11 +75,15 @@ class LevelPlatform extends Level {
             }
         }
 
-        images.get('tiles').drawEventually((img) {
+        this.tilemap = new drawutils.TileMap(
+            width * settings.sprite_tile_size,
+            height * settings.sprite_tile_size,
+            images.get('tiles')
+        );
+
+        this.tilemap.render((img) {
             var tile;
             var tileImg;
-            var platform = -1;
-            var lastPlatform = 5;
             for (var x = 0; x < width; x++) {
                 for (var y = 0; y < height; y++) {
                     tile = this.data[this.getLevelIndex(x, y)];
@@ -89,7 +91,7 @@ class LevelPlatform extends Level {
 
                     tileImg = tiles.IMAGES[tile];
 
-                    ctx.drawImageScaledFromSource(
+                    this.tilemap.drawImage(
                         img,
                         tileImg % TILES_PER_ROW * settings.sprite_tile_size,
                         (tileImg / TILES_PER_ROW).floor() * settings.sprite_tile_size,
@@ -101,16 +103,9 @@ class LevelPlatform extends Level {
                         settings.sprite_tile_size
                     );
                 }
-
-                if (x % 6 == 0) {
-                    platform = -1;
-                } else if (x % 6 == 1) {
-                    platform = ((new Math.Random().nextDouble() * 2 - 1) * 6).floor() + lastPlatform;
-                    platform = Math.max(platform, 5);
-                    lastPlatform = platform;
-                }
             }
         });
+
     }
 
     int getLevelIndex(int x, int y) {
@@ -184,7 +179,7 @@ class LevelPlatform extends Level {
             60, 60
         );
 
-        var myHeight = this.ctx.canvas.height;
+        var myHeight = this.tilemap.height;
         var theirHeight = ctx.canvas.height;
 
         // Calculate the new best offsets for the viewport
@@ -199,12 +194,11 @@ class LevelPlatform extends Level {
         this.bottomEdge = Math.max(Math.min(this.bottomEdge, this.height - 1 - ctx.canvas.height / settings.tile_size), 0);
 
         var terrainY = myHeight - theirHeight / TILES_RATIO - this.bottomEdge * settings.sprite_tile_size;
-        ctx.drawImageScaledFromSource(
-            this.ctx.canvas,
-            this.leftEdge * settings.sprite_tile_size, terrainY,
-            ctx.canvas.width / TILES_RATIO, (ctx.canvas.height + 1) / TILES_RATIO,
-            0, 0,
-            ctx.canvas.width, ctx.canvas.height + TILES_RATIO_INV
+        this.tilemap.drawMapScaled(
+            ctx,
+            this.leftEdge * settings.sprite_tile_size,
+            terrainY,
+            TILES_RATIO
         );
 
         var offsetX = -1 * this.leftEdge * settings.tile_size;
