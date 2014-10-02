@@ -75,7 +75,7 @@ abstract class Entity {
         int index;
         int tile;
 
-        if (this.y < 0) {
+        if (this.y < 0 || this.y.ceil() > level.height - 1) {
             return;
         }
 

@@ -686,7 +686,7 @@ window.JSFX = function JSFX() {
     this.playSample = function(orig) {
         var cloned = audioCtx.createBufferSource();
         cloned.buffer = orig.buffer;
-        cloned.playbackRate = orig.playbackRate;
+        // cloned.playbackRate = orig.playbackRate;
         cloned.connect(audioCtx.destination);
         cloned.start(0);
     };
