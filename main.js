@@ -8187,13 +8187,13 @@ var $$ = {};
     t1 = $._can;
     t2 = document.body;
     t2.toString;
-    t2 = C.JSNumber_methods.toInt$0(C.JSNumber_methods.roundToDouble$0(t2.clientWidth));
+    t2 = C.JSNumber_methods.toInt$0(Math.ceil(C.JSNumber_methods.toInt$0(C.JSNumber_methods.roundToDouble$0(t2.clientWidth)) / 2));
     $._width = t2;
     J.set$width$x(t1, t2);
     t2 = $._can;
     t1 = document.body;
     t1.toString;
-    t1 = C.JSNumber_methods.toInt$0(C.JSNumber_methods.roundToDouble$0(t1.clientHeight));
+    t1 = C.JSNumber_methods.toInt$0(Math.ceil(C.JSNumber_methods.toInt$0(C.JSNumber_methods.roundToDouble$0(t1.clientHeight)) / 2));
     $._height = t1;
     J.set$height$x(t2, t1);
   }, "call$1", "onResize$closure", 2, 0, 31, 2],
@@ -8202,7 +8202,7 @@ var $$ = {};
     t1 = $.entitiesDrawable.fetched;
     if (t1 != null)
       new U.drawUI_closure().call$1(t1);
-    J.set$font$x($._ctx, C.JSInt_methods.toString$0(64) + "px VT323");
+    J.set$font$x($._ctx, C.JSInt_methods.toString$0(32) + "px VT323");
     J.set$fillStyle$x($._ctx, "black");
     t1 = $._ctx;
     t2 = $.get$registry();
@@ -8212,7 +8212,7 @@ var $$ = {};
     t3 = $._ctx.canvas.height;
     if (typeof t3 !== "number")
       return t3.$sub();
-    J.fillText$3$x(t1, t2, 86, t3 - 23);
+    J.fillText$3$x(t1, t2, 54, t3 - 23);
     J.set$fillStyle$x($._ctx, "white");
     t3 = $._ctx;
     t2 = $.get$registry();
@@ -8222,12 +8222,12 @@ var $$ = {};
     t1 = $._ctx.canvas.height;
     if (typeof t1 !== "number")
       return t1.$sub();
-    J.fillText$3$x(t3, t2, 84, t1 - 25);
+    J.fillText$3$x(t3, t2, 52, t1 - 25);
   }, "call$0", "drawUI$closure", 0, 0, 11],
   drawUI_closure: {
     "^": "Closure:28;",
     call$1: function(img) {
-      J.drawImageScaledFromSource$9$x($._ctx, img, 0, 0, 8, 8, 10, J.$sub$n($._height, 8) - 64, 64, 64);
+      J.drawImageScaledFromSource$9$x($._ctx, img, 0, 0, 8, 8, 10, J.$sub$n($._height, 8) - 32, 32, 32);
     },
     $isFunction: true
   }
@@ -8436,8 +8436,8 @@ var $$ = {};
       t2 = t1.x;
       if (typeof t2 !== "number")
         return t2.$mul();
-      t2 = t2 * 64 + this.offsetX_3;
-      if (!(t2 + 64 < 0)) {
+      t2 = t2 * 32 + this.offsetX_3;
+      if (!(t2 + 32 < 0)) {
         t3 = this.ctx_1.canvas.width;
         if (typeof t3 !== "number")
           return H.iae(t3);
@@ -8446,7 +8446,7 @@ var $$ = {};
         t3 = true;
       if (t3)
         return;
-      J.drawImageScaledFromSource$9$x(this.ctx_1, img, x * 8, 8, 8, 8, t2, J.$add$ns(J.$mul$ns(J.$sub$n(J.$sub$n(this.level_2.level$LevelPlatform$height, t1.y), t1.height), 64), this.offsetY_4), 64, 64);
+      J.drawImageScaledFromSource$9$x(this.ctx_1, img, x * 8, 8, 8, 8, t2, J.$add$ns(J.$mul$ns(J.$sub$n(J.$sub$n(this.level_2.level$LevelPlatform$height, t1.y), t1.height), 32), this.offsetY_4), 32, 32);
     },
     $isFunction: true
   }
@@ -8985,8 +8985,8 @@ var $$ = {};
       t2 = t1.x;
       if (typeof t2 !== "number")
         return t2.$mul();
-      t2 = t2 * 64 + this.offsetX_3;
-      if (!(t2 + 64 < 0)) {
+      t2 = t2 * 32 + this.offsetX_3;
+      if (!(t2 + 32 < 0)) {
         t3 = this.ctx_1.canvas.width;
         if (typeof t3 !== "number")
           return H.iae(t3);
@@ -8995,7 +8995,7 @@ var $$ = {};
         t3 = true;
       if (t3)
         return;
-      J.drawImageScaledFromSource$9$x(this.ctx_1, img, x * 8, 0, 8, 8, t2, J.$add$ns(J.$mul$ns(J.$sub$n(J.$sub$n(this.level_2.level$LevelPlatform$height, t1.y), t1.height), 64), this.offsetY_4), 64, 64);
+      J.drawImageScaledFromSource$9$x(this.ctx_1, img, x * 8, 0, 8, 8, t2, J.$add$ns(J.$mul$ns(J.$sub$n(J.$sub$n(this.level_2.level$LevelPlatform$height, t1.y), t1.height), 32), this.offsetY_4), 32, 32);
     },
     $isFunction: true
   }
@@ -9747,23 +9747,23 @@ var $$ = {};
       t5 = this.leftEdge;
       if (typeof t5 !== "number")
         return t5.$mul();
-      t4 = (t5 * 6 + (t2 - t4 / 64 / 2)) / 7;
+      t4 = (t5 * 6 + (t2 - t4 / 32 / 2)) / 7;
       this.leftEdge = t4;
       t2 = this.bottomEdge;
       if (typeof t2 !== "number")
         return t2.$mul();
-      this.bottomEdge = (t2 * 6 + (t8 - t3 / 64 / 2)) / 7;
+      this.bottomEdge = (t2 * 6 + (t8 - t3 / 32 / 2)) / 7;
       t3 = this.level$LevelPlatform$width;
       t8 = ctx.canvas.width;
       if (typeof t8 !== "number")
         return t8.$div();
-      this.leftEdge = P.max(P.min(t4, J.$sub$n(t3, t8 / 64)), 0);
+      this.leftEdge = P.max(P.min(t4, J.$sub$n(t3, t8 / 32)), 0);
       t8 = this.bottomEdge;
       t3 = J.$sub$n(this.level$LevelPlatform$height, 1);
       t4 = ctx.canvas.height;
       if (typeof t4 !== "number")
         return t4.$div();
-      this.bottomEdge = P.max(P.min(t8, J.$sub$n(t3, t4 / 64)), 0);
+      this.bottomEdge = P.max(P.min(t8, J.$sub$n(t3, t4 / 32)), 0);
       t4 = $.TILES_RATIO;
       if (typeof theirHeight !== "number")
         return theirHeight.$div();
@@ -9783,7 +9783,7 @@ var $$ = {};
       t4 = this.leftEdge;
       if (typeof t4 !== "number")
         return H.iae(t4);
-      offsetX = -1 * t4 * 64;
+      offsetX = -1 * t4 * 32;
       t4 = ctx.canvas.height;
       t3 = t3.$mul(myHeight, $.TILES_RATIO);
       if (typeof t4 !== "number")
@@ -9793,7 +9793,7 @@ var $$ = {};
       t8 = this.bottomEdge;
       if (typeof t8 !== "number")
         return t8.$mul();
-      offsetY = t4 - t3 + t8 * 64;
+      offsetY = t4 - t3 + t8 * 32;
       T.draw(ctx, this, offsetX, offsetY);
       if (this.levelCompletedTTL !== -1) {
         t1 = this.coolShades.fetched;
@@ -9929,12 +9929,12 @@ var $$ = {};
       t1 = this.me_4;
       t2 = this.player_1;
       t3 = J.getInterceptor$x(t2);
-      playerY = J.$add$ns(J.$mul$ns(J.$sub$n(J.$sub$n(t1.level$LevelPlatform$height, t3.get$y(t2)), t3.get$height(t2)), 64), this.offsetY_3);
+      playerY = J.$add$ns(J.$mul$ns(J.$sub$n(J.$sub$n(t1.level$LevelPlatform$height, t3.get$y(t2)), t3.get$height(t2)), 32), this.offsetY_3);
       t4 = this.ctx_0;
       t5 = J.getInterceptor$x(shades);
       t6 = t5.get$width(shades);
       t5 = t5.get$height(shades);
-      t2 = J.$mul$ns(t3.get$x(t2), 64);
+      t2 = J.$mul$ns(t3.get$x(t2), 32);
       t1 = t1.levelCompletedTTL;
       if (typeof t1 !== "number")
         return t1.$sub();
@@ -9942,7 +9942,7 @@ var $$ = {};
       t3 = t4.canvas.height;
       if (typeof t3 !== "number")
         return H.iae(t3);
-      J.drawImageScaledFromSource$9$x(t4, shades, 0, 0, t6, t5, t2 + this.offsetX_2, J.$sub$n(playerY, t1 * t3), 64, 64);
+      J.drawImageScaledFromSource$9$x(t4, shades, 0, 0, t6, t5, t2 + this.offsetX_2, J.$sub$n(playerY, t1 * t3), 32, 32);
     },
     $isFunction: true
   },
@@ -10228,7 +10228,10 @@ var $$ = {};
           t1 = this.x;
           if (typeof t1 !== "number")
             return t1.$mul();
-          this.x = (nearestLadder + t1 * 5) / 6;
+          t1 = (nearestLadder + t1 * 5) / 6;
+          this.x = t1;
+          if (Math.abs(nearestLadder - t1) < 0.1)
+            this.x = nearestLadder;
         }
       }
       if (!$.upArrow && !this.isInContactWithFloor)
@@ -10349,7 +10352,7 @@ var $$ = {};
       t3 = t2.x;
       if (typeof t3 !== "number")
         return t3.$mul();
-      J.drawImageScaledFromSource$9$x(this.ctx_1, img, x * 8, t1 * 8, 8, 8, t3 * 64 + this.offsetX_3, J.$add$ns(J.$mul$ns(J.$sub$n(J.$sub$n(this.level_2.level$LevelPlatform$height, t2.y), t2.height), 64), this.offsetY_4), 64, 64);
+      J.drawImageScaledFromSource$9$x(this.ctx_1, img, x * 8, t1 * 8, 8, 8, t3 * 32 + this.offsetX_3, J.$add$ns(J.$mul$ns(J.$sub$n(J.$sub$n(this.level_2.level$LevelPlatform$height, t2.y), t2.height), 32), this.offsetY_4), 32, 32);
     },
     $isFunction: true
   }
@@ -10977,7 +10980,7 @@ $.leftArrow = false;
 $.rightArrow = false;
 $.upArrow = false;
 $.TILES_PER_ROW = 5;
-$.TILES_RATIO = 8;
+$.TILES_RATIO = 4;
 $.DISABILITY_LEVEL = -1;
 $.CURRENT_LEVEL = 0;
 $._jsfxInst = null;

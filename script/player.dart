@@ -121,6 +121,9 @@ class Player extends Entity {
             this.canDoubleJump = false;
             this.didDoubleJump = false;
             this.x = (nearestLadder.toDouble() + this.x * 5) / 6;
+            if ((nearestLadder.toDouble() - this.x).abs() < 0.1) {
+                this.x = nearestLadder.toDouble();
+            }
 
         }
 

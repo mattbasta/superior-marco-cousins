@@ -32,8 +32,8 @@ void init() {
 }
 
 void onResize(Event e) {
-    _can.width = _width = document.body.clientWidth;
-    _can.height = _height = document.body.clientHeight;
+    _can.width = _width = (document.body.clientWidth / 2).ceil();
+    _can.height = _height = (document.body.clientHeight / 2).ceil();
 }
 
 void drawUI() {
