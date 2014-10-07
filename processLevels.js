@@ -28,7 +28,6 @@ fs.readdir('levels/', function(err, list) {
 
     list.sort().forEach(function(file) {
         if (file === 'template.dart.txt') return;
-        if (file === 'template.js.txt') return;
 
         var file = 'levels/' + file;
 

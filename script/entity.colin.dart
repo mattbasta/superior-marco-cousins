@@ -1,3 +1,5 @@
+library entities.colin;
+
 import 'dart:html';
 import 'dart:math' as Math;
 

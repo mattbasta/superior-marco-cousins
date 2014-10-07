@@ -1,1 +1,3 @@
+library leveldata;
+
 var LEVELS = %s;

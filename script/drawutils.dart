@@ -1,3 +1,5 @@
+library drawutils;
+
 import 'dart:html';
 
 import 'images.dart' as images;

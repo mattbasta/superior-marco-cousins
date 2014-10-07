@@ -1,3 +1,5 @@
+library entities.melon;
+
 import 'dart:html';
 
 import 'entities.dart' as entities;

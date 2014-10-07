@@ -1,3 +1,5 @@
+library drawing;
+
 import 'dart:html';
 
 import 'entities.dart' as entities;

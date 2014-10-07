@@ -1,3 +1,5 @@
+library player;
+
 import 'dart:html';
 import 'dart:math' as Math;
 

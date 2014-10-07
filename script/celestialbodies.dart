@@ -1,3 +1,5 @@
+library celestialbodies;
+
 import 'dart:html';
 import 'dart:math' as Math;
 

@@ -1,3 +1,5 @@
+library keys;
+
 import 'dart:html';
 
 import 'events.dart' as events;

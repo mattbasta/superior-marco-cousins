@@ -1,3 +1,5 @@
+library images;
+
 import 'dart:async';
 import 'dart:html';
 

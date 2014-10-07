@@ -76,3 +76,8 @@ Set<int> CLOUD = new Set.from([
     TILE_LEAF,
     TILE_LOG,
 ]);
+
+
+bool canStand(int tile) {
+    return SOLID.contains(tile) || CLOUD.contains(tile);
+}

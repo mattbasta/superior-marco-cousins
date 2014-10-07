@@ -1,3 +1,5 @@
+library levels.platform;
+
 import 'dart:html';
 import 'dart:math' as Math;
 import 'dart:typed_data';

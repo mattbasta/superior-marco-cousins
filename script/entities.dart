@@ -1,5 +1,8 @@
+library entities;
+
 import 'dart:html';
 
+import 'entity.beetle.dart';
 import 'entity.colin.dart';
 import 'entity.generic.dart';
 import 'entity.melon.dart';
@@ -34,8 +37,11 @@ Entity getEntity(int id, int x, int y) {
             return new MelonEntity(x, y);
         case 5: // Colin
             return new ColinEntity(x, y);
+        case 15: // Beetle
+            return new BeetleEntity(x, y);
+        default:
+            throw new Exception('Unrecognized entity ' + id.toString());
     }
-    return null;
 }
 
 void add(int id, int x, int y) {

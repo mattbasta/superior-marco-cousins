@@ -1,3 +1,5 @@
+library settings;
+
 const jump_energy = 160;
 const jump_energy_force = 3;
 const jump_energy_force_ticks = 40;

@@ -1,3 +1,5 @@
+library entities.generic;
+
 import 'dart:html';
 import 'dart:math' as Math;
 
@@ -7,7 +9,7 @@ import 'settings.dart' as settings;
 import 'tiles.dart' as tiles;
 
 
-const DELTA_RATIO = 20 / 1000;
+const DELTA_RATIO = 0.3;
 
 const GRAVITY = 50;
 const MAX_SPEED = 50.0;
@@ -24,8 +26,8 @@ abstract class Entity {
     bool didDoubleJump = false;
     int jumpEnergy;
 
-    int height = 1;
-    int width = 1;
+    double height = 1.0;
+    double width = 1.0;
 
     bool bouncing = false;
     bool isInContactWithFloor = false;
@@ -90,7 +92,7 @@ abstract class Entity {
             for (var x = start; x < end; x++) {
                 index = level.getLevelIndex(x, this.y.ceil());
                 tile = level.data[index];
-                if (tiles.SOLID.contains(tile) || tiles.CLOUD.contains(tile)) {
+                if (tiles.canStand(tile)) {
                     this.hitGround(this.y.ceil().toDouble());
                     return;
                 }
@@ -135,12 +137,12 @@ abstract class Entity {
     }
 
     bool testHitUp(Level level) {
-        int height = this.height;
+        double height = this.height;
         this.standers.forEach((e) {
             height = Math.max(height, e.height + this.height);
         });
 
-        int y = this.y.floor() + height + 1;
+        int y = (this.y + height).floor() + 1;
         if (y >= level.height) {
             return false;
         }
@@ -178,12 +180,7 @@ abstract class Entity {
                 index = level.getLevelIndex(this.x.ceil() - 1, y);
                 tile = level.data[index];
                 if (tiles.SOLID.contains(tile)) {
-                    if (this.bounce() != 0.0) {
-                        this.velX = -1 * this.bounce() * this.velX;
-                    } else {
-                        this.velX = 0.0;
-                    }
-                    this.x = this.x.ceil().toDouble();
+                    this.hitWall(this.x.ceil().toDouble());
                     return;
                 }
             } else if (this.velX > 1) {
@@ -191,12 +188,7 @@ abstract class Entity {
                 index = level.getLevelIndex((this.x + this.width).floor(), y);
                 tile = level.data[index];
                 if (tiles.SOLID.contains(tile)) {
-                    if (this.bounce() != 0.0) {
-                        this.velX = -1 * this.bounce() * this.velX;
-                    } else {
-                        this.velX = 0.0;
-                    }
-                    this.x = this.x.floor().toDouble();
+                    this.hitWall(this.x.floor().toDouble());
                     return;
                 }
             }
@@ -204,13 +196,16 @@ abstract class Entity {
     }
 
     void hitTestEntities(Function cb) {
-        entities.registry.where((e) => e != this)
-                         .where((e) {
-            return !(this.x >= e.x + e.width ||
-                     this.y >= e.y + e.height ||
-                     this.x + this.width <= e.x ||
-                     this.y + this.height <= e.y);
-        }).forEach(cb);
+        for (var ent in entities.registry) {
+            if (ent == this) continue;
+
+            if (this.x >= ent.x + ent.width) continue;
+            if (this.y >= ent.y + ent.height) continue;
+            if (this.x + this.width <= ent.x) continue;
+            if (this.y + this.height <= ent.y) continue;
+
+            cb(ent);
+        }
     }
 
     void updateUpwardsChain() {
@@ -218,6 +213,7 @@ abstract class Entity {
             double newY = this.y + this.height;
             this.standers.forEach((e) {
                 e.y = newY;
+                e.isInContactWithFloor = true;
                 e.updateUpwardsChain();
             });
         }
@@ -233,8 +229,7 @@ abstract class Entity {
                        this.x > this.standingOn.x + this.standingOn.width) {
                 // If we're no longer standing on the other entity, un-stand
                 // us from it.
-                this.standingOn.standers.remove(this);
-                this.standingOn = null;
+                this.stopStanding();
             } else if (estStandingY < this.standingOn.y) {
                 // If the entity would be falling through the entity it is
                 // on, terminate the fall.
@@ -260,6 +255,10 @@ abstract class Entity {
 
     void jump(double velY) {
         this.velY += velY;
+        this.stopStanding();
+    }
+
+    void stopStanding() {
         if (this.standingOn != null) {
             this.standingOn.standers.remove(this);
             this.standingOn = null;
@@ -270,7 +269,7 @@ abstract class Entity {
         double origY = this.y;
         double origX = this.x;
 
-        this.x += this.velX * DELTA_RATIO;
+        this.x += this.velX / delta * DELTA_RATIO;
         if (this.velX != 0.0) {
             this.testCollisionSide(level);
             if (this.canBePushed() || this.canPush()) {
@@ -279,14 +278,14 @@ abstract class Entity {
                         this.x = origX;
                     } else if (ent.canBePushed() && this.canPush()) {
                         // TODO: Play with this.
-                        ent.velX = ent.velX * DELTA_RATIO;
+                        ent.velX = ent.velX / delta * DELTA_RATIO;
                     }
 
                 });
             }
         }
 
-        this.y += this.velY * DELTA_RATIO;
+        this.y += this.velY / delta * DELTA_RATIO;
         if (this.velY < 0) {
             this.testCollisionDown(level, origY);
             this.testFallingDown();
@@ -305,10 +304,15 @@ abstract class Entity {
             this.isInContactWithFloor = false;
         }
 
-        this.velY -= GRAVITY * DELTA_RATIO;
+        this.velY -= GRAVITY / delta * DELTA_RATIO;
         if (this.velY > MAX_SPEED) this.velY = MAX_SPEED;
         if (-1 * this.velY > MAX_SPEED) this.velY = -1 * MAX_SPEED;
         else if (-1 * this.velY > MAX_SPEED) this.velY = -1 * MAX_SPEED;
+    }
+
+    void hitWall(double stoppedX) {
+        this.velX = 0.0;
+        this.x = stoppedX;
     }
 
     void sitOnChair() {
