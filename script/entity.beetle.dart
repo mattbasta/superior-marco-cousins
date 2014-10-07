@@ -14,7 +14,7 @@ const SPRITE_TILE = 8;
 const DIR_LEFT = 0;
 const DIR_RIGHT = 1;
 
-const BEETLE_SPEED = 6.0;
+const BEETLE_SPEED = 4.0;
 
 class BeetleEntity extends Entity {
 
@@ -73,16 +73,12 @@ class BeetleEntity extends Entity {
 
         double newX = this.x + prospectiveVel / delta * DELTA_RATIO;
         if (this.isInContactWithFloor && newX.floor() != this.x.floor()) {
-            bool foundfloor = false;
             for (int x = newX.floor(); x <= (newX.floor() + this.width).ceil(); x++) {
                 int index = level.getLevelIndex(x, this.y.ceil());
-                if (tiles.canStand(level.data[index])) {
-                    foundfloor = true;
+                if (!tiles.canStand(level.data[index])) {
+                    this.hitWall(this.x);
+                    break;
                 }
-            }
-            if (!foundfloor) {
-                this.hitWall(this.x);
-                return true;
             }
         }
 
@@ -90,7 +86,7 @@ class BeetleEntity extends Entity {
 
         this.calcPhysics(delta, level);
 
-        return true;
+        return this.y > -1;
 
     }
 

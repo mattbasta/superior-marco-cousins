@@ -204,7 +204,8 @@ abstract class Entity {
             if (this.x + this.width <= ent.x) continue;
             if (this.y + this.height <= ent.y) continue;
 
-            cb(ent);
+            bool result = cb(ent);
+            if (result) break;
         }
     }
 
@@ -241,14 +242,15 @@ abstract class Entity {
             // If we can stand on someone (and we're not already), check
             // who we can stand on.
             this.hitTestEntities((e) {
-                if (!e.canBeStoodOn()) return;
-                if (e.standingOn == this) return;
+                if (!e.canBeStoodOn()) return false;
+                if (e.standingOn == this) return false;
                 e.standers.add(this);
                 this.standingOn = e;
                 this.hitGround(e.y + e.height);
                 if (e.velY) {
                     this.velY += e.velY;
                 }
+                return true;
             });
         }
     }
@@ -276,10 +278,19 @@ abstract class Entity {
                 this.hitTestEntities((ent) {
                     if (ent.canPush() && this.canBePushed()) {
                         this.x = origX;
+                        return true;
                     } else if (ent.canBePushed() && this.canPush()) {
-                        // TODO: Play with this.
-                        ent.velX = ent.velX / delta * DELTA_RATIO;
+                        double hitX;
+                        if (this.velX > 0) {
+                            hitX = ent.x - this.width;
+                        } else {
+                            hitX = ent.x + ent.width;
+                        }
+                        this.hitWall(hitX);
+                        return true;
                     }
+
+                    return false;
 
                 });
             }
