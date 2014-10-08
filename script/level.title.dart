@@ -34,12 +34,15 @@ class LevelTitle extends Level {
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         this.image.draw((img) {
-            var hw = img.width / 2;
-            var hh = img.height / 2;
-            ctx.drawImage(
+            var hw = img.width / 4;
+            var hh = img.height / 4;
+            ctx.drawImageScaledFromSource(
                 img,
+                0, 0,
+                img.width, img.height,
                 ctx.canvas.width / 2 - hw,
-                ctx.canvas.height / 2 - hh
+                ctx.canvas.height / 2 - hh,
+                img.width / 2, img.height / 2
             );
         });
     }

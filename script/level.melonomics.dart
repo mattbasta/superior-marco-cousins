@@ -60,7 +60,7 @@ class LevelMelonomics extends Level {
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         this.image.draw((img) {
-            var headerWidth = ctx.canvas.width * 0.4;
+            var headerWidth = ctx.canvas.width * 0.4 / 2;
             ctx.drawImageScaledFromSource(
                 img,
                 0, 0,
@@ -76,14 +76,14 @@ class LevelMelonomics extends Level {
             int items = (this.ticks / 300).floor();
 
             num y = ctx.canvas.height * 0.1 + headerWidth / img.width * img.height + 50;
-            ctx.font = '40px VT323';
+            ctx.font = '20px VT323';
             ctx.fillStyle = 'white';
 
             if (items != 0) {
                 items--;
                 ctx.fillText('Net Melons', ctx.canvas.width * 0.3, y);
                 ctx.fillText(melons.toString(), ctx.canvas.width * 0.65, y);
-                y += 42;
+                y += 21;
             }
 
             TAXES.forEach((tax) {
@@ -94,12 +94,12 @@ class LevelMelonomics extends Level {
                 int diff = afterTax - melons;
                 ctx.fillText(tax.name, ctx.canvas.width * 0.3, y);
                 ctx.fillText(diff.toString(), ctx.canvas.width * 0.65, y);
-                y += 42;
+                y += 21;
                 melons = afterTax;
             });
 
             if (items != 0) {
-                y += 40;
+                y += 20;
                 items--;
                 ctx.fillText('Gross Melons', ctx.canvas.width * 0.3, y);
                 ctx.fillText(melons.toString(), ctx.canvas.width * 0.65, y);
@@ -107,7 +107,7 @@ class LevelMelonomics extends Level {
 
             if (items != 0) {
                 items--;
-                y += 40;
+                y += 20;
                 ctx.fillText('PRESS TO CONTINUE', ctx.canvas.width * 0.3, y);
             }
         });
