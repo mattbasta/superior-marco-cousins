@@ -1,22 +1,12 @@
-library images;
-
-import 'dart:async';
-import 'dart:html';
-
-
-Future<ImageElement> loadImage(String src) {
-    var comp = new Completer();
-
-    var img = new ImageElement();
-    img.src = src;
-    img.onLoad.listen((e) {
-        comp.complete(img);
+function loadImage(src) {
+    return new Promise(resolve => {
+        var img = new Image();
+        img.src = src;
+        img.onload = () => resolve();
     });
-
-    return comp.future;
 }
 
-Map images = {
+const images = {
     'bastacorp': loadImage('img/bastacorp.jpg'),
     'blueman': loadImage('img/blueman.png'),
     'coolshades': loadImage('img/coolshades.png'),
@@ -31,35 +21,31 @@ Map images = {
     'tiles': loadImage('img/tiles.png')
 };
 
-Future<List> waitFor(Iterable<String> names) {
-    return Future.wait(names.map((name) => images[name]));
-}
-
-var all = Future.wait(images.values);
+export const all = Promise.all(Object.keys(images).map(key => images[key]));
 
 class Drawable {
-
-    Future<ImageElement> future;
-    ImageElement fetched;
-
-    Drawable(String name) {
+    constructor(String name) {
         this.future = images[name];
-        this.future.then((img) {
+        this.future.then(img => {
             this.fetched = img;
         });
     }
 
-    void draw(Function drawer) {
-        if (this.fetched != null) {
+    draw(drawer) {
+        if (this.fetched !== null) {
             drawer(this.fetched);
         }
     }
 
-    void drawEventually(Function drawer) {
+    drawEventually(drawer) {
         this.future.then(drawer);
     }
 }
 
-Drawable get(String name) {
+export function get(name) {
     return new Drawable(name);
-}
+};
+
+export function waitFor(names) {
+    return Promise.all(names.map(key => images[key]));
+};
