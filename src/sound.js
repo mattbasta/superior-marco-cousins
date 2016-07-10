@@ -1,9 +1,4 @@
-library sound;
-
-import 'dart:js';
-
-
-var waves = {
+const waves = {
     'bastacorp': ["saw",0.0000,0.1930,0.0000,0.2680,0.0000,0.0040,110.0000,878.0000,2400.0000,-0.9000,0.0000,0.0000,0.0100,0.0003,0.0000,0.0000,0.0000,0.5000,-0.2960,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,0.0000],
     'select': ["square",2.0000,0.1930,0.0000,0.0020,0.5760,0.2760,20.0000,850.0000,2400.0000,0.0000,0.0000,0.0000,0.0100,0.0003,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,0.0000],
     'jump': ["square",0.0000,0.1530,0.0000,0.1280,0.0000,0.0200,20.0000,339.0000,971.0000,0.4080,0.0000,0.0000,0.0100,0.0003,0.0000,0.0000,0.0000,0.5000,0.0000,0.0000,0.0000,0.0000,0.8070,0.0000,0.0000,0.0000,0.0000],
@@ -16,21 +11,19 @@ var waves = {
     'throwMelon': ["synth",0.0000,0.0750,0.0000,0.0560,0.0000,0.0000,20.0000,616.0000,2400.0000,0.5540,-0.2400,0.0000,0.0100,0.0003,0.0000,0.0000,0.0000,0.0000,0.0000,0.7704,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,0.0000],
 };
 
-JsObject _jsfxInst = null;
+let _jsfxInst = null;
 
-Map<String, JsObject> samples = {};
+const samples = {};
 
-void init() {
-    _jsfxInst = new JsObject(context['JSFX']);
+export function init() {
+    _jsfxInst = new JSFX();
 
-    for (var wave in waves.keys) {
-        samples[wave] = _jsfxInst.callMethod(
-            'getSample',
-            [new JsObject.jsify(waves[wave])]
-        );
-    }
-}
+    Object.keys(waves).forEach(key => {
+        const wave = waves[key];
+        samples[wave] = _jsfxInst.getSample(wave);
+    });
+};
 
-void play(String name) {
-    _jsfxInst.callMethod('playSample', [samples[name]]);
-}
+export function play(String name) {
+    _jsfxInst.playSample(samples[name]);
+};

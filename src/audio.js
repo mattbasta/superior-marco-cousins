@@ -1,3 +1,6 @@
+import 'buzz';
+
+
 const loops = new Map();
 let playingLoop = null;
 

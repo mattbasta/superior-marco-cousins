@@ -18,6 +18,4 @@ drawing.init();
 entities.init();
 levels.init();
 
-images.all.then((_) {
-    timing.start();
-});
+images.all.then(() => timing.start());

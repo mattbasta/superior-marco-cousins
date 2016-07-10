@@ -1,20 +1,18 @@
-library keys;
-
-import 'dart:html';
-
-import 'events.dart' as events;
+import {EventTarget} from 'events';
 
 
-var up = new events.EventTarget();
-var down = new events.EventTarget();
+const up = new EventTarget();
+const down = new EventTarget();
 
-var downArrow = false;
-var leftArrow = false;
-var rightArrow = false;
-var upArrow = false;
+let downArrow = false;
+let leftArrow = false;
+let rightArrow = false;
+let upArrow = false;
 
-void _keypress(KeyEvent e, bool wasSet) {
-    if (!e.metaKey && !e.altKey) e.preventDefault();
+function keypress(e, wasSet) {
+    if (!e.metaKey && !e.altKey) {
+        e.preventDefault();
+    }
     switch(e.keyCode) {
         case 37: // Left
         case 65: // A
@@ -42,11 +40,11 @@ void _keypress(KeyEvent e, bool wasSet) {
     }
 }
 
-void init() {
-    document.body.onKeyDown.listen((e) {
-        _keypress(e, true);
+export default function init() {
+    document.body.addEventListener('onkeydown', e => {
+        keypress(e, true);
     });
-    document.body.onKeyUp.listen((e) {
-        _keypress(e, false);
+    document.body.addEventListener('onkeyup', e => {
+        keypress(e, false);
     });
 }

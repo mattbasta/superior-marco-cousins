@@ -1,0 +1,12 @@
+export const jump_energy = 160;
+export const jump_energy_force = 3;
+export const jump_energy_force_ticks = 40;
+export const jump_force = 13;
+export const jump_force_double = 10.0;
+export const jump_force_double_falling = 25.0;
+export const sprite_tile_row = 5;
+export const sprite_tile_size = 8;
+export const tile_size = 32;
+export const throw_force_x = 20;
+export const throw_force_y = 10;
+export const ladder_velocity = 7.0;
