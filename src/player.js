@@ -1,6 +1,5 @@
-import 'entity/generic';
-import 'entity/melon';
-import 'level/generic';
+import {Entity} from 'entity/generic';
+import {MelonEntity} from 'entity/melon';
 
 import * as entities from 'entities';
 import * as images from 'images';
@@ -62,10 +61,10 @@ export class Player extends Entity {
         this.direction = DIR_RIGHT;
     }
 
-    draw(CanvasRenderingContext2D ctx, Level level, int offsetX, int offsetY) {
+    draw(ctx, level, offsetX, offsetY) {
         this.image.draw(img => {
-            var x = 4; // Default pose
-            var now = Date.now();
+            const now = Date.now();
+            let x = 4; // Default pose
             // If the player is walking, make them wiggle between states 5 and 6
             if (this.walking) {
                 x += (now / 200).floor() % 2 + 1;
@@ -86,7 +85,7 @@ export class Player extends Entity {
         });
     }
 
-    tick(int delta, Level level) {
+    tick(delta, level) {
         if (this.y < -1) {
             return true;
         }
@@ -95,9 +94,9 @@ export class Player extends Entity {
             return true;
         }
 
-        int nearestLadder = this.nearestLadder(level);
-        bool onLadder = nearestLadder != -1;
-        bool jumpCondition = keys.upArrow && !this.testHitUp(level) && !onLadder;
+        const nearestLadder = this.nearestLadder(level);
+        const onLadder = nearestLadder != -1;
+        const jumpCondition = keys.upArrow && !this.testHitUp(level) && !onLadder;
 
         if (jumpCondition && this.isInContactWithFloor) {
             this.jump(settings.jump_force * (this.ducking ? 0.75 : 1));
