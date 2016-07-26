@@ -1,42 +1,36 @@
-library levels.menu;
-
-import 'dart:html';
-
-import 'audio.dart' as audio;
-import 'images.dart' as images;
-import 'keys.dart' as keys;
-import 'level.generic.dart';
-import 'sound.dart' as sound;
+import * as audio from '../audio';
+import * as images from '../images';
+import * as keys from '../keys';
+import {Level} from './generic';
+import * as sound from '../sound';
 
 
-class LevelMenu extends Level {
+export class LevelMenu extends Level {
 
-    images.Drawable image;
-    int duration;
-    String audioName;
-
-    bool ended;
-
-    LevelMenu(String src, {String audioName: null}) {
+    constructor(src, audioName = null) {
+        super();
         this.image = images.get(src);
         this.audioName = audioName;
+        this.ended = false;
     }
 
-    void reset() {
-        if (this.audioName != null) {
+    reset() {
+        if (this.audioName !== null) {
             audio.playLoop(this.audioName);
         }
         this.ended = false;
 
-        keys.down.one('any', (e) {sound.play('select');});
-        keys.up.one('any', (e) {this.ended = true;});
+        keys.down.one('any', () => sound.play('select'));
+        keys.up.one('any', () => {
+            this.ended = true;
+        });
     }
 
-    void draw(CanvasRenderingContext2D ctx, Function drawUI) {
+    draw(ctx, drawUI) {
         ctx.fillStyle = '#111';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        this.image.draw((img) {
+        this.image.draw(img => {
             var hw = img.width / 4;
             var hh = img.height / 4;
             ctx.drawImageScaledFromSource(
@@ -50,7 +44,7 @@ class LevelMenu extends Level {
         });
     }
 
-    void tick(int delta, Function nextLevel) {
+    tick(delta, nextLevel) {
         if (this.ended) {
             nextLevel();
         }

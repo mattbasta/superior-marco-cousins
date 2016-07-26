@@ -1,6 +1,3 @@
-(function() {
-"use strict";
-
 var audio = {};
 (function(samplerate){
     this.SampleRate = samplerate || 44100;
@@ -661,7 +658,7 @@ var jsfx = {};
 
 }).apply(jsfx);
 
-window.JSFX = function JSFX() {
+module.exports = function JSFX() {
 
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -691,5 +688,3 @@ window.JSFX = function JSFX() {
         cloned.start(0);
     };
 };
-
-}());

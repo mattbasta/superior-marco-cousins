@@ -1,30 +1,27 @@
-library levels.disability;
-
-import 'dart:html';
-
-import 'audio.dart' as audio;
-import 'images.dart' as images;
-import 'level.generic.dart';
-import 'keys.dart' as keys;
-import 'sound.dart' as sound;
+import * as audio from '../audio';
+import * as images from '../images';
+import {Level} from './generic';
+import * as keys from '../keys';
+import * as sound from '../sound';
 
 
-const String DENIED_TEXT = 'APPLICATION DENIED';
+const DENIED_TEXT = 'APPLICATION DENIED';
 
 
-class LevelDisability extends Level {
+export class LevelDisability extends Level {
 
-    images.Drawable image;
-
-    String enteredText = '';
-    bool active = false;
-    int entered = -1;
+    constructor() {
+        super();
+        this.enteredText = '';
+        this.active = false;
+        this.entered = -1;
+    }
 
 
     LevelDisability() {
         this.image = images.get('disabilityBenefits');
 
-        keys.up.on('any', (e) {
+        keys.up.on('any', e => {
             if (!this.active || this.entered > 0) return;
             if (e.metaKey || e.altKey) return;
 
@@ -32,13 +29,13 @@ class LevelDisability extends Level {
 
             sound.play('keypress');
             // Handle Enter
-            if (e.keyCode == 13) {
+            if (e.keyCode === 13) {
                 if (this.enteredText == '') return;
                 this.entered = 1500;
                 return;
             }
             // Handle backspace
-            if (e.keyCode == 8) {
+            if (e.keyCode === 8) {
                 if (this.enteredText == '') return;
                 this.enteredText = this.enteredText.substring(0, this.enteredText.length - 1);
                 return;
@@ -50,20 +47,20 @@ class LevelDisability extends Level {
         });
     }
 
-    void reset() {
+    reset() {
         audio.playLoop('hero');
         this.active = true;
         this.entered = -1;
         this.enteredText = '';
     }
 
-    void draw(CanvasRenderingContext2D ctx, Function drawUI) {
+    draw(ctx, drawUI) {
         ctx.fillStyle = '#111';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        this.image.draw((img) {
-            var headerWidth = ctx.canvas.width * 0.4;
-            var headerHeight = headerWidth / img.width * img.height;
+        this.image.draw(img => {
+            const headerWidth = ctx.canvas.width * 0.4;
+            const headerHeight = headerWidth / img.width * img.height;
             ctx.drawImageScaledFromSource(
                 img,
                 0, 0,
@@ -73,7 +70,7 @@ class LevelDisability extends Level {
                 headerWidth, headerHeight
             );
 
-            var measured;
+            let measured;
 
             if (this.entered > -1) {
                 ctx.fillStyle = '#f00';
@@ -99,11 +96,11 @@ class LevelDisability extends Level {
 
     }
 
-    void tick(int delta, Function nextLevel) {
+    tick(delta, nextLevel) {
         if (!this.active) {
             nextLevel();
         }
-        if (this.entered != -1) {
+        if (this.entered !== -1) {
             this.entered -= delta;
             if (this.entered < 0) {
                 this.active = false;

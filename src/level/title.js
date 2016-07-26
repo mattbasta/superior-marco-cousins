@@ -1,27 +1,18 @@
-library levels.title;
-
-import 'dart:html';
-
-import 'images.dart' as images;
-import 'level.generic.dart';
-import 'sound.dart' as sound;
+import * as images from '../images';
+import {Level} from './generic';
+import * as sound from '../sound';
 
 
-class LevelTitle extends Level {
+export class LevelTitle extends Level {
 
-    images.Drawable image;
-    int duration;
-    String soundName;
-
-    int ttl;
-
-    LevelTitle(String src, int duration, {String soundName: null}) {
+    constructor(src, duration, soundName) {
+        super();
         this.image = images.get(src);
         this.duration = duration;
         this.soundName = soundName;
     }
 
-    void reset() {
+    reset() {
         if (this.soundName != null) {
             sound.play(this.soundName);
         }
@@ -29,11 +20,11 @@ class LevelTitle extends Level {
         this.ttl = this.duration;
     }
 
-    void draw(CanvasRenderingContext2D ctx, Function drawUI) {
+    draw(ctx, drawUI) {
         ctx.fillStyle = '#111';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        this.image.draw((img) {
+        this.image.draw(img => {
             var hw = img.width / 4;
             var hh = img.height / 4;
             ctx.drawImageScaledFromSource(
@@ -47,7 +38,7 @@ class LevelTitle extends Level {
         });
     }
 
-    void tick(int delta, Function nextLevel) {
+    tick(delta, nextLevel) {
         this.ttl -= delta;
         if (this.ttl <= 0) {
             nextLevel();

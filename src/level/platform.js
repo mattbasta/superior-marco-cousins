@@ -1,78 +1,51 @@
-library levels.platform;
-
-import 'dart:html';
-import 'dart:math' as Math;
-import 'dart:typed_data';
-
-import 'base64.dart' as base64;
-import 'celestialbodies.dart' as celestialbodies;
-import 'drawutils.dart' as drawutils;
-import 'entities.dart' as entities;
-import 'images.dart' as images;
-import 'level.generic.dart';
-import 'levels.dart' as levelLib;
-import 'settings.dart' as settings;
-import 'sound.dart' as sound;
-import 'tiles.dart' as tiles;
+import * as base64 from '../base64';
+import * as celestialbodies from '../celestialbodies';
+import * as drawutils from '../drawutils';
+import * as entities from '../entities';
+import * as images from '../images';
+import {Level} from './generic';
+import * as levelLib from './index';
+import * as settings from '../settings';
+import * as sound from '../sound';
+import * as tiles from '../tiles';
 
 
 const DAY_LENGTH = 5 * 60 * 1000;  // 5 minutes
 const COMPLETED_TTL = 3000;
 
-var TILES_PER_ROW = settings.sprite_tile_row;
-var TILES_RATIO = settings.tile_size / settings.sprite_tile_size;
-var TILES_RATIO_INV = settings.sprite_tile_size / settings.tile_size;
+const TILES_PER_ROW = settings.sprite_tile_row;
+const TILES_RATIO = settings.tile_size / settings.sprite_tile_size;
+const TILES_RATIO_INV = settings.sprite_tile_size / settings.tile_size;
 
 
-String getTimeColor(int time) {
-
+function getTimeColor(time) {
     // One day-night cycle for every full oscillation of cosine
-    var tod = Math.cos(time / DAY_LENGTH * 2 * Math.PI);
+    let tod = Math.cos(time / DAY_LENGTH * 2 * Math.PI);
     // Normalize the result to [0,1]
     tod += 1;
     tod /= 2;
 
-    var hue = 150 * tod - 100;  // [-100,50]
-    var sat = 70 * tod + 20;  // [20,100]
-    var lig = 33 * tod + 35;  // [35,68]
-    return 'hsl(' + hue.toString() + ',' + sat.toString() + '%,' + lig.toString() + '%)';
+    const hue = 150 * tod - 100;  // [-100,50]
+    const sat = 70 * tod + 20;  // [20,100]
+    const lig = 33 * tod + 35;  // [35,68]
+    return `hsl(${hue},${sat}%,${lig}%)`;
 }
 
 
-class LevelPlatform extends Level {
-    int width;
-    int height;
+export class LevelPlatform extends Level {
 
-    List defaultEntities;
-
-    int time;
-    num leftEdge;
-    num bottomEdge;
-
-    images.Drawable coolShades;
-
-    images.Drawable messageImg;
-    int messageImgTTL;
-    Function messageImgNext;
-
-    int levelCompletedTTL;
-    bool completed;
-
-    drawutils.TileMap tilemap;
-    Uint16List data;
-
-
-    LevelPlatform(int width, int height, Object data, List defaultEntities) {
+    constructor(width, height, data, defaultEntities) {
+        super();
         this.width = width;
         this.height = height;
         this.defaultEntities = defaultEntities;
 
         this.coolShades = images.get('coolshades');
 
-        this.data = new Uint16List(width * height);
-        if (data != null) {
-            var convertedData = base64.base64DecToArr(data);
-            for (var i = 0; i < convertedData.length - 1; i++) {
+        this.data = new Uint16Array(width * height);
+        if (data !== null) {
+            const convertedData = base64.base64DecToArr(data);
+            for (let i = 0; i < convertedData.length - 1; i++) {
                 this.data[i] = convertedData[i];
             }
         }
@@ -83,15 +56,13 @@ class LevelPlatform extends Level {
             images.get('tiles')
         );
 
-        this.tilemap.render((img) {
-            var tile;
-            var tileImg;
-            for (var x = 0; x < width; x++) {
-                for (var y = 0; y < height; y++) {
-                    tile = this.data[this.getLevelIndex(x, y)];
+        this.tilemap.render(img => {
+            for (let x = 0; x < width; x++) {
+                for (let y = 0; y < height; y++) {
+                    const tile = this.data[this.getLevelIndex(x, y)];
                     if (tile == tiles.TILE_AIR) continue;
 
-                    tileImg = tiles.IMAGES[tile];
+                    const tileImg = tiles.IMAGES[tile];
 
                     this.tilemap.drawImage(
                         img,
@@ -110,11 +81,11 @@ class LevelPlatform extends Level {
 
     }
 
-    int getLevelIndex(int x, int y) {
+    getLevelIndex(x, y) {
         return (this.height - y - 1) * this.width + x;
     }
 
-    void reset() {
+    reset() {
         this.time = 0;
 
         this.leftEdge = 0;
@@ -129,12 +100,12 @@ class LevelPlatform extends Level {
         this.completed = false;
         entities.reset();
 
-        this.defaultEntities.forEach((dE) {
+        this.defaultEntities.forEach((dE) => {
             entities.add(dE['id'], dE['x'], dE['y']);
         });
     }
 
-    void tick(int delta, Function nextLevel) {
+    tick(delta, nextLevel) {
 
         if (this.completed) {
             nextLevel();
@@ -144,7 +115,7 @@ class LevelPlatform extends Level {
 
         entities.tick(delta, this);
 
-        if (this.messageImgTTL != 0) {
+        if (this.messageImgTTL !== 0) {
             this.messageImgTTL -= delta;
             if (this.messageImgTTL <= 0) {
                 this.completed = true;
@@ -152,7 +123,7 @@ class LevelPlatform extends Level {
             }
         }
 
-        if (this.levelCompletedTTL != -1) {
+        if (this.levelCompletedTTL !== -1) {
             this.levelCompletedTTL -= delta;
             if (this.levelCompletedTTL <= 0) {
                 this.completed = true;
@@ -160,7 +131,7 @@ class LevelPlatform extends Level {
         }
     }
 
-    void draw(CanvasRenderingContext2D ctx, Function drawUI) {
+    draw(ctx, drawUI) {
         // Clear the frame with the sky color.
         ctx.fillStyle = getTimeColor(this.time);
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -207,9 +178,9 @@ class LevelPlatform extends Level {
         var offsetY = ctx.canvas.height - myHeight * TILES_RATIO + this.bottomEdge * settings.tile_size;
         entities.draw(ctx, this, offsetX, offsetY);
 
-        if (this.levelCompletedTTL != -1) {
+        if (this.levelCompletedTTL !== -1) {
             var me = this;
-            this.coolShades.draw((shades) {
+            this.coolShades.draw((shades) => {
                 var playerY = (me.height - player.y - player.height) * settings.tile_size + offsetY;
                 ctx.drawImageScaledFromSource(
                     shades,
@@ -222,8 +193,8 @@ class LevelPlatform extends Level {
             });
         }
 
-        if (this.messageImg != null) {
-            this.messageImg.draw((img) {
+        if (this.messageImg !== null) {
+            this.messageImg.draw(img => {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
                 ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 var width = ctx.canvas.width * 0.4;
@@ -242,41 +213,37 @@ class LevelPlatform extends Level {
         drawUI();
     }
 
-    void drownedInPool() {
+    drownedInPool() {
         sound.play('drownInPool');
         this.messageImg = images.get('drowninpool');
         this.messageImgTTL = 1250;
-        this.messageImgNext = () {
-            levelLib.goTo(1);
-        };
+        this.messageImgNext = () => levelLib.goTo(1);
     }
 
-    void fellInHole() {
+    fellInHole() {
         sound.play('fellInHole');
         this.messageImg = images.get('fellInHole');
         this.messageImgTTL = 1250;
-        this.messageImgNext = () {
-            levelLib.goToDisability();
-        };
+        this.messageImgNext = () => levelLib.goToDisability();
     }
 
-    void sitByPool() {
-        if (this.levelCompletedTTL != -1) {
+    sitByPool() {
+        if (this.levelCompletedTTL !== -1) {
             return;
         }
         this.messageImg = images.get('relaxbypool');
         this.messageImgTTL = COMPLETED_TTL;
         this.levelCompletedTTL = COMPLETED_TTL;
-        this.messageImgNext = () {
-            levelLib.next();
-        };
+        this.messageImgNext = () => levelLib.next();
     }
 
-    void complete() {
+    complete() {
         this.completed = true;
     }
 
 
-    bool canPause() => true;
+    get canPause() {
+        return true;
+    };
 
 }
