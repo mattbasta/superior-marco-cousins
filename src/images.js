@@ -24,7 +24,7 @@ const images = {
 export const all = Promise.all(Object.keys(images).map(key => images[key]));
 
 class Drawable {
-    constructor(String name) {
+    constructor(name) {
         this.future = images[name];
         this.future.then(img => {
             this.fetched = img;

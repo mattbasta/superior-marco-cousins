@@ -27,7 +27,7 @@ fs.readdir('levels/', function(err, list) {
     if (err) process.exit(1);
 
     list.sort().forEach(function(file) {
-        if (file === 'template.dart.txt') return;
+        if (file === 'template.js.txt') return;
 
         var file = 'levels/' + file;
 
@@ -46,6 +46,6 @@ fs.readdir('levels/', function(err, list) {
 
     });
 
-    var template = fs.readFileSync('levels/template.dart.txt').toString();
-    fs.writeFileSync('script/leveldata.dart', template.replace('%s', JSON.stringify(data)));
+    var template = fs.readFileSync('levels/template.js.txt').toString();
+    fs.writeFileSync('src/leveldata.js', template.replace('%s', JSON.stringify(data)));
 });

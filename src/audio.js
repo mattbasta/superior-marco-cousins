@@ -1,4 +1,4 @@
-import 'buzz';
+import * as buzz from 'buzz';
 
 
 const loops = new Map();
@@ -9,7 +9,7 @@ function loadLoop(name, uri) {
         return;
     }
 
-    const loop = new window.buzz.sound(uri, {
+    const loop = new buzz.sound(uri, {
         formats: ['mp3'],
         preload: true,
         autoload: true,

@@ -1,11 +1,11 @@
-import {Entity} from 'entity/generic';
-import {MelonEntity} from 'entity/melon';
+import {Entity} from './entities/generic';
+import {MelonEntity} from './entities';
 
-import * as entities from 'entities';
-import * as images from 'images';
-import * as keys from 'keys';
-import * as settings from 'settings';
-import * as sound from 'sound';
+import * as entities from './entities';
+import * as images from './images';
+import * as keys from './keys';
+import * as settings from './settings';
+import * as sound from './sound';
 
 
 const DIR_LEFT = 0;

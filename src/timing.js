@@ -1,7 +1,7 @@
-import * as drawing from 'drawing';
-import * as keys from 'keys';
-import * as levels from 'levels';
-import * as sound from 'sound';
+import * as drawing from './drawing';
+import * as keys from './keys';
+import * as levels from './levels';
+import * as sound from './sound';
 
 
 let started = false;

@@ -24,6 +24,6 @@ export function init() {
     });
 };
 
-export function play(String name) {
+export function play(name) {
     _jsfxInst.playSample(samples[name]);
 };

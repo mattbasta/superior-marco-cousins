@@ -1,4 +1,4 @@
-import * as drawutils from 'drawutils';
+import * as drawutils from './drawutils';
 
 
 const BODY_SIZE = 17; // px
@@ -25,7 +25,7 @@ export function getBody(color) {
 let sun = null;
 let moon = null;
 
-void init() {
+export function init() {
     sun = getBody('#fff');
     moon = getBody('#ccc');
-}
+};

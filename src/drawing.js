@@ -1,7 +1,7 @@
-import * as entities from 'entities';
-import * as images from 'images';
-import * as levels from 'levels';
-import * as settings from 'settings';
+import * as entities from './entities';
+import * as images from './images';
+import * as levels from './levels';
+import * as settings from './settings';
 
 
 let can;
@@ -35,7 +35,7 @@ export function init() {
 };
 
 export function drawUI() {
-    entitiesDrawable.draw((img) {
+    entitiesDrawable.draw(img => {
         ctx.drawImageScaledFromSource(
             img,
             0, 0,

@@ -1,4 +1,4 @@
-import * as images from 'images';
+import * as images from './images';
 
 
 export class TileMap {
