@@ -4,7 +4,7 @@ import * as drawutils from '../drawutils';
 import * as entities from '../entities';
 import * as images from '../images';
 import {Level} from './generic';
-import * as levelLib from './index';
+import * as levelLib from '../levels';
 import * as settings from '../settings';
 import * as sound from '../sound';
 import * as tiles from '../tiles';
@@ -60,14 +60,14 @@ export class LevelPlatform extends Level {
             for (let x = 0; x < width; x++) {
                 for (let y = 0; y < height; y++) {
                     const tile = this.data[this.getLevelIndex(x, y)];
-                    if (tile == tiles.TILE_AIR) continue;
+                    if (tile === tiles.TILE_AIR) continue;
 
                     const tileImg = tiles.IMAGES[tile];
 
                     this.tilemap.drawImage(
                         img,
                         tileImg % TILES_PER_ROW * settings.sprite_tile_size,
-                        (tileImg / TILES_PER_ROW).floor() * settings.sprite_tile_size,
+                        Math.floor(tileImg / TILES_PER_ROW) * settings.sprite_tile_size,
                         settings.sprite_tile_size,
                         settings.sprite_tile_size,
                         x * settings.sprite_tile_size,
@@ -137,14 +137,14 @@ export class LevelPlatform extends Level {
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         // Draw the sun/moon
-        ctx.drawImageScaledFromSource(
+        ctx.drawImage(
             celestialbodies.sun,
             0, 0,
             celestialbodies.sun.width, celestialbodies.sun.height,
             30, -1 * (ctx.canvas.height / 2) * Math.cos(this.time / DAY_LENGTH * 2 * Math.PI) + ctx.canvas.height,
             60, 60
         );
-        ctx.drawImageScaledFromSource(
+        ctx.drawImage(
             celestialbodies.moon,
             0, 0,
             celestialbodies.moon.width, celestialbodies.moon.height,
@@ -152,13 +152,13 @@ export class LevelPlatform extends Level {
             60, 60
         );
 
-        var myHeight = this.tilemap.height;
-        var theirHeight = ctx.canvas.height;
+        const myHeight = this.tilemap.height;
+        const theirHeight = ctx.canvas.height;
 
         // Calculate the new best offsets for the viewport
-        var player = entities.registry[0];
-        var bestX = (player.x + player.width / 2) - (ctx.canvas.width / settings.tile_size / 2);
-        var bestY = (player.y + player.height / 2) - (ctx.canvas.height / settings.tile_size / 2);
+        const player = entities.registry[0];
+        const bestX = (player.x + player.width / 2) - (ctx.canvas.width / settings.tile_size / 2);
+        const bestY = (player.y + player.height / 2) - (ctx.canvas.height / settings.tile_size / 2);
 
         this.leftEdge = (this.leftEdge * 6 + bestX) / 7;
         this.bottomEdge = (this.bottomEdge * 6 + bestY) / 7;
@@ -166,7 +166,7 @@ export class LevelPlatform extends Level {
         this.leftEdge = Math.max(Math.min(this.leftEdge, this.width - ctx.canvas.width / settings.tile_size), 0);
         this.bottomEdge = Math.max(Math.min(this.bottomEdge, this.height - 1 - ctx.canvas.height / settings.tile_size), 0);
 
-        var terrainY = myHeight - theirHeight / TILES_RATIO - this.bottomEdge * settings.sprite_tile_size;
+        const terrainY = myHeight - theirHeight / TILES_RATIO - this.bottomEdge * settings.sprite_tile_size;
         this.tilemap.drawMapScaled(
             ctx,
             this.leftEdge * settings.sprite_tile_size,
@@ -174,20 +174,19 @@ export class LevelPlatform extends Level {
             TILES_RATIO
         );
 
-        var offsetX = -1 * this.leftEdge * settings.tile_size;
-        var offsetY = ctx.canvas.height - myHeight * TILES_RATIO + this.bottomEdge * settings.tile_size;
+        const offsetX = -1 * this.leftEdge * settings.tile_size;
+        const offsetY = ctx.canvas.height - myHeight * TILES_RATIO + this.bottomEdge * settings.tile_size;
         entities.draw(ctx, this, offsetX, offsetY);
 
         if (this.levelCompletedTTL !== -1) {
-            var me = this;
             this.coolShades.draw((shades) => {
-                var playerY = (me.height - player.y - player.height) * settings.tile_size + offsetY;
-                ctx.drawImageScaledFromSource(
+                const playerY = (this.height - player.y - player.height) * settings.tile_size + offsetY;
+                ctx.drawImage(
                     shades,
                     0, 0,
                     shades.width, shades.height,
                     player.x * settings.tile_size + offsetX,
-                    playerY - Math.max(0, (me.levelCompletedTTL - 750) / (COMPLETED_TTL - 750)) * ctx.canvas.height,
+                    playerY - Math.max(0, (this.levelCompletedTTL - 750) / (COMPLETED_TTL - 750)) * ctx.canvas.height,
                     settings.tile_size, settings.tile_size
                 );
             });
@@ -197,9 +196,9 @@ export class LevelPlatform extends Level {
             this.messageImg.draw(img => {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
                 ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                var width = ctx.canvas.width * 0.4;
-                var height = width / img.width * img.height;
-                ctx.drawImageScaledFromSource(
+                const width = ctx.canvas.width * 0.4;
+                const height = width / img.width * img.height;
+                ctx.drawImage(
                     img,
                     0, 0,
                     img.width, img.height,

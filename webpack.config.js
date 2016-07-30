@@ -4,21 +4,22 @@ var webpack = require('webpack');
 
 
 module.exports = {
-    // devtool: 'source-maps',
+    devtool: 'source-map',
     entry: {
         app: ['./src/main.js']
     },
     output: {
+        filename: '/main.js',
         path: path.resolve(__dirname),
         publicPath: '/',
-        filename: '/main.js',
+        sourceMapFileName: '/main.js.map',
     },
     plugins: [
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {warnings: false},
-            mangle: {},
-            sourceMap: false,
-        }),
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {warnings: false},
+        //     mangle: {},
+        //     sourceMap: false,
+        // }),
         new webpack.optimize.DedupePlugin(),
     ],
     module: {

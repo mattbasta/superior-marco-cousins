@@ -1,44 +1,41 @@
-library entities.melon;
-
-import 'dart:html';
-
-import 'entities.dart' as entities;
-import 'entity.generic.dart';
-import 'images.dart' as images;
-import 'level.generic.dart';
-import 'settings.dart' as settings;
-import 'sound.dart' as sound;
+import * as entities from '../entities';
+import {Entity} from './generic';
+import * as images from '../images';
+import * as settings from '../settings';
+import * as sound from '../sound';
 
 
 const SPRITE_TILE = 8;
 
-class MelonEntity extends Entity {
-
-    images.Drawable image;
-    bool bouncing = false;
-
-    double bounce() => 0.5;
-    String type() => 'melon';
-
-    MelonEntity(int x, int y): super() {
-        this.x = x.toDouble();
-        this.y = y.toDouble();
+export class MelonEntity extends Entity {
+    constructor(x, y) {
+        super();
+        this.x = x;
+        this.y = y;
 
         this.image = images.get('entities');
     }
 
-    void reset() {
+    reset() {
         this.bouncing = false;
     }
 
-    void draw(CanvasRenderingContext2D ctx, Level level, int offsetX, int offsetY) {
-        this.image.draw((img) {
-            var x = ((new DateTime.now().millisecondsSinceEpoch) / 250).floor() % 3;
-            var locX = this.x * settings.tile_size;
+    get bounce() {
+        return 0.5;
+    }
+
+    get type() {
+        return 'melon';
+    }
+
+    draw(ctx, level, offsetX, offsetY) {
+        this.image.draw((img) => {
+            const x = Math.floor(Date.now() / 250) % 3;
+            const locX = this.x * settings.tile_size;
 
             if (locX + offsetX + settings.tile_size < 0 || locX + offsetX > ctx.canvas.width) return;
 
-            ctx.drawImageScaledFromSource(
+            ctx.drawImage(
                 img,
                 x * SPRITE_TILE, 0,
                 SPRITE_TILE, SPRITE_TILE,
@@ -48,19 +45,19 @@ class MelonEntity extends Entity {
         });
     }
 
-    bool tick(int delta, Level level) {
+    tick(delta, level) {
         if (this.bouncing) {
             this.calcPhysics(delta, level);
             this.velX *= 0.95;
             if (this.isInContactWithFloor && this.velX + this.velY < 1) {
                 this.bouncing = false;
-                this.x = this.x.round().toDouble();
+                this.x = Math.round(this.x);
             }
 
             return true;
 
         } else {
-            var player = entities.registry[0];
+            const player = entities.registry[0];
 
             if (this.x > player.x + player.width) return true;
             if (this.x + this.width < player.x) return true;
@@ -74,4 +71,4 @@ class MelonEntity extends Entity {
 
     }
 
-}
+};

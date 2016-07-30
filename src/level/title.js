@@ -13,7 +13,7 @@ export class LevelTitle extends Level {
     }
 
     reset() {
-        if (this.soundName != null) {
+        if (this.soundName !== null) {
             sound.play(this.soundName);
         }
 
@@ -25,9 +25,9 @@ export class LevelTitle extends Level {
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         this.image.draw(img => {
-            var hw = img.width / 4;
-            var hh = img.height / 4;
-            ctx.drawImageScaledFromSource(
+            const hw = img.width / 4;
+            const hh = img.height / 4;
+            ctx.drawImage(
                 img,
                 0, 0,
                 img.width, img.height,

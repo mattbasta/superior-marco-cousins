@@ -22,10 +22,6 @@ export function getBody(color) {
     return body.canvas;
 }
 
-let sun = null;
-let moon = null;
+export const sun = getBody('#fff');
+export const moon = getBody('#ccc');
 
-export function init() {
-    sun = getBody('#fff');
-    moon = getBody('#ccc');
-};

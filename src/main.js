@@ -1,5 +1,4 @@
 import * as audio from './audio';
-import * as celestialbodies from './celestialbodies';
 import * as drawing from './drawing';
 import * as entities from './entities';
 import * as images from './images';
@@ -13,7 +12,6 @@ audio.init();
 keys.init();
 sound.init();
 
-celestialbodies.init();
 drawing.init();
 entities.init();
 levels.init();

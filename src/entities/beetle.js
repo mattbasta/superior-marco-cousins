@@ -1,12 +1,7 @@
-library entities.beetle;
-
-import 'dart:html';
-
-import 'entity.generic.dart';
-import 'images.dart' as images;
-import 'level.generic.dart';
-import 'settings.dart' as settings;
-import 'tiles.dart' as tiles;
+import {DELTA_RATIO, Entity} from './generic';
+import * as images from '../images';
+import * as settings from '../settings';
+import * as tiles from '../tiles';
 
 
 const SPRITE_TILE = 8;
@@ -16,43 +11,40 @@ const DIR_RIGHT = 1;
 
 const BEETLE_SPEED = 4.0;
 
-class BeetleEntity extends Entity {
 
-    images.Drawable image;
-
-    int direction;
-
-    double bounce() => 0.3;
-    bool canBePushed() => false;
-    bool canBeStoodOn() => true;
-    bool canPush() => true;
-    bool canStandOn() => true;
-    String type() => 'beetle';
-
-    BeetleEntity(int x, int y): super() {
-        this.x = x.toDouble();
-        this.y = y.toDouble();
+export class BeetleEntity extends Entity {
+    constructor(x, y) {
+        super();
+        this.x = x;
+        this.y = y;
 
         this.height = 0.625;
 
         this.image = images.get('entities');
     }
 
-    void reset() {
+    get bounce() { return 0.3; }
+    get canBePushed() { return false; }
+    get canBeStoodOn() { return true; }
+    get canPush() { return true; }
+    get canStandOn() { return true; }
+    get type() { return 'beetle'; }
+
+    reset() {
         this.direction = DIR_RIGHT;
     }
 
-    void draw(CanvasRenderingContext2D ctx, Level level, int offsetX, int offsetY) {
-        this.image.draw((img) {
-            var x = (new DateTime.now().millisecondsSinceEpoch / 350).floor() % 2;
+    draw(ctx, level, offsetX, offsetY) {
+        this.image.draw((img) => {
+            let x = Math.floor(Date.now() / 350) % 2;
             if (this.direction == DIR_LEFT) {
                 x += 2;
             }
-            var locX = this.x * settings.tile_size;
+            const locX = this.x * settings.tile_size;
 
             if (locX + offsetX + settings.tile_size < 0 || locX + offsetX > ctx.canvas.width) return;
 
-            ctx.drawImageScaledFromSource(
+            ctx.drawImage(
                 img,
                 x * SPRITE_TILE, 3 * SPRITE_TILE + 3,
                 SPRITE_TILE, SPRITE_TILE * this.height,
@@ -62,19 +54,19 @@ class BeetleEntity extends Entity {
         });
     }
 
-    bool tick(int delta, Level level) {
+    tick(delta, level) {
 
-        double prospectiveVel;
+        let prospectiveVel;
         if (this.direction == DIR_LEFT) {
             prospectiveVel = -1 * BEETLE_SPEED;
         } else if (this.direction == DIR_RIGHT) {
             prospectiveVel = BEETLE_SPEED;
         }
 
-        double newX = this.x + prospectiveVel / delta * DELTA_RATIO;
-        if (this.isInContactWithFloor && newX.floor() != this.x.floor()) {
-            for (int x = newX.floor(); x <= (newX.floor() + this.width).ceil(); x++) {
-                int index = level.getLevelIndex(x, this.y.ceil());
+        const newX = this.x + prospectiveVel / delta * DELTA_RATIO;
+        if (this.isInContactWithFloor && Math.floor(newX) !== Math.floor(this.x)) {
+            for (let x = Math.floor(newX); x <= Math.ceil(Math.floor(newX) + this.width); x++) {
+                const index = level.getLevelIndex(x, Math.ceil(this.y));
                 if (!tiles.canStand(level.data[index])) {
                     this.hitWall(this.x);
                     break;
@@ -90,9 +82,9 @@ class BeetleEntity extends Entity {
 
     }
 
-    void hitWall(double stoppedX) {
+    hitWall(stoppedX) {
         super.hitWall(stoppedX);
         this.direction = (this.direction == DIR_LEFT) ? DIR_RIGHT : DIR_LEFT;
     }
 
-}
+};

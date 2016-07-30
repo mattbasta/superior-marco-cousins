@@ -2,7 +2,7 @@ import * as images from './images';
 
 
 export class TileMap {
-    constructor(width, height, drawable, {tileSize = 256}) {
+    constructor(width, height, drawable, tileSize = 256) {
         this.width = width;
         this.height = height;
         this.tileSize = tileSize;
@@ -13,9 +13,9 @@ export class TileMap {
 
         this.canvases = [];
 
-        const count = Math.floor(height / tileSize).floor() * this.perRow + (width / tileSize);
+        const count = Math.floor(height / tileSize) * this.perRow + (width / tileSize);
         for (let i = 0; i < count; i++) {
-            canvases.add(getBuffer(this.tileSize, this.tileSize).canvas);
+            this.canvases.push(getBuffer(this.tileSize, this.tileSize).canvas);
         }
     }
 
@@ -24,9 +24,9 @@ export class TileMap {
     }
 
     drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh) {
-        var idx = Math.floor(dy / this.tileSize) * this.perRow + Math.floor(dx / this.tileSize);
-        var ctx = getBufferFromCanvas(this.canvases[idx]);
-        ctx.drawImageScaledFromSource(
+        const idx = Math.floor(dy / this.tileSize) * this.perRow + Math.floor(dx / this.tileSize);
+        const ctx = getBufferFromCanvas(this.canvases[idx]);
+        ctx.drawImage(
             img,
             sx, sy, sw, sh,
             dx % this.tileSize, dy % this.tileSize, dw, dh
@@ -51,7 +51,7 @@ export class TileMap {
             for (let x = leftMostX; x <= rightMostX; x++) {
                 const idx = y * this.perRow + x;
                 if (idx < 0 || idx >= this.canvases.length) continue;
-                ctx.drawImageScaledFromSource(
+                ctx.drawImage(
                     this.canvases[idx],
                     0, 0, this.tileSize, this.tileSize,
                     x * tsRatio - sx * ratio, y * tsRatio - sy * ratio,

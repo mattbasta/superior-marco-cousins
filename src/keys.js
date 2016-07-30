@@ -1,13 +1,13 @@
-import {EventTarget} from 'events';
+import {EventTarget} from './events';
 
 
-const up = new EventTarget();
-const down = new EventTarget();
+export const up = new EventTarget();
+export const down = new EventTarget();
 
-let downArrow = false;
-let leftArrow = false;
-let rightArrow = false;
-let upArrow = false;
+exports.downArrow = false;
+exports.leftArrow = false;
+exports.rightArrow = false;
+exports.upArrow = false;
 
 function keypress(e, wasSet) {
     if (!e.metaKey && !e.altKey) {
@@ -16,19 +16,19 @@ function keypress(e, wasSet) {
     switch(e.keyCode) {
         case 37: // Left
         case 65: // A
-            leftArrow = wasSet;
+            exports.leftArrow = wasSet;
             break;
         case 38: // Up
         case 87: // W
-            upArrow = wasSet;
+            exports.upArrow = wasSet;
             break;
         case 39: // Right
         case 68: // D
-            rightArrow = wasSet;
+            exports.rightArrow = wasSet;
             break;
         case 40: // Down
         case 83: // S
-            downArrow = wasSet;
+            exports.downArrow = wasSet;
             break;
     }
     if (wasSet) {
@@ -40,11 +40,11 @@ function keypress(e, wasSet) {
     }
 }
 
-export default function init() {
-    document.body.addEventListener('onkeydown', e => {
+export function init() {
+    window.addEventListener('keydown', e => {
         keypress(e, true);
     });
-    document.body.addEventListener('onkeyup', e => {
+    window.addEventListener('keyup', e => {
         keypress(e, false);
     });
 }

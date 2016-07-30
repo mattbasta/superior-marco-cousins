@@ -15,10 +15,7 @@ export class LevelDisability extends Level {
         this.enteredText = '';
         this.active = false;
         this.entered = -1;
-    }
 
-
-    LevelDisability() {
         this.image = images.get('disabilityBenefits');
 
         keys.up.on('any', e => {
@@ -42,7 +39,7 @@ export class LevelDisability extends Level {
             }
             // Handle everything else
             if (this.enteredText.length < 10) {
-                this.enteredText += new String.fromCharCode(e.keyCode);
+                this.enteredText += String.fromCharCode(e.keyCode);
             }
         });
     }
@@ -61,7 +58,7 @@ export class LevelDisability extends Level {
         this.image.draw(img => {
             const headerWidth = ctx.canvas.width * 0.4;
             const headerHeight = headerWidth / img.width * img.height;
-            ctx.drawImageScaledFromSource(
+            ctx.drawImage(
                 img,
                 0, 0,
                 img.width, img.height,
@@ -83,7 +80,7 @@ export class LevelDisability extends Level {
                 return;
             }
 
-            if (this.enteredText != '') {
+            if (this.enteredText !== '') {
                 ctx.fillStyle = '#fff';
                 measured = ctx.measureText(this.enteredText);
                 ctx.fillText(

@@ -28,7 +28,7 @@ export function init() {
     };
 
     resizeListener();
-    document.body.addEventListener('resize', resizeListener);
+    window.addEventListener('resize', resizeListener);
 
     entitiesDrawable = images.get('entities');
 
@@ -36,7 +36,7 @@ export function init() {
 
 export function drawUI() {
     entitiesDrawable.draw(img => {
-        ctx.drawImageScaledFromSource(
+        ctx.drawImage(
             img,
             0, 0,
             8, 8,

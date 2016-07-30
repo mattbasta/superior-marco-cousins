@@ -22,8 +22,7 @@ export function init() {
     _jsfxInst = new JSFX();
 
     Object.keys(waves).forEach(key => {
-        const wave = waves[key];
-        samples[wave] = _jsfxInst.getSample(wave);
+        samples[key] = _jsfxInst.getSample(waves[key]);
     });
 };
 

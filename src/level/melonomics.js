@@ -16,8 +16,8 @@ class MelonomicsTax {
 
 const TAXES = [
     new MelonomicsTax('Melon Tax', v => true, v => v - 2),
-    new MelonomicsTax('Seed Tax', v => v > 0, v => (v * 0.8).floor()),
-    new MelonomicsTax('Melon Inflation', v => true, v => v - (v.abs() * 0.2 + 1).floor()),
+    new MelonomicsTax('Seed Tax', v => v > 0, v => Math.floor(v * 0.8)),
+    new MelonomicsTax('Melon Inflation', v => true, v => v - Math.floor(Math.abs(v) * 0.2 + 1)),
     new MelonomicsTax('Inter-Melon Commerce Tax', v => v > 10, v => v - 1),
     new MelonomicsTax('Even Tax', v => v % 2 == 0, v => v - 1),
 ];
@@ -52,8 +52,8 @@ export class LevelMelonomics extends Level {
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         this.image.draw(img => {
-            var headerWidth = ctx.canvas.width * 0.4 / 2;
-            ctx.drawImageScaledFromSource(
+            const headerWidth = ctx.canvas.width * 0.4 / 2;
+            ctx.drawImage(
                 img,
                 0, 0,
                 img.width, img.height,
@@ -65,7 +65,7 @@ export class LevelMelonomics extends Level {
 
             let melons = this.startMelons;
 
-            let items = (this.ticks / 300).floor();
+            let items = Math.floor(this.ticks / 300);
 
             let y = ctx.canvas.height * 0.1 + headerWidth / img.width * img.height + 50;
             ctx.font = '20px VT323';

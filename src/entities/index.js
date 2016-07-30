@@ -4,7 +4,7 @@ import {MelonEntity} from './melon';
 import {Player} from '../player';
 
 
-const registry = [];
+export const registry = [];
 
 export function init() {
     registry.push(new Player());
@@ -20,7 +20,7 @@ export function tick(delta, level) {
     for (let i = registry.length - 1; i >= 0; i--) {
         const result = registry[i].tick(delta, level);
         if (!result) {
-            registry.slice(i, 1);
+            registry.splice(i, 1);
         }
     }
 };
@@ -39,13 +39,13 @@ export function getEntity(id, x, y) {
 };
 
 export function add(id, x, y) {
-    registry.add(getEntity(id, x, y));
+    registry.push(getEntity(id, x, y));
 };
 
 export function reset() {
     if (registry.length === 1) {
         return;
     }
-    registry.slice(1, registry.length);
+    registry.splice(1, registry.length);
     registry[0].reset();
 };

@@ -1,8 +1,8 @@
 function loadImage(src) {
     return new Promise(resolve => {
-        var img = new Image();
+        const img = new Image();
         img.src = src;
-        img.onload = () => resolve();
+        img.onload = () => resolve(img);
     });
 }
 
@@ -25,6 +25,8 @@ export const all = Promise.all(Object.keys(images).map(key => images[key]));
 
 class Drawable {
     constructor(name) {
+        this.fetched = null;
+
         this.future = images[name];
         this.future.then(img => {
             this.fetched = img;

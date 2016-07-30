@@ -1,5 +1,5 @@
 import {Entity} from './entities/generic';
-import {MelonEntity} from './entities';
+import {MelonEntity} from './entities/melon';
 
 import * as entities from './entities';
 import * as images from './images';
@@ -67,7 +67,7 @@ export class Player extends Entity {
             let x = 4; // Default pose
             // If the player is walking, make them wiggle between states 5 and 6
             if (this.walking) {
-                x += (now / 200).floor() % 2 + 1;
+                x += Math.floor(now / 200) % 2 + 1;
             } else if (this.ducking) {
                 x = 2;
             }
@@ -75,7 +75,7 @@ export class Player extends Entity {
                 x = 0;
             }
 
-            ctx.drawImageScaledFromSource(
+            ctx.drawImage(
                 img,
                 x * SPRITE_TILE, this.direction * SPRITE_TILE,
                 SPRITE_TILE, SPRITE_TILE,
@@ -95,7 +95,7 @@ export class Player extends Entity {
         }
 
         const nearestLadder = this.nearestLadder(level);
-        const onLadder = nearestLadder != -1;
+        const onLadder = nearestLadder !== -1;
         const jumpCondition = keys.upArrow && !this.testHitUp(level) && !onLadder;
 
         if (jumpCondition && this.isInContactWithFloor) {
@@ -117,7 +117,7 @@ export class Player extends Entity {
         } else if (!keys.upArrow) {
             this.canDoubleJump = true;
 
-        } else if (jumpCondition && this.jumpEnergy != 0) {
+        } else if (jumpCondition && this.jumpEnergy !== 0) {
             this.velY += settings.jump_energy_force * (delta / settings.jump_energy_force_ticks);
 
             this.jumpEnergy -= delta;
@@ -128,9 +128,9 @@ export class Player extends Entity {
             this.jumpEnergy = settings.jump_energy;
             this.canDoubleJump = false;
             this.didDoubleJump = false;
-            this.x = (nearestLadder.toDouble() + this.x * 5) / 6;
-            if ((nearestLadder.toDouble() - this.x).abs() < 0.1) {
-                this.x = nearestLadder.toDouble();
+            this.x = (nearestLadder + this.x * 5) / 6;
+            if (Math.abs(nearestLadder - this.x) < 0.1) {
+                this.x = nearestLadder;
             }
 
         }
@@ -156,7 +156,7 @@ export class Player extends Entity {
                 this.velX = 8.5;
                 this.walking = !keys.downArrow;
             } else {
-                if (this.velX.abs() > 0.001) {
+                if (Math.abs(this.velX) > 0.001) {
                     this.velX *= 0.65;
                 } else {
                     this.velX = 0.0;
@@ -198,11 +198,11 @@ export class Player extends Entity {
         this.melonCount--;
 
         sound.play('throwMelon');
-        const melon = new MelonEntity(this.x.floor(), this.y.floor());
+        const melon = new MelonEntity(Math.floor(this.x), Math.floor(this.y));
         melon.bouncing = true;
         melon.velY = this.velY + settings.throw_force_y;
         melon.velX = settings.throw_force_x * (this.direction === DIR_LEFT ? -1 : 1);
-        entities.registry.add(melon);
+        entities.registry.push(melon);
     }
 
 };
