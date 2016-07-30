@@ -21,6 +21,7 @@ export function tick(delta, level) {
         const result = registry[i].tick(delta, level);
         if (!result) {
             registry.splice(i, 1);
+            i--;
         }
     }
 };

@@ -23,6 +23,7 @@ export class Player extends Entity {
         this.walking = false;
         this.didSitInChair = false;
         this.shouldThrowMelon = false;
+        this.ladderCounter = 0;
 
         this.melonCount = 0;
 
@@ -131,6 +132,12 @@ export class Player extends Entity {
             this.x = (nearestLadder + this.x * 5) / 6;
             if (Math.abs(nearestLadder - this.x) < 0.1) {
                 this.x = nearestLadder;
+            }
+
+            const origLadderCount = this.ladderCounter;
+            this.ladderCounter += delta;
+            if (Math.floor(origLadderCount / 150) !== Math.floor(this.ladderCounter / 150)) {
+                sound.play('ladder');
             }
 
         }
