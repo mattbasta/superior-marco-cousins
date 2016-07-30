@@ -8,7 +8,6 @@ import * as sound from './sound';
 import * as timing from './timing';
 
 
-audio.init();
 keys.init();
 sound.init();
 
@@ -16,4 +15,7 @@ drawing.init();
 entities.init();
 levels.init();
 
-images.all.then(() => timing.start());
+Promise.all([
+    audio.all,
+    images.all,
+]).then(() => timing.start());

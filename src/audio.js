@@ -18,11 +18,12 @@ function loadLoop(name, uri) {
     loops.set(name, loop);
 }
 
+loadLoop('title', 'audio/title');
+loadLoop('hero', 'audio/hero');
 
-export function init() {
-    loadLoop('title', 'audio/title');
-    loadLoop('hero', 'audio/hero');
-};
+export const all = Promise.all(Array.from(loops.values()).map(loop => {
+    return new Promise(resolve => loop.bind('canplay', resolve));
+}));
 
 export function playLoop(name) {
     if (playingLoop === name) {

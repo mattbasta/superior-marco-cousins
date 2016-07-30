@@ -87,7 +87,6 @@
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
-	audio.init();
 	keys.init();
 	sound.init();
 	
@@ -95,8 +94,8 @@
 	entities.init();
 	levels.init();
 	
-	images.all.then(function () {
-	  return timing.start();
+	Promise.all([audio.all, images.all]).then(function () {
+	    return timing.start();
 	});
 
 /***/ },
@@ -108,7 +107,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.init = init;
+	exports.all = undefined;
 	exports.playLoop = playLoop;
 	exports.stop = stop;
 	
@@ -135,10 +134,14 @@
 	    loops.set(name, loop);
 	}
 	
-	function init() {
-	    loadLoop('title', 'audio/title');
-	    loadLoop('hero', 'audio/hero');
-	};
+	loadLoop('title', 'audio/title');
+	loadLoop('hero', 'audio/hero');
+	
+	var all = exports.all = Promise.all(Array.from(loops.values()).map(function (loop) {
+	    return new Promise(function (resolve) {
+	        return loop.bind('canplay', resolve);
+	    });
+	}));
 	
 	function playLoop(name) {
 	    if (playingLoop === name) {
