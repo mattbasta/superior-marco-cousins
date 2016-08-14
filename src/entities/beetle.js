@@ -9,7 +9,7 @@ const SPRITE_TILE = 8;
 const DIR_LEFT = 0;
 const DIR_RIGHT = 1;
 
-const BEETLE_SPEED = 4.0;
+const BEETLE_SPEED = 3.0;
 
 
 export class BeetleEntity extends Entity {
@@ -37,7 +37,7 @@ export class BeetleEntity extends Entity {
     draw(ctx, level, offsetX, offsetY) {
         this.image.draw((img) => {
             let x = Math.floor(Date.now() / 350) % 2;
-            if (this.direction == DIR_LEFT) {
+            if (this.direction === DIR_LEFT) {
                 x += 2;
             }
             const locX = this.x * settings.tile_size;
@@ -57,9 +57,9 @@ export class BeetleEntity extends Entity {
     tick(delta, level) {
 
         let prospectiveVel;
-        if (this.direction == DIR_LEFT) {
+        if (this.direction === DIR_LEFT) {
             prospectiveVel = -1 * BEETLE_SPEED;
-        } else if (this.direction == DIR_RIGHT) {
+        } else if (this.direction === DIR_RIGHT) {
             prospectiveVel = BEETLE_SPEED;
         }
 
@@ -84,7 +84,7 @@ export class BeetleEntity extends Entity {
 
     hitWall(stoppedX) {
         super.hitWall(stoppedX);
-        this.direction = (this.direction == DIR_LEFT) ? DIR_RIGHT : DIR_LEFT;
+        this.direction = (this.direction === DIR_LEFT) ? DIR_RIGHT : DIR_LEFT;
     }
 
 };

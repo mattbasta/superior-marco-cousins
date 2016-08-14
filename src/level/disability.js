@@ -27,13 +27,13 @@ export class LevelDisability extends Level {
             sound.play('keypress');
             // Handle Enter
             if (e.keyCode === 13) {
-                if (this.enteredText == '') return;
+                if (!this.enteredText) return;
                 this.entered = 1500;
                 return;
             }
             // Handle backspace
             if (e.keyCode === 8) {
-                if (this.enteredText == '') return;
+                if (!this.enteredText) return;
                 this.enteredText = this.enteredText.substring(0, this.enteredText.length - 1);
                 return;
             }

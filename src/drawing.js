@@ -35,29 +35,26 @@ export function init() {
 };
 
 export function drawUI() {
-    entitiesDrawable.draw(img => {
+    const melonCountTop = height - 16;
+    entitiesDrawable.draw(img =>
         ctx.drawImage(
             img,
             0, 0,
             8, 8,
-            10, height - 8 - settings.tile_size,
+            10, melonCountTop - settings.tile_size + 8,
             settings.tile_size, settings.tile_size
-        );
-    });
+        )
+    );
 
-    ctx.font = settings.tile_size.toString() + 'px VT323';
+    ctx.font = `${settings.tile_size}px VT323`;
+
+    const melonCountLeft = 20 + settings.tile_size;
+    const melonCountText = `x${entities.registry[0].melonCount}`;
+
     ctx.fillStyle = 'black';
-    ctx.fillText(
-        'x' + entities.registry[0].melonCount.toString(),
-        12 + settings.tile_size + 10,
-        ctx.canvas.height - 23
-    );
+    ctx.fillText(melonCountText, melonCountLeft + 2, melonCountTop + 2);
     ctx.fillStyle = 'white';
-    ctx.fillText(
-        'x' + entities.registry[0].melonCount.toString(),
-        10 + settings.tile_size + 10,
-        ctx.canvas.height - 25
-    );
+    ctx.fillText(melonCountText, melonCountLeft, melonCountTop);
 };
 
 export function drawPaused() {

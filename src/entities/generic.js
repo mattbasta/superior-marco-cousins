@@ -38,7 +38,7 @@ export class Entity {
     get complexJumps() { return false; }
 
     hitGround(y) {
-        if (this.bounce !== 0.0 && this.velY < -1 && this.standers.size == 0) {
+        if (this.bounce !== 0.0 && this.velY < -1 && !this.standers.size) {
             this.velY = -1 * this.bounce * this.velY;
         } else {
             this.velY = 0.0;
@@ -116,7 +116,7 @@ export class Entity {
 
     testHitUp(level) {
         let height = this.height;
-        this.standers.forEach((e) => {
+        this.standers.forEach(e => {
             height = Math.max(height, e.height + this.height);
         });
 
@@ -171,7 +171,7 @@ export class Entity {
 
     hitTestEntities(cb) {
         for (let ent of entities.registry) {
-            if (ent == this) continue;
+            if (ent === this) continue;
 
             if (this.x >= ent.x + ent.width) continue;
             if (this.y >= ent.y + ent.height) continue;
@@ -184,14 +184,16 @@ export class Entity {
     }
 
     updateUpwardsChain() {
-        if (this.standers.size) {
-            const newY = this.y + this.height;
-            this.standers.forEach((e) => {
-                e.y = newY;
-                e.isInContactWithFloor = true;
-                e.updateUpwardsChain();
-            });
+        if (!this.standers.size) {
+            return;
         }
+
+        const newY = this.y + this.height;
+        this.standers.forEach(e => {
+            e.y = newY;
+            e.isInContactWithFloor = true;
+            e.updateUpwardsChain();
+        });
     }
 
     testFallingDown() {
@@ -215,9 +217,9 @@ export class Entity {
         if (this.canStandOn && this.standingOn === null) {
             // If we can stand on someone (and we're not already), check
             // who we can stand on.
-            this.hitTestEntities((e) => {
+            this.hitTestEntities(e => {
                 if (!e.canBeStoodOn) return false;
-                if (e.standingOn == this) return false;
+                if (e.standingOn === this) return false;
                 e.standers.add(this);
                 this.standingOn = e;
                 this.hitGround(e.y + e.height);
@@ -245,8 +247,11 @@ export class Entity {
         const origY = this.y;
         const origX = this.x;
 
-        this.x += this.velX / delta * DELTA_RATIO;
-        if (this.velX !== 0.0) {
+        const velX = this.standingOn ?
+            this.standingOn.velX + this.velX :
+            this.velX;
+        this.x += velX / delta * DELTA_RATIO;
+        if (velX !== 0.0) {
             this.testCollisionSide(level);
             if (this.canBePushed || this.canPush) {
                 this.hitTestEntities((ent) => {
@@ -254,7 +259,7 @@ export class Entity {
                         this.x = origX;
                         return true;
                     } else if (ent.canBePushed && this.canPush) {
-                        const hitX = this.velX > 0 ? ent.x - this.width : ent.x + this.width;
+                        const hitX = velX > 0 ? ent.x - this.width : ent.x + this.width;
                         this.hitWall(hitX);
                         return true;
                     }

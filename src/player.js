@@ -58,6 +58,7 @@ export class Player extends Entity {
         this.walking = false;
         this.didSitInChair = false;
         this.shouldThrowMelon = false;
+        this.melonCount = 0;
 
         this.direction = DIR_RIGHT;
     }

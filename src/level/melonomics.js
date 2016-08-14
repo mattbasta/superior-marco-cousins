@@ -19,7 +19,7 @@ const TAXES = [
     new MelonomicsTax('Seed Tax', v => v > 0, v => Math.floor(v * 0.8)),
     new MelonomicsTax('Melon Inflation', v => true, v => v - Math.floor(Math.abs(v) * 0.2 + 1)),
     new MelonomicsTax('Inter-Melon Commerce Tax', v => v > 10, v => v - 1),
-    new MelonomicsTax('Even Tax', v => v % 2 == 0, v => v - 1),
+    new MelonomicsTax('Even Tax', v => v % 2 === 0, v => v - 1),
 ];
 
 
@@ -80,7 +80,7 @@ export class LevelMelonomics extends Level {
 
             TAXES.forEach(tax => {
                 if (!tax.applies(melons)) return;
-                if (items == 0) return;
+                if (!items) return;
                 items--;
                 const afterTax = tax.mod(melons);
                 const diff = afterTax - melons;

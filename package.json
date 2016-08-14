@@ -4,8 +4,9 @@
   "description": "such good game",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config=webpack.config.js --progress"
+    "build": "webpack --config=webpack.config.js --progress",
+    "dev": "webpack --config=webpack.config.js --progress --watch --colors",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",

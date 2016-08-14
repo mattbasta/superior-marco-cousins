@@ -975,15 +975,20 @@
 	};
 	
 	function drawUI() {
+	    var melonCountTop = height - 16;
 	    entitiesDrawable.draw(function (img) {
-	        ctx.drawImage(img, 0, 0, 8, 8, 10, height - 8 - settings.tile_size, settings.tile_size, settings.tile_size);
+	        return ctx.drawImage(img, 0, 0, 8, 8, 10, melonCountTop - settings.tile_size + 8, settings.tile_size, settings.tile_size);
 	    });
 	
-	    ctx.font = settings.tile_size.toString() + 'px VT323';
+	    ctx.font = settings.tile_size + 'px VT323';
+	
+	    var melonCountLeft = 20 + settings.tile_size;
+	    var melonCountText = 'x' + entities.registry[0].melonCount;
+	
 	    ctx.fillStyle = 'black';
-	    ctx.fillText('x' + entities.registry[0].melonCount.toString(), 12 + settings.tile_size + 10, ctx.canvas.height - 23);
+	    ctx.fillText(melonCountText, melonCountLeft + 2, melonCountTop + 2);
 	    ctx.fillStyle = 'white';
-	    ctx.fillText('x' + entities.registry[0].melonCount.toString(), 10 + settings.tile_size + 10, ctx.canvas.height - 25);
+	    ctx.fillText(melonCountText, melonCountLeft, melonCountTop);
 	};
 	
 	function drawPaused() {
@@ -1118,7 +1123,7 @@
 	var DIR_LEFT = 0;
 	var DIR_RIGHT = 1;
 	
-	var BEETLE_SPEED = 4.0;
+	var BEETLE_SPEED = 3.0;
 	
 	var BeetleEntity = exports.BeetleEntity = function (_Entity) {
 	    _inherits(BeetleEntity, _Entity);
@@ -1149,7 +1154,7 @@
 	
 	            this.image.draw(function (img) {
 	                var x = Math.floor(Date.now() / 350) % 2;
-	                if (_this2.direction == DIR_LEFT) {
+	                if (_this2.direction === DIR_LEFT) {
 	                    x += 2;
 	                }
 	                var locX = _this2.x * settings.tile_size;
@@ -1164,9 +1169,9 @@
 	        value: function tick(delta, level) {
 	
 	            var prospectiveVel = void 0;
-	            if (this.direction == DIR_LEFT) {
+	            if (this.direction === DIR_LEFT) {
 	                prospectiveVel = -1 * BEETLE_SPEED;
-	            } else if (this.direction == DIR_RIGHT) {
+	            } else if (this.direction === DIR_RIGHT) {
 	                prospectiveVel = BEETLE_SPEED;
 	            }
 	
@@ -1191,7 +1196,7 @@
 	        key: 'hitWall',
 	        value: function hitWall(stoppedX) {
 	            _get(Object.getPrototypeOf(BeetleEntity.prototype), 'hitWall', this).call(this, stoppedX);
-	            this.direction = this.direction == DIR_LEFT ? DIR_RIGHT : DIR_LEFT;
+	            this.direction = this.direction === DIR_LEFT ? DIR_RIGHT : DIR_LEFT;
 	        }
 	    }, {
 	        key: 'bounce',
@@ -1289,7 +1294,7 @@
 	    _createClass(Entity, [{
 	        key: 'hitGround',
 	        value: function hitGround(y) {
-	            if (this.bounce !== 0.0 && this.velY < -1 && this.standers.size == 0) {
+	            if (this.bounce !== 0.0 && this.velY < -1 && !this.standers.size) {
 	                this.velY = -1 * this.bounce * this.velY;
 	            } else {
 	                this.velY = 0.0;
@@ -1431,7 +1436,7 @@
 	                for (var _iterator = entities.registry[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	                    var ent = _step.value;
 	
-	                    if (ent == this) continue;
+	                    if (ent === this) continue;
 	
 	                    if (this.x >= ent.x + ent.width) continue;
 	                    if (this.y >= ent.y + ent.height) continue;
@@ -1459,23 +1464,21 @@
 	    }, {
 	        key: 'updateUpwardsChain',
 	        value: function updateUpwardsChain() {
-	            var _this2 = this;
-	
-	            if (this.standers.size) {
-	                (function () {
-	                    var newY = _this2.y + _this2.height;
-	                    _this2.standers.forEach(function (e) {
-	                        e.y = newY;
-	                        e.isInContactWithFloor = true;
-	                        e.updateUpwardsChain();
-	                    });
-	                })();
+	            if (!this.standers.size) {
+	                return;
 	            }
+	
+	            var newY = this.y + this.height;
+	            this.standers.forEach(function (e) {
+	                e.y = newY;
+	                e.isInContactWithFloor = true;
+	                e.updateUpwardsChain();
+	            });
 	        }
 	    }, {
 	        key: 'testFallingDown',
 	        value: function testFallingDown() {
-	            var _this3 = this;
+	            var _this2 = this;
 	
 	            if (this.standingOn !== null) {
 	                // If the entity is standing on someone, check the state of
@@ -1496,12 +1499,12 @@
 	                // who we can stand on.
 	                this.hitTestEntities(function (e) {
 	                    if (!e.canBeStoodOn) return false;
-	                    if (e.standingOn == _this3) return false;
-	                    e.standers.add(_this3);
-	                    _this3.standingOn = e;
-	                    _this3.hitGround(e.y + e.height);
+	                    if (e.standingOn === _this2) return false;
+	                    e.standers.add(_this2);
+	                    _this2.standingOn = e;
+	                    _this2.hitGround(e.y + e.height);
 	                    if (e.velY) {
-	                        _this3.velY += e.velY;
+	                        _this2.velY += e.velY;
 	                    }
 	                    return true;
 	                });
@@ -1524,22 +1527,23 @@
 	    }, {
 	        key: 'calcPhysics',
 	        value: function calcPhysics(delta, level) {
-	            var _this4 = this;
+	            var _this3 = this;
 	
 	            var origY = this.y;
 	            var origX = this.x;
 	
-	            this.x += this.velX / delta * DELTA_RATIO;
-	            if (this.velX !== 0.0) {
+	            var velX = this.standingOn ? this.standingOn.velX + this.velX : this.velX;
+	            this.x += velX / delta * DELTA_RATIO;
+	            if (velX !== 0.0) {
 	                this.testCollisionSide(level);
 	                if (this.canBePushed || this.canPush) {
 	                    this.hitTestEntities(function (ent) {
-	                        if (ent.canPush && _this4.canBePushed) {
-	                            _this4.x = origX;
+	                        if (ent.canPush && _this3.canBePushed) {
+	                            _this3.x = origX;
 	                            return true;
-	                        } else if (ent.canBePushed && _this4.canPush) {
-	                            var hitX = _this4.velX > 0 ? ent.x - _this4.width : ent.x + _this4.width;
-	                            _this4.hitWall(hitX);
+	                        } else if (ent.canBePushed && _this3.canPush) {
+	                            var hitX = velX > 0 ? ent.x - _this3.width : ent.x + _this3.width;
+	                            _this3.hitWall(hitX);
 	                            return true;
 	                        }
 	
@@ -2901,6 +2905,7 @@
 	            this.walking = false;
 	            this.didSitInChair = false;
 	            this.shouldThrowMelon = false;
+	            this.melonCount = 0;
 	
 	            this.direction = DIR_RIGHT;
 	        }
@@ -3399,13 +3404,13 @@
 	            sound.play('keypress');
 	            // Handle Enter
 	            if (e.keyCode === 13) {
-	                if (_this.enteredText == '') return;
+	                if (!_this.enteredText) return;
 	                _this.entered = 1500;
 	                return;
 	            }
 	            // Handle backspace
 	            if (e.keyCode === 8) {
-	                if (_this.enteredText == '') return;
+	                if (!_this.enteredText) return;
 	                _this.enteredText = _this.enteredText.substring(0, _this.enteredText.length - 1);
 	                return;
 	            }
@@ -3591,7 +3596,7 @@
 	}, function (v) {
 	    return v - 1;
 	}), new MelonomicsTax('Even Tax', function (v) {
-	    return v % 2 == 0;
+	    return v % 2 === 0;
 	}, function (v) {
 	    return v - 1;
 	})];
@@ -3659,7 +3664,7 @@
 	
 	                TAXES.forEach(function (tax) {
 	                    if (!tax.applies(melons)) return;
-	                    if (items == 0) return;
+	                    if (!items) return;
 	                    items--;
 	                    var afterTax = tax.mod(melons);
 	                    var diff = afterTax - melons;
@@ -4025,7 +4030,7 @@
 	            this.messageImg = images.get('drowninpool');
 	            this.messageImgTTL = 1250;
 	            this.messageImgNext = function () {
-	                return levelLib.goTo(1);
+	                return levelLib.goToDisability();
 	            };
 	        }
 	    }, {
@@ -4087,11 +4092,13 @@
 	    var nOutLen = nInLen * 3 + 1 >> 2;
 	    var taBytes = new Uint8Array(nOutLen);
 	
-	    for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
-	        nMod4 = nInIdx & 3;
+	    var nUint24 = 0;
+	    var nOutIdx = 0;
+	    for (var nInIdx = 0; nInIdx < nInLen; nInIdx++) {
+	        var nMod4 = nInIdx & 3;
 	        nUint24 |= b64ToUint6(sB64Enc.codePointAt(nInIdx)) << 18 - 6 * nMod4;
-	        if (nMod4 == 3 || nInLen - nInIdx == 1) {
-	            for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
+	        if (nMod4 === 3 || nInLen - nInIdx === 1) {
+	            for (var nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
 	                taBytes[nOutIdx] = nUint24 >> (16 >> nMod3 & 24) & 255;
 	            }
 	            nUint24 = 0;

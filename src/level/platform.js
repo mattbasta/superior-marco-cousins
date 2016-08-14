@@ -216,7 +216,7 @@ export class LevelPlatform extends Level {
         sound.play('drownInPool');
         this.messageImg = images.get('drowninpool');
         this.messageImgTTL = 1250;
-        this.messageImgNext = () => levelLib.goTo(1);
+        this.messageImgNext = () => levelLib.goToDisability();
     }
 
     fellInHole() {
