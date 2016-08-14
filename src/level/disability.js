@@ -24,23 +24,32 @@ export class LevelDisability extends Level {
 
             e.preventDefault();
 
-            sound.play('keypress');
             // Handle Enter
             if (e.keyCode === 13) {
-                if (!this.enteredText) return;
+                if (!this.enteredText) {
+                    sound.play('badkeypress');
+                    return;
+                }
                 this.entered = 1500;
+                sound.play('keypress');
                 return;
             }
             // Handle backspace
             if (e.keyCode === 8) {
-                if (!this.enteredText) return;
+                if (!this.enteredText) {
+                    sound.play('badkeypress');
+                    return;
+                }
                 this.enteredText = this.enteredText.substring(0, this.enteredText.length - 1);
+                sound.play('keypress');
                 return;
             }
             // Handle everything else
             if (this.enteredText.length < 10) {
                 this.enteredText += String.fromCharCode(e.keyCode);
             }
+
+            sound.play('keypress');
         });
     }
 

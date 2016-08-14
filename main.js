@@ -2065,6 +2065,7 @@
 	    'drownInPool': ["saw", 0.0000, 0.1530, 0.0000, 0.9760, 0.0000, 0.1540, 112.0000, 467.0000, 594.0000, 0.1020, -0.9520, 0.0000, 0.0100, 0.0003, 0.0000, 0.0000, 0.0000, 0.0120, 0.0640, 0.0000, 0.0000, 0.0000, 1.0000, 0.0000, 0.0000, 0.1600, 0.0000],
 	    'melonCollect': ["square", 0.0000, 0.0520, 0.0000, 0.0320, 0.4920, 0.3600, 20.0000, 1320.0000, 2400.0000, 0.0000, 0.0000, 0.0000, 0.0100, 0.0003, 0.0000, 0.2620, 0.1050, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 1.0000, 0.0000, 0.0000, 0.0000, 0.0000],
 	    'keypress': ["noise", 0.0000, 0.0540, 0.0000, 0.0140, 0.7560, 0.0460, 20.0000, 1691.0000, 2400.0000, -0.2680, 0.0000, 0.0000, 0.0100, 0.0003, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, -0.1320, -0.1860, 1.0000, 0.0000, 0.0000, 0.0000, 0.0000],
+	    'badkeypress': ["sine", 0.0000, 0.2060, 0.0000, 0.0280, 0.0000, 0.0180, 20.0000, 425.0000, 1843.0000, -1.0000, -1.0000, 0.0000, 0.0100, -0.0673, 0.0000, 0.0000, 0.0000, 0.4555, 0.1460, 0.0000, 0.0000, 0.0000, 1.0000, 0.0000, 0.0000, 0.0000, 0.0000],
 	    'fellInHole': ["noise", 0.0000, 0.0750, 0.0000, 0.2700, 0.7890, 0.6200, 20.0000, 20.0000, 1512.0000, -0.7620, 0.0000, 0.0000, 0.0100, 0.0003, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 1.0000, 0.0000, 0.0000, 0.1280, 0.0000],
 	    'throwMelon': ["synth", 0.0000, 0.0750, 0.0000, 0.0560, 0.0000, 0.0000, 20.0000, 616.0000, 2400.0000, 0.5540, -0.2400, 0.0000, 0.0100, 0.0003, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.7704, 0.0000, 0.0000, 1.0000, 0.0000, 0.0000, 0.0000, 0.0000],
 	    'ladder': ["noise", 0.0000, 0.0230, 0.0000, 0.0000, 0.0000, 0.0220, 20.0000, 1420.0000, 2400.0000, -0.3000, 0.0000, 0.0000, 0.0100, 0.0003, 0.0000, -0.4400, 0.8090, 0.0000, 0.0000, 0.0000, -0.0540, -0.1600, 1.0000, 0.0000, 0.0000, 0.0000, 0.0000]
@@ -3401,23 +3402,32 @@
 	
 	            e.preventDefault();
 	
-	            sound.play('keypress');
 	            // Handle Enter
 	            if (e.keyCode === 13) {
-	                if (!_this.enteredText) return;
+	                if (!_this.enteredText) {
+	                    sound.play('badkeypress');
+	                    return;
+	                }
 	                _this.entered = 1500;
+	                sound.play('keypress');
 	                return;
 	            }
 	            // Handle backspace
 	            if (e.keyCode === 8) {
-	                if (!_this.enteredText) return;
+	                if (!_this.enteredText) {
+	                    sound.play('badkeypress');
+	                    return;
+	                }
 	                _this.enteredText = _this.enteredText.substring(0, _this.enteredText.length - 1);
+	                sound.play('keypress');
 	                return;
 	            }
 	            // Handle everything else
 	            if (_this.enteredText.length < 10) {
 	                _this.enteredText += String.fromCharCode(e.keyCode);
 	            }
+	
+	            sound.play('keypress');
 	        });
 	        return _this;
 	    }
@@ -3591,7 +3601,7 @@
 	    return true;
 	}, function (v) {
 	    return v - Math.floor(Math.abs(v) * 0.2 + 1);
-	}), new MelonomicsTax('Inter-Melon Commerce Tax', function (v) {
+	}), new MelonomicsTax('Intermelon Commerce Fee', function (v) {
 	    return v > 10;
 	}, function (v) {
 	    return v - 1;
@@ -3621,12 +3631,10 @@
 	            audio.playLoop('hero');
 	            this.ticks = 0;
 	            this.ended = false;
-	            var melons = this.startMelons = entities.registry[0].melonCount;
-	            TAXES.forEach(function (tax) {
-	                if (!tax.applies(melons)) return;
-	                melons = tax.mod(melons);
-	            });
-	            this.finalMelons = melons;
+	            this.finalMelons = TAXES.reduce(function (melons, tax) {
+	                if (!tax.applies(melons)) return melons;
+	                return tax.mod(melons);
+	            }, this.startMelons = entities.registry[0].melonCount);
 	
 	            keys.down.one('any', function () {
 	                return sound.play('select');
