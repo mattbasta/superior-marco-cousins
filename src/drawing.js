@@ -58,13 +58,13 @@ export function drawUI() {
 };
 
 export function drawPaused() {
-    const modifierWidth = ctx.measureText(PAUSE_TEXT);
-
     ctx.font = '60px VT323';
+
+    const modifierWidth = ctx.measureText(PAUSE_TEXT);
     ctx.fillStyle = 'black';
-    ctx.fillText(PAUSE_TEXT, width / 2 - modifierWidth.width / 2 + 4, height / 2 - 30 + 4);
+    ctx.fillText(PAUSE_TEXT, width / 2 - modifierWidth.width / 2 + 4, height / 2 - 15 + 4);
     ctx.fillStyle = 'white';
-    ctx.fillText(PAUSE_TEXT, width / 2 - modifierWidth.width / 2, height / 2 - 30);
+    ctx.fillText(PAUSE_TEXT, width / 2 - modifierWidth.width / 2, height / 2 - 15);
 };
 
 export function draw() {

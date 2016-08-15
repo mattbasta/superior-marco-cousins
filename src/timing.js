@@ -31,7 +31,7 @@ export function start() {
     started = true;
 
     keys.up.on(80, e => {
-        if (!paused && !levels.getCurrent().canPause()) {
+        if (!paused && !levels.getCurrent().canPause) {
             return;
         }
         paused = !paused;
