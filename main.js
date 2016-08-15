@@ -992,13 +992,13 @@
 	};
 	
 	function drawPaused() {
-	    var modifierWidth = ctx.measureText(PAUSE_TEXT);
-	
 	    ctx.font = '60px VT323';
+	
+	    var modifierWidth = ctx.measureText(PAUSE_TEXT);
 	    ctx.fillStyle = 'black';
-	    ctx.fillText(PAUSE_TEXT, width / 2 - modifierWidth.width / 2 + 4, height / 2 - 30 + 4);
+	    ctx.fillText(PAUSE_TEXT, width / 2 - modifierWidth.width / 2 + 4, height / 2 - 15 + 4);
 	    ctx.fillStyle = 'white';
-	    ctx.fillText(PAUSE_TEXT, width / 2 - modifierWidth.width / 2, height / 2 - 30);
+	    ctx.fillText(PAUSE_TEXT, width / 2 - modifierWidth.width / 2, height / 2 - 15);
 	};
 	
 	function draw() {
@@ -1123,7 +1123,8 @@
 	var DIR_LEFT = 0;
 	var DIR_RIGHT = 1;
 	
-	var BEETLE_SPEED = 3.0;
+	var BEETLE_SPEED = 2.0;
+	var BEETLE_PANIC_SPEED = 6.5;
 	
 	var BeetleEntity = exports.BeetleEntity = function (_Entity) {
 	    _inherits(BeetleEntity, _Entity);
@@ -1152,6 +1153,7 @@
 	        value: function draw(ctx, level, offsetX, offsetY) {
 	            var _this2 = this;
 	
+	            var speed = this.standers.size ? BEETLE_PANIC_SPEED : BEETLE_SPEED;
 	            this.image.draw(function (img) {
 	                var x = Math.floor(Date.now() / 350) % 2;
 	                if (_this2.direction === DIR_LEFT) {
@@ -1167,16 +1169,19 @@
 	    }, {
 	        key: 'tick',
 	        value: function tick(delta, level) {
+	            var speed = this.standers.size ? BEETLE_PANIC_SPEED : BEETLE_SPEED;
 	
 	            var prospectiveVel = void 0;
-	            if (this.direction === DIR_LEFT) {
-	                prospectiveVel = -1 * BEETLE_SPEED;
+	            if (this.standingOn) {
+	                prospectiveVel = 0;
+	            } else if (this.direction === DIR_LEFT) {
+	                prospectiveVel = -1 * speed;
 	            } else if (this.direction === DIR_RIGHT) {
-	                prospectiveVel = BEETLE_SPEED;
+	                prospectiveVel = speed;
 	            }
 	
 	            var newX = this.x + prospectiveVel / delta * _generic.DELTA_RATIO;
-	            if (this.isInContactWithFloor && Math.floor(newX) !== Math.floor(this.x)) {
+	            if (this.isInContactWithFloor && Math.floor(newX) !== Math.floor(this.x) && !this.standers.size) {
 	                for (var x = Math.floor(newX); x <= Math.ceil(Math.floor(newX) + this.width); x++) {
 	                    var index = level.getLevelIndex(x, Math.ceil(this.y));
 	                    if (!tiles.canStand(level.data[index])) {
@@ -4408,7 +4413,7 @@
 	    started = true;
 	
 	    keys.up.on(80, function (e) {
-	        if (!paused && !levels.getCurrent().canPause()) {
+	        if (!paused && !levels.getCurrent().canPause) {
 	            return;
 	        }
 	        paused = !paused;

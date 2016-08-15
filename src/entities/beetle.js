@@ -9,7 +9,8 @@ const SPRITE_TILE = 8;
 const DIR_LEFT = 0;
 const DIR_RIGHT = 1;
 
-const BEETLE_SPEED = 3.0;
+const BEETLE_SPEED = 2.0;
+const BEETLE_PANIC_SPEED = 6.5;
 
 
 export class BeetleEntity extends Entity {
@@ -35,6 +36,7 @@ export class BeetleEntity extends Entity {
     }
 
     draw(ctx, level, offsetX, offsetY) {
+        const speed = this.standers.size ? BEETLE_PANIC_SPEED : BEETLE_SPEED;
         this.image.draw((img) => {
             let x = Math.floor(Date.now() / 350) % 2;
             if (this.direction === DIR_LEFT) {
@@ -55,16 +57,23 @@ export class BeetleEntity extends Entity {
     }
 
     tick(delta, level) {
+        const speed = this.standers.size ? BEETLE_PANIC_SPEED : BEETLE_SPEED;
 
         let prospectiveVel;
-        if (this.direction === DIR_LEFT) {
-            prospectiveVel = -1 * BEETLE_SPEED;
+        if (this.standingOn) {
+            prospectiveVel = 0;
+        } else if (this.direction === DIR_LEFT) {
+            prospectiveVel = -1 * speed;
         } else if (this.direction === DIR_RIGHT) {
-            prospectiveVel = BEETLE_SPEED;
+            prospectiveVel = speed;
         }
 
         const newX = this.x + prospectiveVel / delta * DELTA_RATIO;
-        if (this.isInContactWithFloor && Math.floor(newX) !== Math.floor(this.x)) {
+        if (
+            this.isInContactWithFloor &&
+            Math.floor(newX) !== Math.floor(this.x) &&
+            !this.standers.size
+        ) {
             for (let x = Math.floor(newX); x <= Math.ceil(Math.floor(newX) + this.width); x++) {
                 const index = level.getLevelIndex(x, Math.ceil(this.y));
                 if (!tiles.canStand(level.data[index])) {
