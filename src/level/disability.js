@@ -83,27 +83,29 @@ export class LevelDisability extends Level {
                 headerWidth, headerHeight
             );
 
-            let measured;
+            const startY = ctx.canvas.height / 2 + headerHeight / 2 - 15;
+            ctx.font = '30px VT323';
 
             if (this.entered > -1) {
                 ctx.fillStyle = '#f00';
-                measured = ctx.measureText(DENIED_TEXT);
+                const measured = ctx.measureText(DENIED_TEXT);
                 ctx.fillText(
                     DENIED_TEXT,
-                    ctx.canvas.width / 2 - measured.width / 2,
-                    ctx.canvas.height / 2 + headerHeight / 2 - 15
+                    ctx.canvas.width / 2 - measured.width / 2, startY
                 );
                 return;
             }
 
-            if (this.enteredText !== '') {
+
+            ctx.fillStyle = '#fff';
+            const measured = ctx.measureText(this.enteredText);
+            const startX = ctx.canvas.width / 2 - measured.width / 2;
+            ctx.fillText(this.enteredText, startX, startY);
+
+            if (Math.floor(Date.now() / 750) % 2) {
                 ctx.fillStyle = '#fff';
-                measured = ctx.measureText(this.enteredText);
-                ctx.fillText(
-                    this.enteredText,
-                    ctx.canvas.width / 2 - measured.width / 2,
-                    ctx.canvas.height / 2 + headerHeight / 2 - 15
-                );
+                const cursorX = startX + measured.width + 1;
+                ctx.fillRect(cursorX, startY - 22, 15, 25);
             }
         });
 

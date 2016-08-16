@@ -3519,19 +3519,25 @@
 	                var headerHeight = headerWidth / img.width * img.height;
 	                ctx.drawImage(img, 0, 0, img.width, img.height, ctx.canvas.width / 2 - headerWidth / 2, ctx.canvas.height / 2 - headerHeight / 2, headerWidth, headerHeight);
 	
-	                var measured = void 0;
+	                var startY = ctx.canvas.height / 2 + headerHeight / 2 - 15;
+	                ctx.font = '30px VT323';
 	
 	                if (_this2.entered > -1) {
 	                    ctx.fillStyle = '#f00';
-	                    measured = ctx.measureText(DENIED_TEXT);
-	                    ctx.fillText(DENIED_TEXT, ctx.canvas.width / 2 - measured.width / 2, ctx.canvas.height / 2 + headerHeight / 2 - 15);
+	                    var _measured = ctx.measureText(DENIED_TEXT);
+	                    ctx.fillText(DENIED_TEXT, ctx.canvas.width / 2 - _measured.width / 2, startY);
 	                    return;
 	                }
 	
-	                if (_this2.enteredText !== '') {
+	                ctx.fillStyle = '#fff';
+	                var measured = ctx.measureText(_this2.enteredText);
+	                var startX = ctx.canvas.width / 2 - measured.width / 2;
+	                ctx.fillText(_this2.enteredText, startX, startY);
+	
+	                if (Math.floor(Date.now() / 750) % 2) {
 	                    ctx.fillStyle = '#fff';
-	                    measured = ctx.measureText(_this2.enteredText);
-	                    ctx.fillText(_this2.enteredText, ctx.canvas.width / 2 - measured.width / 2, ctx.canvas.height / 2 + headerHeight / 2 - 15);
+	                    var cursorX = startX + measured.width + 1;
+	                    ctx.fillRect(cursorX, startY - 22, 15, 25);
 	                }
 	            });
 	        }
