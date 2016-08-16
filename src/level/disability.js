@@ -114,4 +114,8 @@ export class LevelDisability extends Level {
         }
     }
 
+    get canType() {
+        return true;
+    }
+
 }

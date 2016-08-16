@@ -110,15 +110,21 @@
 	exports.all = undefined;
 	exports.playLoop = playLoop;
 	exports.stop = stop;
+	exports.toggleMute = toggleMute;
+	exports.isMuted = isMuted;
 	
 	var _buzz = __webpack_require__(3);
 	
 	var buzz = _interopRequireWildcard(_buzz);
 	
+	var _storage = __webpack_require__(31);
+	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	var loops = new Map();
 	var playingLoop = null;
+	
+	var muted = (0, _storage.get)('muted');
 	
 	function loadLoop(name, uri) {
 	    if (loops.has(name)) {
@@ -132,6 +138,10 @@
 	        loop: true
 	    });
 	    loops.set(name, loop);
+	
+	    if (muted) {
+	        loop.toggleMute();
+	    }
 	}
 	
 	loadLoop('title', 'audio/title');
@@ -172,6 +182,42 @@
 	    }
 	    loops.get(playingLoop).stop();
 	    playingLoop = null;
+	};
+	
+	window.addEventListener('beforeunload', function () {
+	    (0, _storage.set)('muted', muted);
+	});
+	
+	function toggleMute() {
+	    muted = !muted;
+	    var _iteratorNormalCompletion = true;
+	    var _didIteratorError = false;
+	    var _iteratorError = undefined;
+	
+	    try {
+	        for (var _iterator = loops.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var loop = _step.value;
+	
+	            loop.toggleMute();
+	        }
+	    } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	    } finally {
+	        try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	                _iterator.return();
+	            }
+	        } finally {
+	            if (_didIteratorError) {
+	                throw _iteratorError;
+	            }
+	        }
+	    }
+	};
+	
+	function isMuted() {
+	    return muted;
 	};
 
 /***/ },
@@ -1138,6 +1184,7 @@
 	        _this.y = y;
 	
 	        _this.height = 0.625;
+	        _this.ticksAfterReversing = 0;
 	
 	        _this.image = images.get('entities');
 	        return _this;
@@ -1146,6 +1193,7 @@
 	    _createClass(BeetleEntity, [{
 	        key: 'reset',
 	        value: function reset() {
+	            this.ticksAfterReversing = 0;
 	            this.direction = DIR_RIGHT;
 	        }
 	    }, {
@@ -1193,15 +1241,21 @@
 	
 	            this.velX = prospectiveVel;
 	
+	            var origDirection = this.direction;
 	            this.calcPhysics(delta, level);
+	            if (this.direction === origDirection && this.ticksAfterReversing) {
+	                this.ticksAfterReversing--;
+	            }
 	
-	            return this.y > -1;
+	            return this.y > -2;
 	        }
 	    }, {
 	        key: 'hitWall',
 	        value: function hitWall(stoppedX) {
 	            _get(Object.getPrototypeOf(BeetleEntity.prototype), 'hitWall', this).call(this, stoppedX);
+	            if (this.ticksAfterReversing) return;
 	            this.direction = this.direction === DIR_LEFT ? DIR_RIGHT : DIR_LEFT;
+	            this.ticksAfterReversing = 3;
 	        }
 	    }, {
 	        key: 'bounce',
@@ -1316,9 +1370,6 @@
 	    }, {
 	        key: 'testCollisionDown',
 	        value: function testCollisionDown(level, origY) {
-	            var index = void 0;
-	            var tile = void 0;
-	
 	            if (this.y < 0 || Math.ceil(this.y) > level.height - 1) {
 	                return;
 	            }
@@ -1332,9 +1383,8 @@
 	            // Test for solid blocks
 	            if (crossedOne) {
 	                for (var x = start; x < end; x++) {
-	                    index = level.getLevelIndex(x, Math.ceil(this.y));
-	                    tile = level.data[index];
-	                    if (tiles.canStand(tile)) {
+	                    var index = level.getLevelIndex(x, Math.ceil(this.y));
+	                    if (tiles.canStand(level.data[index])) {
 	                        this.hitGround(Math.ceil(this.y));
 	                        return;
 	                    }
@@ -1346,8 +1396,8 @@
 	            // Test for half-solid blocks
 	            if (testForHalf) {
 	                for (var _x = start; _x < end; _x++) {
-	                    index = level.getLevelIndex(_x, Math.ceil(this.y));
-	                    tile = level.data[index];
+	                    var _index = level.getLevelIndex(_x, Math.ceil(this.y));
+	                    var tile = level.data[_index];
 	                    if (tiles.HALF_SOLID.has(tile)) {
 	                        if (tile == tiles.TILE_CHAIR_LEFT || tile == tiles.TILE_CHAIR_RIGHT) {
 	                            this.sitOnChair();
@@ -1363,12 +1413,11 @@
 	    }, {
 	        key: 'nearestLadder',
 	        value: function nearestLadder(level) {
-	            for (var y = Math.max(Math.floor(this.y + 1), 0); y < Math.min(Math.ceil(this.y + this.height), level.height - 1); y++) {
-	
+	            var topMostSide = Math.min(Math.ceil(this.y + this.height), level.height - 1);
+	            for (var y = Math.max(Math.floor(this.y + 1), 0); y < topMostSide; y++) {
 	                var x = Math.floor(this.x + 0.5);
 	                var index = level.getLevelIndex(x, y);
-	                var tile = level.data[index];
-	                if (tile === tiles.TILE_LADDER) {
+	                if (level.data[index] === tiles.TILE_LADDER) {
 	                    return x;
 	                }
 	            }
@@ -1379,6 +1428,7 @@
 	        value: function testHitUp(level) {
 	            var _this = this;
 	
+	            // This is because there is no `reduce()` on Set.
 	            var height = this.height;
 	            this.standers.forEach(function (e) {
 	                height = Math.max(height, e.height + _this.height);
@@ -1389,11 +1439,9 @@
 	                return false;
 	            }
 	
-	            for (var x = Math.max(Math.floor(this.x), 0); x < Math.min(Math.ceil(this.x + this.width), level.width - 1); x++) {
-	
-	                var index = level.getLevelIndex(x, y);
-	                var tile = level.data[index];
-	                if (tiles.SOLID.has(tile)) {
+	            var rightMostSpot = Math.min(Math.ceil(this.x + this.width), level.width - 1);
+	            for (var x = Math.max(Math.floor(this.x), 0); x < rightMostSpot; x++) {
+	                if (tiles.SOLID.has(level.data[level.getLevelIndex(x, y)])) {
 	                    return true;
 	                }
 	            }
@@ -1409,8 +1457,8 @@
 	    }, {
 	        key: 'testCollisionSide',
 	        value: function testCollisionSide(level) {
-	            for (var y = Math.max(Math.floor(this.y) + 1, 0); y < Math.min(Math.ceil(this.y + this.height + 1), level.height - 1); y++) {
-	
+	            var topMostSide = Math.min(Math.ceil(this.y + this.height + 1), level.height - 1);
+	            for (var y = Math.max(Math.floor(this.y) + 1, 0); y < topMostSide; y++) {
 	                if (this.velX < 1) {
 	                    // On left
 	                    var index = level.getLevelIndex(Math.ceil(this.x) - 1, y);
@@ -1421,8 +1469,8 @@
 	                    }
 	                } else if (this.velX > 1) {
 	                    // On right
-	                    var _index = level.getLevelIndex(Math.floor(this.x + this.width), y);
-	                    var _tile = level.data[_index];
+	                    var _index2 = level.getLevelIndex(Math.floor(this.x + this.width), y);
+	                    var _tile = level.data[_index2];
 	                    if (tiles.SOLID.has(_tile)) {
 	                        this.hitWall(Math.floor(this.x));
 	                        return;
@@ -1469,6 +1517,8 @@
 	    }, {
 	        key: 'updateUpwardsChain',
 	        value: function updateUpwardsChain() {
+	            var _this2 = this;
+	
 	            if (!this.standers.size) {
 	                return;
 	            }
@@ -1476,6 +1526,7 @@
 	            var newY = this.y + this.height;
 	            this.standers.forEach(function (e) {
 	                e.y = newY;
+	                e.velY = _this2.velY;
 	                e.isInContactWithFloor = true;
 	                e.updateUpwardsChain();
 	            });
@@ -1483,7 +1534,7 @@
 	    }, {
 	        key: 'testFallingDown',
 	        value: function testFallingDown() {
-	            var _this2 = this;
+	            var _this3 = this;
 	
 	            if (this.standingOn !== null) {
 	                // If the entity is standing on someone, check the state of
@@ -1504,12 +1555,12 @@
 	                // who we can stand on.
 	                this.hitTestEntities(function (e) {
 	                    if (!e.canBeStoodOn) return false;
-	                    if (e.standingOn === _this2) return false;
-	                    e.standers.add(_this2);
-	                    _this2.standingOn = e;
-	                    _this2.hitGround(e.y + e.height);
+	                    if (e.standingOn === _this3) return false;
+	                    e.standers.add(_this3);
+	                    _this3.standingOn = e;
+	                    _this3.hitGround(e.y + e.height);
 	                    if (e.velY) {
-	                        _this2.velY += e.velY;
+	                        _this3.velY += e.velY;
 	                    }
 	                    return true;
 	                });
@@ -1532,7 +1583,7 @@
 	    }, {
 	        key: 'calcPhysics',
 	        value: function calcPhysics(delta, level) {
-	            var _this3 = this;
+	            var _this4 = this;
 	
 	            var origY = this.y;
 	            var origX = this.x;
@@ -1543,12 +1594,12 @@
 	                this.testCollisionSide(level);
 	                if (this.canBePushed || this.canPush) {
 	                    this.hitTestEntities(function (ent) {
-	                        if (ent.canPush && _this3.canBePushed) {
-	                            _this3.x = origX;
+	                        if (ent.canPush && _this4.canBePushed) {
+	                            _this4.x = origX;
 	                            return true;
-	                        } else if (ent.canBePushed && _this3.canPush) {
-	                            var hitX = velX > 0 ? ent.x - _this3.width : ent.x + _this3.width;
-	                            _this3.hitWall(hitX);
+	                        } else if (ent.canBePushed && _this4.canPush) {
+	                            var hitX = velX > 0 ? ent.x - _this4.width : ent.x + _this4.width;
+	                            _this4.hitWall(hitX);
 	                            return true;
 	                        }
 	
@@ -2009,7 +2060,6 @@
 	                this.velX *= 0.95;
 	                if (this.isInContactWithFloor && this.velX + this.velY < 1) {
 	                    this.bouncing = false;
-	                    this.x = Math.round(this.x);
 	                }
 	
 	                return true;
@@ -2059,6 +2109,8 @@
 	
 	var _jsfx2 = _interopRequireDefault(_jsfx);
 	
+	var _audio = __webpack_require__(2);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var waves = {
@@ -2089,6 +2141,9 @@
 	};
 	
 	function play(name) {
+	    if ((0, _audio.isMuted)()) {
+	        return;
+	    }
 	    _jsfxInst.playSample(samples[name]);
 	};
 
@@ -3487,6 +3542,11 @@
 	                }
 	            }
 	        }
+	    }, {
+	        key: 'canType',
+	        get: function get() {
+	            return true;
+	        }
 	    }]);
 
 	    return LevelDisability;
@@ -3533,6 +3593,11 @@
 	        }
 	    }, {
 	        key: "canPause",
+	        get: function get() {
+	            return false;
+	        }
+	    }, {
+	        key: "canType",
 	        get: function get() {
 	            return false;
 	        }
@@ -3767,6 +3832,7 @@
 	        _this.image = images.get(src);
 	        _this.audioName = audioName;
 	        _this.ended = false;
+	        _this.playedSound = false;
 	        return _this;
 	    }
 	
@@ -3778,13 +3844,18 @@
 	            if (this.audioName !== null) {
 	                audio.playLoop(this.audioName);
 	            }
+	            this.playedSound = false;
 	            this.ended = false;
 	
 	            keys.down.one('any', function () {
-	                return sound.play('select');
+	                sound.play('select');
+	                _this2.playedSound = true;
 	            });
 	            keys.up.one('any', function () {
 	                _this2.ended = true;
+	                if (!_this2.playedSound) {
+	                    sound.play('select');
+	                }
 	            });
 	        }
 	    }, {
@@ -4368,6 +4439,10 @@
 	});
 	exports.start = start;
 	
+	var _audio = __webpack_require__(2);
+	
+	var audio = _interopRequireWildcard(_audio);
+	
 	var _drawing = __webpack_require__(4);
 	
 	var drawing = _interopRequireWildcard(_drawing);
@@ -4413,6 +4488,7 @@
 	    started = true;
 	
 	    keys.up.on(80, function (e) {
+	        // P
 	        if (!paused && !levels.getCurrent().canPause) {
 	            return;
 	        }
@@ -4423,7 +4499,36 @@
 	            drawing.drawPaused();
 	        }
 	    });
+	
+	    keys.up.on(77, function (e) {
+	        if (levels.getCurrent().canType) {
+	            return;
+	        }
+	        e.preventDefault();
+	        audio.toggleMute();
+	    });
 	};
+
+/***/ },
+/* 31 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.set = set;
+	exports.get = get;
+	var VERSION = 1;
+	
+	function set(key, val) {
+	    window.localStorage.setItem(VERSION + "." + key, JSON.stringify(val));
+	};
+	
+	function get(key) {
+	    return JSON.parse(window.localStorage.getItem(VERSION + "." + key));
+	}
 
 /***/ }
 /******/ ]);

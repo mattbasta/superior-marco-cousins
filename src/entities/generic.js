@@ -54,9 +54,6 @@ export class Entity {
     }
 
     testCollisionDown(level, origY) {
-        let index;
-        let tile;
-
         if (this.y < 0 || Math.ceil(this.y) > level.height - 1) {
             return;
         }
@@ -70,9 +67,8 @@ export class Entity {
         // Test for solid blocks
         if (crossedOne) {
             for (let x = start; x < end; x++) {
-                index = level.getLevelIndex(x, Math.ceil(this.y));
-                tile = level.data[index];
-                if (tiles.canStand(tile)) {
+                const index = level.getLevelIndex(x, Math.ceil(this.y));
+                if (tiles.canStand(level.data[index])) {
                     this.hitGround(Math.ceil(this.y));
                     return;
                 }
@@ -84,8 +80,8 @@ export class Entity {
         // Test for half-solid blocks
         if (testForHalf) {
             for (let x = start; x < end; x++) {
-                index = level.getLevelIndex(x, Math.ceil(this.y));
-                tile = level.data[index];
+                const index = level.getLevelIndex(x, Math.ceil(this.y));
+                const tile = level.data[index];
                 if (tiles.HALF_SOLID.has(tile)) {
                     if (tile == tiles.TILE_CHAIR_LEFT || tile == tiles.TILE_CHAIR_RIGHT) {
                         this.sitOnChair();
@@ -100,14 +96,11 @@ export class Entity {
     }
 
     nearestLadder(level) {
-        for (let y = Math.max(Math.floor(this.y + 1), 0);
-             y < Math.min(Math.ceil(this.y + this.height), level.height - 1);
-             y++) {
-
+        const topMostSide = Math.min(Math.ceil(this.y + this.height), level.height - 1);
+        for (let y = Math.max(Math.floor(this.y + 1), 0); y < topMostSide; y++) {
             const x = Math.floor(this.x + 0.5);
             const index = level.getLevelIndex(x, y);
-            const tile = level.data[index];
-            if (tile === tiles.TILE_LADDER) {
+            if (level.data[index] === tiles.TILE_LADDER) {
                 return x;
             }
         }
@@ -115,6 +108,7 @@ export class Entity {
     }
 
     testHitUp(level) {
+        // This is because there is no `reduce()` on Set.
         let height = this.height;
         this.standers.forEach(e => {
             height = Math.max(height, e.height + this.height);
@@ -125,13 +119,9 @@ export class Entity {
             return false;
         }
 
-        for (let x = Math.max(Math.floor(this.x), 0);
-             x < Math.min(Math.ceil(this.x + this.width), level.width - 1);
-             x++) {
-
-            const index = level.getLevelIndex(x, y);
-            const tile = level.data[index];
-            if (tiles.SOLID.has(tile)) {
+        const rightMostSpot = Math.min(Math.ceil(this.x + this.width), level.width - 1);
+        for (let x = Math.max(Math.floor(this.x), 0); x < rightMostSpot; x++) {
+            if (tiles.SOLID.has(level.data[level.getLevelIndex(x, y)])) {
                 return true;
             }
         }
@@ -145,10 +135,8 @@ export class Entity {
     }
 
     testCollisionSide(level) {
-        for (let y = Math.max(Math.floor(this.y) + 1, 0);
-             y < Math.min(Math.ceil(this.y + this.height + 1), level.height - 1);
-             y++) {
-
+        const topMostSide = Math.min(Math.ceil(this.y + this.height + 1), level.height - 1);
+        for (let y = Math.max(Math.floor(this.y) + 1, 0); y < topMostSide; y++) {
             if (this.velX < 1) {
                 // On left
                 const index = level.getLevelIndex(Math.ceil(this.x) - 1, y);
@@ -191,6 +179,7 @@ export class Entity {
         const newY = this.y + this.height;
         this.standers.forEach(e => {
             e.y = newY;
+            e.velY = this.velY;
             e.isInContactWithFloor = true;
             e.updateUpwardsChain();
         });

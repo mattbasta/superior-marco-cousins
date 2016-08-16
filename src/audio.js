@@ -1,8 +1,12 @@
 import * as buzz from 'buzz';
 
+import {set, get} from './storage';
+
 
 const loops = new Map();
 let playingLoop = null;
+
+let muted = get('muted');
 
 function loadLoop(name, uri) {
     if (loops.has(name)) {
@@ -16,6 +20,10 @@ function loadLoop(name, uri) {
         loop: true,
     });
     loops.set(name, loop);
+
+    if (muted) {
+        loop.toggleMute();
+    }
 }
 
 loadLoop('title', 'audio/title');
@@ -54,4 +62,20 @@ export function stop() {
     }
     loops.get(playingLoop).stop();
     playingLoop = null;
+};
+
+window.addEventListener('beforeunload', () => {
+    set('muted', muted);
+});
+
+
+export function toggleMute() {
+    muted = !muted;
+    for (let loop of loops.values()) {
+        loop.toggleMute();
+    }
+};
+
+export function isMuted() {
+    return muted;
 };

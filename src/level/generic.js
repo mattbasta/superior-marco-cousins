@@ -19,4 +19,8 @@ export class Level {
         return false;
     }
 
+    get canType() {
+        return false;
+    }
+
 };

@@ -12,17 +12,25 @@ export class LevelMenu extends Level {
         this.image = images.get(src);
         this.audioName = audioName;
         this.ended = false;
+        this.playedSound = false;
     }
 
     reset() {
         if (this.audioName !== null) {
             audio.playLoop(this.audioName);
         }
+        this.playedSound = false;
         this.ended = false;
 
-        keys.down.one('any', () => sound.play('select'));
+        keys.down.one('any', () => {
+            sound.play('select');
+            this.playedSound = true;
+        });
         keys.up.one('any', () => {
             this.ended = true;
+            if (!this.playedSound) {
+                sound.play('select');
+            }
         });
     }
 

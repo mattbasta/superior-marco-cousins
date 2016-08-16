@@ -51,7 +51,6 @@ export class MelonEntity extends Entity {
             this.velX *= 0.95;
             if (this.isInContactWithFloor && this.velX + this.velY < 1) {
                 this.bouncing = false;
-                this.x = Math.round(this.x);
             }
 
             return true;

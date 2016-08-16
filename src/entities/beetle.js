@@ -20,6 +20,7 @@ export class BeetleEntity extends Entity {
         this.y = y;
 
         this.height = 0.625;
+        this.ticksAfterReversing = 0;
 
         this.image = images.get('entities');
     }
@@ -32,6 +33,7 @@ export class BeetleEntity extends Entity {
     get type() { return 'beetle'; }
 
     reset() {
+        this.ticksAfterReversing = 0;
         this.direction = DIR_RIGHT;
     }
 
@@ -85,15 +87,21 @@ export class BeetleEntity extends Entity {
 
         this.velX = prospectiveVel;
 
+        const origDirection = this.direction;
         this.calcPhysics(delta, level);
+        if (this.direction === origDirection && this.ticksAfterReversing) {
+            this.ticksAfterReversing--;
+        }
 
-        return this.y > -1;
+        return this.y > -2;
 
     }
 
     hitWall(stoppedX) {
         super.hitWall(stoppedX);
+        if (this.ticksAfterReversing) return;
         this.direction = (this.direction === DIR_LEFT) ? DIR_RIGHT : DIR_LEFT;
+        this.ticksAfterReversing = 3;
     }
 
 };

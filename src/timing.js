@@ -1,3 +1,4 @@
+import * as audio from './audio';
 import * as drawing from './drawing';
 import * as keys from './keys';
 import * as levels from './levels';
@@ -30,7 +31,7 @@ export function start() {
     requestAnimationFrame(loop);
     started = true;
 
-    keys.up.on(80, e => {
+    keys.up.on(80, e => { // P
         if (!paused && !levels.getCurrent().canPause) {
             return;
         }
@@ -40,5 +41,13 @@ export function start() {
         if (paused) {
             drawing.drawPaused();
         }
+    });
+
+    keys.up.on(77, e => {
+        if (levels.getCurrent().canType) {
+            return;
+        }
+        e.preventDefault();
+        audio.toggleMute();
     });
 };
