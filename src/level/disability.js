@@ -44,12 +44,19 @@ export class LevelDisability extends Level {
                 sound.play('keypress');
                 return;
             }
-            // Handle everything else
-            if (this.enteredText.length < 10) {
-                this.enteredText += String.fromCharCode(e.keyCode);
+
+            if (e.key && (e.key === 'Shift' || e.key === 'Meta' || e.key === 'Alt')) {
+                return;
             }
 
-            sound.play('keypress');
+            // Handle everything else
+            if (this.enteredText.length < 10 && e.key && e.key.length === 1) {
+                this.enteredText += e.key;
+                sound.play('keypress');
+            } else {
+                sound.play('badkeypress');
+            }
+
         });
     }
 
