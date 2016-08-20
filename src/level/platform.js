@@ -45,7 +45,7 @@ export class LevelPlatform extends Level {
         this.data = new Uint16Array(width * height);
         if (data !== null) {
             const convertedData = base64.base64DecToArr(data);
-            for (let i = 0; i < convertedData.length - 1; i++) {
+            for (let i = 0; i < convertedData.length; i++) {
                 this.data[i] = convertedData[i];
             }
         }
@@ -100,9 +100,7 @@ export class LevelPlatform extends Level {
         this.completed = false;
         entities.reset();
 
-        this.defaultEntities.forEach((dE) => {
-            entities.add(dE['id'], dE['x'], dE['y']);
-        });
+        this.defaultEntities.forEach(({id, x, y}) => entities.add(id, x, y));
     }
 
     tick(delta, nextLevel) {

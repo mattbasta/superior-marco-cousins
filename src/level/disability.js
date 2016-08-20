@@ -6,6 +6,7 @@ import * as sound from '../sound';
 
 
 const DENIED_TEXT = 'APPLICATION DENIED';
+const MAX_LEN = 10;
 
 
 export class LevelDisability extends Level {
@@ -50,7 +51,7 @@ export class LevelDisability extends Level {
             }
 
             // Handle everything else
-            if (this.enteredText.length < 10 && e.key && e.key.length === 1) {
+            if (this.enteredText.length < MAX_LEN && e.key && e.key.length === 1) {
                 this.enteredText += e.key;
                 sound.play('keypress');
             } else {
@@ -102,6 +103,9 @@ export class LevelDisability extends Level {
             const startX = ctx.canvas.width / 2 - measured.width / 2;
             ctx.fillText(this.enteredText, startX, startY);
 
+            if (this.enteredText.length === MAX_LEN) {
+                return;
+            }
             if (Math.floor(Date.now() / 750) % 2) {
                 ctx.fillStyle = '#fff';
                 const cursorX = startX + measured.width + 1;

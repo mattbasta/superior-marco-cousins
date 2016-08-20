@@ -43,7 +43,7 @@ export function start() {
         }
     });
 
-    keys.up.on(77, e => {
+    keys.up.on(77, e => { // M
         if (levels.getCurrent().canType) {
             return;
         }
