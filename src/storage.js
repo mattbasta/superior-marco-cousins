@@ -6,4 +6,4 @@ export function set(key, val) {
 
 export function get(key) {
     return JSON.parse(window.localStorage.getItem(`${VERSION}.${key}`));
-}
+};
